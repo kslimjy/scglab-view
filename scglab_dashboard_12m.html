@@ -1,0 +1,2540 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>에스씨지랩 경영현황</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f4f5f7;--white:#fff;--border:#e8eaed;--border2:#d1d5db;
+  --text:#1a1d23;--text2:#52576a;--text3:#9499ab;
+  --blue:#4b7cf3;--mint:#1ec997;--gold:#d97706;--purple:#7c3aed;
+  --red:#ef4444;--green:#059669;
+  --shadow:0 1px 3px rgba(0,0,0,.06),0 2px 8px rgba(0,0,0,.04);
+}
+html{background:var(--bg)}
+body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:13px;-webkit-font-smoothing:antialiased}
+
+.hdr{background:var(--white);border-bottom:1px solid var(--border);padding:0 32px;display:flex;align-items:center;justify-content:space-between;height:56px;position:sticky;top:0;z-index:100;box-shadow:0 1px 4px rgba(0,0,0,.05)}
+.logo{font-size:16px;font-weight:700;color:var(--text)} .logo em{color:var(--text);font-style:normal}
+.hdr-meta{font-size:11px;color:var(--text3)} .hdr-meta b{color:var(--text2)}
+
+.tabs{background:var(--white);border-bottom:1px solid var(--border);padding:0 32px;display:flex}
+.tab{padding:14px 20px;font-size:13px;font-weight:500;color:var(--text3);background:none;border:none;cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;font-family:inherit}
+.tab:hover{color:var(--text2)} .tab.on{color:var(--text);border-bottom-color:var(--mint);font-weight:600}
+
+.wrap{max-width:1440px;margin:0 auto;padding:24px 32px}
+.page{display:none} .page.on{display:block}
+
+.fbar{display:flex;align-items:center;gap:6px;margin-bottom:20px}
+.flabel{font-size:11px;color:var(--text3);margin-right:4px;font-weight:500}
+.fb{padding:5px 14px;font-size:12px;font-weight:500;border:1.5px solid var(--border2);border-radius:20px;background:var(--white);color:var(--text2);cursor:pointer;font-family:inherit;transition:all .15s}
+.fb:hover{border-color:var(--mint);color:var(--mint)} .fb.on{background:var(--text);border-color:var(--text);color:#fff}
+.fb.confirmed{background:#e0f2fe;border-color:#38bdf8;color:#0369a1;font-weight:600}
+.fb.confirmed.on{background:#0ea5e9;border-color:#0284c7;color:#fff}
+
+.kpi-row{display:grid;gap:12px;margin-bottom:16px}
+.kpi5{grid-template-columns:repeat(5,1fr)}
+.kpi4{grid-template-columns:repeat(4,1fr)}
+.kcard{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:16px 18px;box-shadow:var(--shadow)}
+.kcard.accent{border-left:3px solid var(--mint)}
+.klabel{font-size:11px;color:var(--text3);font-weight:500;margin-bottom:5px}
+.kval{font-size:22px;font-weight:700;letter-spacing:-.5px;line-height:1.1}
+.ksub{font-size:11px;color:var(--text3);margin-top:4px}
+.ktag{display:inline-flex;align-items:center;gap:3px;font-size:11px;font-weight:600;padding:2px 7px;border-radius:20px;margin-top:5px}
+.ktag.up{background:rgba(5,150,105,.1);color:var(--green)}
+.ktag.dn{background:rgba(239,68,68,.1);color:var(--red)}
+.kcard-hint{font-size:10px;color:var(--text3);margin-top:2px;font-style:italic}
+
+/* 잔여목표/연간계획 배너 */
+.plan-banner{background:linear-gradient(135deg,#f0f4ff,#e8f5f0);border:1px solid #c7d7f5;border-radius:12px;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px}
+.pb-item{text-align:center;min-width:80px}
+.pb-label{font-size:10px;color:var(--text3);margin-bottom:3px;white-space:nowrap}
+.pb-val{font-size:15px;font-weight:700;white-space:nowrap}
+.pb-div{width:1px;background:var(--border2);height:32px;flex-shrink:0}
+.pb-exceed{background:rgba(5,150,105,.12);border:1px solid rgba(5,150,105,.3);border-radius:8px;padding:6px 14px;font-size:12px;font-weight:600;color:var(--green);white-space:nowrap}
+
+.ach3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
+.achcard{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:14px 18px;box-shadow:var(--shadow)}
+.achhead{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:3px}
+.achlabel{font-size:12px;font-weight:600;color:var(--text2)}
+.achbasis{font-size:10px;color:var(--text3);margin-top:1px;font-style:italic}
+.achpct{font-size:19px;font-weight:700;letter-spacing:-.5px}
+.achbar{height:5px;background:#eef0f4;border-radius:3px;overflow:hidden;margin:8px 0 7px}
+.achfill{height:100%;border-radius:3px;transition:width .7s cubic-bezier(.4,0,.2,1)}
+.achvals{display:flex;gap:14px;flex-wrap:wrap}
+.achitem{font-size:11px;color:var(--text3)} .achitem b{color:var(--text2);font-weight:600}
+.achdiff{font-size:11px;font-weight:600} .achdiff.pos{color:var(--green)} .achdiff.neg{color:var(--red)}
+.ach-exceed{font-size:11px;font-weight:600;color:var(--green);background:rgba(5,150,105,.08);border-radius:4px;padding:1px 6px}
+
+.cgrid{display:grid;gap:14px;margin-bottom:16px}
+.c21{grid-template-columns:2fr 1fr}
+.c11{grid-template-columns:1fr 1fr}
+.c1{grid-template-columns:1fr}
+.ccard{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:20px 22px;box-shadow:var(--shadow)}
+.ctitle{font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px}
+.csub{font-size:11px;color:var(--text3);margin-bottom:14px}
+.cwrap{position:relative}
+.h200{height:200px} .h260{height:260px} .h280{height:280px} .h300{height:300px}
+.legend{display:flex;gap:14px;margin-top:10px;flex-wrap:wrap;justify-content:center}
+.li{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text2)}
+.ld{width:10px;height:10px;border-radius:2px;flex-shrink:0}
+
+.month-summary{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:16px}
+.ms-card{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:12px 14px;box-shadow:var(--shadow)}
+.ms-month{font-size:10px;color:var(--text3);font-weight:600;margin-bottom:6px;letter-spacing:.3px}
+.ms-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:3px}
+.ms-label{font-size:10px;color:var(--text3)}
+.ms-val{font-size:12px;font-weight:600}
+.ms-footer{font-size:10px;color:var(--text3);margin-top:5px;padding-top:5px;border-top:1px solid var(--border)}
+
+.sh{display:flex;align-items:baseline;gap:8px;margin-bottom:12px;margin-top:4px}
+.sh h2{font-size:14px;font-weight:700}
+.sh-sub{font-size:11px;color:var(--text3);background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:2px 7px}
+
+.twrap{overflow-x:auto;margin-bottom:16px;border:1px solid var(--border);border-radius:10px}
+table{width:100%;border-collapse:collapse;font-size:12px;table-layout:fixed}
+table.wide{width:max-content;min-width:100%;table-layout:auto}
+thead{background:#f8f9fb}
+th{padding:7px 10px;text-align:right;color:var(--text3);font-weight:500;font-size:11px;border-bottom:1.5px solid var(--border);white-space:nowrap}
+th:first-child{text-align:left;width:120px;min-width:120px;max-width:140px}
+th.num{width:56px;min-width:50px}
+td{padding:6px 10px;text-align:right;border-bottom:1px solid var(--border);font-size:12px;color:var(--text2);white-space:nowrap}
+td:first-child{text-align:left;font-weight:500;color:var(--text2);width:120px;min-width:120px;max-width:140px}
+td.ind{padding-left:20px;color:var(--text3);font-weight:400;font-size:11px}
+tr.ind-row td{background:#fcfcfd;color:var(--text3) !important;font-size:11px}
+tr.ind-row td:first-child{color:var(--text3);font-weight:400}
+tr.ind-row td.cp{color:#9eb5fa !important}
+tr.ind-row td.cb{color:#7ddbbe !important}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fafbfc}
+tr.total td{background:#f3f4f7;font-weight:700;color:var(--text)}
+tr.total td:first-child{color:var(--text)}
+tr.sep td{border-top:1.5px solid var(--border2)}
+tr.sub td{background:#f8f9fb}
+tr.path-row td{background:#f8fbff}
+tr.path-row td:first-child{padding-left:20px;color:var(--text3);font-weight:400;font-size:11px}
+tr.bill-row td{background:#f5fdf9}
+tr.bill-row td:first-child{padding-left:20px;color:var(--text3);font-weight:400;font-size:11px}
+tr.ind-row td{background:#fcfcfd;font-size:11px}
+tr.ind-row td:first-child{padding-left:20px;color:var(--text3);font-weight:400}
+th.cum{color:var(--gold) !important;background:#fffbf0 !important}
+td.cum{background:#fffbf0 !important;font-weight:700;color:var(--text)}
+.cp{color:var(--blue)} .cb{color:var(--mint)} .cg{color:var(--gold)} .cv{color:var(--purple)}
+.pos{color:var(--green);font-weight:600} .neg{color:var(--red);font-weight:600}
+.plan-col{color:var(--text3);font-size:11px}
+.badge{display:inline-flex;align-items:center;gap:2px;padding:1px 6px;border-radius:3px;font-size:10px;font-weight:600}
+.badge.up{background:rgba(5,150,105,.1);color:var(--green)}
+.badge.dn{background:rgba(239,68,68,.1);color:var(--red)}
+
+.rev-toggle-wrap{margin-bottom:16px}
+.rev-toggle-btn{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:6px 14px;font-size:12px;font-weight:500;
+  border:1.5px solid var(--border2);border-radius:20px;
+  background:var(--white);color:var(--text2);
+  cursor:pointer;font-family:inherit;transition:all .15s;margin-right:6px;
+}
+.rev-toggle-btn:hover{border-color:var(--blue);color:var(--blue)}
+.rev-toggle-btn.active{background:var(--blue);border-color:var(--blue);color:#fff}
+.rev-section{
+  background:var(--white);border:1px solid var(--border);
+  border-radius:12px;padding:18px 22px;box-shadow:var(--shadow);
+  margin-bottom:16px;display:none;
+}
+.rev-section.show{display:block}
+.rev-table{width:100%;border-collapse:collapse;font-size:12px}
+.rev-table th{
+  padding:7px 10px;text-align:right;font-size:11px;font-weight:500;
+  color:var(--text3);border-bottom:1.5px solid var(--border);white-space:nowrap;
+  background:#f8f9fb;
+}
+.rev-table th:first-child{text-align:left;width:110px;position:sticky;left:0;background:#f8f9fb;z-index:2}
+.rev-table td{
+  padding:6px 10px;text-align:right;font-size:12px;
+  border-bottom:1px solid var(--border);white-space:nowrap;color:var(--text2);
+}
+.rev-table td:first-child{
+  text-align:left;font-weight:600;color:var(--text2);
+  position:sticky;left:0;background:var(--white);z-index:1;
+}
+.rev-table tr.total td{background:#f3f4f7;font-weight:700;color:var(--text)}
+.rev-table tr.total td:first-child{background:#f3f4f7}
+.rev-table tr:hover td{background:#fafbfc}
+.rev-table tr:hover td:first-child{background:#f0f4ff}
+.rev-bar-wrap{height:6px;background:#eef0f4;border-radius:3px;overflow:hidden;margin-top:3px}
+.rev-bar{height:100%;border-radius:3px}
+#totop{position:fixed;bottom:20px;right:20px;background:var(--text);width:34px;height:34px;border-radius:50%;border:none;cursor:pointer;color:#fff;font-size:14px;display:flex;align-items:center;justify-content:center;opacity:0;transition:.25s;z-index:999}
+#totop.show{opacity:1}
+
+@media(max-width:1000px){
+  .kpi5,.kpi4{grid-template-columns:repeat(2,1fr)}
+  .ach3,.c21,.c11{grid-template-columns:1fr}
+  .wrap{padding:16px}
+  .month-summary{grid-template-columns:repeat(3,1fr)}
+  .plan-banner{justify-content:flex-start}
+}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="logo">에스씨지<em>랩</em> 경영현황</div>
+  <div class="hdr-meta">최종 업데이트: <b>2026년 4월</b></div>
+</div>
+
+<div class="tabs">
+  <button class="tab on"  onclick="pg('p26',this)">2026년 월별</button>
+  <button class="tab"     onclick="pg('p25',this)">2025년 연간</button>
+  <button class="tab"     onclick="pg('pcmp',this)">성과 & 계획비교</button>
+  <button class="tab"     onclick="pg('pfcst',this)">2026년 추정 (2Q) 🔮</button>
+  <button class="tab"     onclick="pg('phist',this)">연간 히스토리</button>
+</div>
+
+<div class="wrap">
+
+<!-- ══════════ 2026 월별 ══════════ -->
+<div class="page on" id="p26">
+  <div class="fbar">
+    <span class="flabel">기간 선택</span>
+    <button class="fb confirmed on" onclick="setM('all',this)">누계 (확정)</button>
+    <button class="fb confirmed" onclick="setM('1',this)">1월 ✓</button>
+    <button class="fb confirmed" onclick="setM('2',this)">2월 ✓</button>
+    <button class="fb confirmed" onclick="setM('3',this)">3월 ✓</button>
+    <button class="fb confirmed" onclick="setM('4',this)">4월 ✓</button>
+    <button class="fb" onclick="setM('5',this)">5월</button>
+    <button class="fb" onclick="setM('6',this)">6월</button>
+    <button class="fb" onclick="setM('7',this)">7월</button>
+    <button class="fb" onclick="setM('8',this)">8월</button>
+    <button class="fb" onclick="setM('9',this)">9월</button>
+    <button class="fb" onclick="setM('10',this)">10월</button>
+    <button class="fb" onclick="setM('11',this)">11월</button>
+    <button class="fb" onclick="setM('12',this)">12월</button>
+  </div>
+
+  <div class="kpi-row kpi5" id="kpi26top"></div>
+  <div id="planBannerWrap"></div>
+  <div class="ach3" id="ach26"></div>
+
+  <div class="sh"><h2>월별 요약</h2><div class="sh-sub">매출 / 영업이익 / 전월 대비</div></div>
+  <div class="month-summary" id="monthCards"></div>
+
+  <div class="cgrid c21">
+    <div class="ccard">
+      <div class="ctitle">매출 추이 (합계)</div>
+      <div class="csub">PATH + 빌링 합산 월별 매출 / 영업이익 실적 vs 계획</div>
+      <div class="cwrap h260"><canvas id="cBar26"></canvas></div>
+      <div class="legend">
+        <div class="li"><div class="ld" style="background:var(--blue)"></div>PATH 매출</div>
+        <div class="li"><div class="ld" style="background:var(--mint)"></div>빌링 매출</div>
+        <div class="li"><div class="ld" style="background:var(--gold);border-radius:50%"></div>영업이익(실적)</div>
+        <div class="li"><div class="ld" style="background:rgba(217,119,6,.35);border:1px dashed #d97706;border-radius:50%"></div>영업이익(계획)</div>
+      </div>
+    </div>
+    <div class="ccard">
+      <div class="ctitle">사업부 매출 비중</div>
+      <div class="csub" id="pieLabel26">클릭하면 세부 항목 표시</div>
+      <div id="pieView26">
+        <div class="cwrap h180" id="pieWrap26"><canvas id="cPie26"></canvas></div>
+        <div id="pieDesc26" style="text-align:center;font-size:12px;color:var(--text2);margin-top:6px;font-weight:600"></div>
+      </div>
+      <div id="pieDetail26" style="display:none;padding:8px 4px">
+        <div id="pieDetailTitle26" style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:10px;display:flex;align-items:center;gap:8px">
+          <button onclick="showPieMain26()" style="font-size:10px;padding:2px 8px;border:1px solid var(--border2);border-radius:10px;background:var(--white);cursor:pointer;color:var(--text3)">← 돌아가기</button>
+          <span id="pieDetailName26"></span>
+        </div>
+        <div id="pieDetailBars26"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 매출구분 토글 -->
+  <div class="rev-toggle-wrap">
+    <span style="font-size:11px;color:var(--text3);font-weight:500;margin-right:8px">매출 구분 상세</span>
+    <button class="rev-toggle-btn" id="btnPath" onclick="toggleRevSection('path',this)">📊 PATH 구분</button>
+    <button class="rev-toggle-btn" id="btnBill" onclick="toggleRevSection('bill',this)">📊 빌링 구분</button>
+  </div>
+
+  <!-- PATH 구분 섹션 -->
+  <div class="rev-section" id="revPath">
+    <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px">PATH 매출 구분</div>
+    <div style="font-size:11px;color:var(--text3);margin-bottom:14px">과금 / 광고 / 커머스 / 기타 — 단위: 백만원</div>
+    <div id="revPathContent"></div>
+  </div>
+
+  <!-- 빌링 구분 섹션 -->
+  <div class="rev-section" id="revBill">
+    <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px">빌링 매출 구분</div>
+    <div style="font-size:11px;color:var(--text3);margin-bottom:14px">B2B / B2C / 솔루션 / 인증 — 단위: 백만원</div>
+    <div id="revBillContent"></div>
+  </div>
+
+  <div class="sh"><h2>손익 상세</h2><div class="sh-sub">단위: 백만원</div></div>
+  <div class="twrap"><table id="tPL26"></table></div>
+
+  <div class="sh"><h2>매출원가 상세</h2><div class="sh-sub">단위: 백만원</div></div>
+  <div class="twrap"><table id="tCost26"></table></div>
+</div>
+
+<!-- ══════════ 2025 연간 ══════════ -->
+<div class="page" id="p25">
+  <div class="kpi-row kpi5" id="kpi25"></div>
+  <div class="cgrid c11">
+    <div class="ccard">
+      <div class="ctitle">매출 / 영업이익 월별 추이</div>
+      <div class="csub">2025년 전체</div>
+      <div class="cwrap h280"><canvas id="cBar25"></canvas></div>
+      <div class="legend">
+        <div class="li"><div class="ld" style="background:var(--blue)"></div>PATH 매출</div>
+        <div class="li"><div class="ld" style="background:var(--mint)"></div>빌링 매출</div>
+        <div class="li"><div class="ld" style="background:var(--gold);border-radius:50%"></div>영업이익</div>
+      </div>
+    </div>
+    <div class="ccard">
+      <div class="ctitle">이익률 월별 추이</div>
+      <div class="csub">영업이익률 / 순이익률</div>
+      <div class="cwrap h280"><canvas id="cRate25"></canvas></div>
+    </div>
+  </div>
+  <!-- 25년 매출구분 토글 -->
+  <div class="rev-toggle-wrap">
+    <span style="font-size:11px;color:var(--text3);font-weight:500;margin-right:8px">매출 구분 상세</span>
+    <button class="rev-toggle-btn" id="btnPath25" onclick="toggleRevSection25('path',this)">📊 PATH 구분</button>
+    <button class="rev-toggle-btn" id="btnBill25" onclick="toggleRevSection25('bill',this)">📊 빌링 구분</button>
+  </div>
+  <div class="rev-section" id="revPath25">
+    <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px">PATH 매출 구분 (2025년)</div>
+    <div style="font-size:11px;color:var(--text3);margin-bottom:14px">과금 / 광고 / 커머스 / 기타 — 단위: 백만원</div>
+    <div id="revPathContent25"></div>
+  </div>
+  <div class="rev-section" id="revBill25">
+    <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px">빌링 매출 구분 (2025년)</div>
+    <div style="font-size:11px;color:var(--text3);margin-bottom:14px">B2B / B2C / 솔루션 / 인증 — 단위: 백만원</div>
+    <div id="revBillContent25"></div>
+  </div>
+
+  <div class="sh"><h2>2025년 월별 손익</h2><div class="sh-sub">단위: 백만원</div></div>
+  <div class="twrap"><table id="tPL25"></table></div>
+</div>
+
+<!-- ══════════ 성과 & 계획비교 ══════════ -->
+<div class="page" id="pcmp">
+
+  <!-- 요약 테이블 -->
+  <div id="cmpSummary"></div>
+
+  <!-- 매출구분 토글 -->
+  <div class="rev-toggle-wrap">
+    <span style="font-size:11px;color:var(--text3);font-weight:500;margin-right:8px">매출 구분 비교</span>
+    <button class="rev-toggle-btn" id="btnPathCmp" onclick="toggleRevSectionCmp('path',this)">📊 PATH 구분</button>
+    <button class="rev-toggle-btn" id="btnBillCmp" onclick="toggleRevSectionCmp('bill',this)">📊 빌링 구분</button>
+  </div>
+  <div class="rev-section" id="revPathCmp">
+    <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px">PATH 매출 구분 비교</div>
+    <div style="font-size:11px;color:var(--text3);margin-bottom:14px">26년 실적 / 26년 계획 / 25년 동기 — 단위: 백만원</div>
+    <div id="revPathCmpContent"></div>
+  </div>
+  <div class="rev-section" id="revBillCmp">
+    <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px">빌링 매출 구분 비교</div>
+    <div style="font-size:11px;color:var(--text3);margin-bottom:14px">26년 실적 / 26년 계획 / 25년 동기 — 단위: 백만원</div>
+    <div id="revBillCmpContent"></div>
+  </div>
+
+  <!-- 차트 토글 버튼 -->
+  <div style="margin-bottom:12px">
+    <button id="chartToggleBtn" onclick="toggleCmpChart()"
+      style="padding:7px 18px;font-size:12px;font-weight:600;border:1.5px solid var(--border2);border-radius:20px;background:var(--white);color:var(--text2);cursor:pointer;font-family:inherit">
+      📈 차트 보기
+    </button>
+  </div>
+
+  <!-- 차트 영역 (기본 숨김) -->
+  <div id="chartToggleWrap" style="display:none">
+    <div class="cgrid c11" style="margin-bottom:16px">
+      <div class="ccard">
+        <div class="ctitle">매출 비교</div>
+        <div class="csub">26년 실적(PATH+빌링) / 25년 동기 / 26년 계획</div>
+        <div class="cwrap h260"><canvas id="cmpChartRev"></canvas></div>
+      </div>
+      <div class="ccard">
+        <div class="ctitle">영업이익 비교</div>
+        <div class="csub">26년 실적(PATH+빌링) / 25년 동기 / 26년 계획</div>
+        <div class="cwrap h260"><canvas id="cmpChartOp"></canvas></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 사업부별 실적 비교 -->
+  <div class="ccard">
+    <div class="ctitle">사업부별 실적 비교</div>
+    <div class="csub">26년 누계(1~4월) — 실적 · 계획 · 전년 동기 · 증감률</div>
+    <div id="cmpTbl"></div>
+  </div>
+
+</div>
+<!-- ══════════ 2026년 추정 (2Q) ══════════ -->
+<div class="page" id="pfcst">
+
+  <!-- 안내 배너 -->
+  <div style="background:linear-gradient(135deg,#f5f5f5,#ebebeb);border:1px solid #d1d5db;border-radius:12px;padding:12px 20px;margin-bottom:16px;display:flex;align-items:center;gap:12px">
+    <span style="font-size:18px">📋</span>
+    <div>
+      <div style="font-size:13px;font-weight:700;color:#374151">2026년 추정 — 2Q 발표자료 기준 (4월 기준 추정)</div>
+      <div style="font-size:11px;color:#6b7280;margin-top:2px">1~4월: 확정 실적 &nbsp;|&nbsp; 5~12월: 추정값 (회색 배경으로 표시) &nbsp;|&nbsp; 연간 합계: 매출 83.4억 / 영업이익 6.9억</div>
+    </div>
+  </div>
+
+  <div class="kpi-row kpi5" id="kpiFcst"></div>
+  <div class="ach3" id="achFcst"></div>
+
+  <!-- 월별 요약 카드 -->
+  <div class="sh"><h2>월별 요약</h2><div class="sh-sub">1~4월 확정 · 5~12월 추정</div></div>
+  <div id="fcstMonthCards" style="display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:16px"></div>
+
+  <!-- 차트 -->
+  <div class="cgrid c21">
+    <div class="ccard">
+      <div class="ctitle">매출 / 영업이익 월별 추이</div>
+      <div class="csub">실선=확정(1~4월) · 점선=추정(5~12월)</div>
+      <div class="cwrap h260"><canvas id="cFcstBar"></canvas></div>
+      <div class="legend">
+        <div class="li"><div class="ld" style="background:var(--blue)"></div>PATH 매출(확정)</div>
+        <div class="li"><div class="ld" style="background:var(--mint)"></div>빌링 매출(확정)</div>
+        <div class="li"><div class="ld" style="background:rgba(75,124,243,.35)"></div>PATH 매출(추정)</div>
+        <div class="li"><div class="ld" style="background:rgba(30,201,151,.35)"></div>빌링 매출(추정)</div>
+        <div class="li"><div class="ld" style="background:var(--gold);border-radius:50%"></div>영업이익</div>
+      </div>
+    </div>
+    <div class="ccard">
+      <div class="ctitle">사업부 매출 비중</div>
+      <div class="csub">클릭하면 세부 항목 표시 (연간 추정 기준)</div>
+      <div id="pieViewFcst">
+        <div class="cwrap h200"><canvas id="cFcstPie"></canvas></div>
+        <div id="fcstPieDesc" style="text-align:center;font-size:12px;color:var(--text2);margin-top:6px;font-weight:600"></div>
+      </div>
+      <div id="pieDetailFcst" style="display:none;padding:8px 4px">
+        <div id="pieDetailTitleFcst" style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:10px;display:flex;align-items:center;gap:8px">
+          <button onclick="showPieMainFcst()" style="font-size:10px;padding:2px 8px;border:1px solid var(--border2);border-radius:10px;background:var(--white);cursor:pointer;color:var(--text3)">← 돌아가기</button>
+          <span id="pieDetailNameFcst"></span>
+        </div>
+        <div id="pieDetailBarsFcst"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 매출구분 토글 -->
+  <div class="rev-toggle-wrap">
+    <span style="font-size:11px;color:var(--text3);font-weight:500;margin-right:8px">매출 구분 상세</span>
+    <button class="rev-toggle-btn" id="btnPathFcst" onclick="toggleRevSectionFcst('path',this)">📊 PATH 구분</button>
+    <button class="rev-toggle-btn" id="btnBillFcst" onclick="toggleRevSectionFcst('bill',this)">📊 빌링 구분</button>
+  </div>
+  <div class="rev-section" id="revPathFcst">
+    <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px">PATH 매출 구분 (추정)</div>
+    <div style="font-size:11px;color:var(--text3);margin-bottom:14px">1~4월 확정 / 5~12월 추정 — 단위: 백만원</div>
+    <div id="revPathFcstContent"></div>
+  </div>
+  <div class="rev-section" id="revBillFcst">
+    <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px">빌링 매출 구분 (추정)</div>
+    <div style="font-size:11px;color:var(--text3);margin-bottom:14px">1~4월 확정 / 5~12월 추정 — 단위: 백만원</div>
+    <div id="revBillFcstContent"></div>
+  </div>
+
+  <!-- 손익 상세 -->
+  <div class="sh"><h2>손익 상세 (연간)</h2><div class="sh-sub">단위: 백만원 · 회색=추정</div></div>
+  <div class="twrap"><table id="tFcstPL"></table></div>
+
+</div>
+<!-- ══════════ 연간 히스토리 ══════════ -->
+<div class="page" id="phist">
+
+  <!-- 25년 확정 + 26년 추정 KPI -->
+  <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:20px">
+    <!-- 25년 확정 -->
+    <div class="ccard" style="border-top:3px solid var(--mint)">
+      <div class="klabel" style="font-size:10px;color:var(--text3)">2025년 확정 매출</div>
+      <div class="kval" style="font-size:20px">63.5억</div>
+      <div class="ksub" style="margin-top:5px">원계획 63.0억 대비</div>
+      <div class="ktag up" style="margin-top:4px">▲0.5억</div>
+    </div>
+    <div class="ccard" style="border-top:3px solid var(--gold)">
+      <div class="klabel" style="font-size:10px;color:var(--text3)">2025년 확정 영업이익</div>
+      <div class="kval" style="font-size:20px;color:var(--gold)">3.8억</div>
+      <div class="ksub" style="margin-top:5px">원계획 0.2억 대비</div>
+      <div class="ktag up" style="margin-top:4px">▲3.6억</div>
+    </div>
+    <div class="ccard" style="border-top:3px solid var(--purple)">
+      <div class="klabel" style="font-size:10px;color:var(--text3)">2025년 확정 순이익</div>
+      <div class="kval" style="font-size:20px;color:var(--purple)">7.0억</div>
+      <div class="ksub" style="margin-top:5px">원계획 3.0억 대비</div>
+      <div class="ktag up" style="margin-top:4px">▲4.0억</div>
+    </div>
+    <!-- 26년 추정 -->
+    <div class="ccard" style="border-top:3px solid #94a3b8;background:#f8fafc">
+      <div class="klabel" style="font-size:10px;color:var(--text3)">2026년 추정 매출 <span style="background:#e2e8f0;padding:1px 4px;border-radius:3px;font-size:9px">2Q추정</span></div>
+      <div class="kval" style="font-size:20px" id="histFcstRev">-</div>
+      <div class="ksub" style="margin-top:5px">사업계획 74.5억 대비</div>
+      <div id="histFcstRevDiff" style="margin-top:4px"></div>
+    </div>
+    <div class="ccard" style="border-top:3px solid #94a3b8;background:#f8fafc">
+      <div class="klabel" style="font-size:10px;color:var(--text3)">2026년 추정 영업이익 <span style="background:#e2e8f0;padding:1px 4px;border-radius:3px;font-size:9px">2Q추정</span></div>
+      <div class="kval" style="font-size:20px;color:#b45309" id="histFcstOp">-</div>
+      <div class="ksub" style="margin-top:5px">사업계획 1.8억 대비</div>
+      <div id="histFcstOpDiff" style="margin-top:4px"></div>
+    </div>
+    <div class="ccard" style="border-top:3px solid #94a3b8;background:#f8fafc">
+      <div class="klabel" style="font-size:10px;color:var(--text3)">2026년 추정 순이익 <span style="background:#e2e8f0;padding:1px 4px;border-radius:3px;font-size:9px">2Q추정</span></div>
+      <div class="kval" style="font-size:20px;color:#6d28d9" id="histFcstNi">-</div>
+      <div class="ksub" style="margin-top:5px">사업계획 5.5억 대비</div>
+      <div id="histFcstNiDiff" style="margin-top:4px"></div>
+    </div>
+  </div>
+
+  <!-- 차트 영역 -->
+  <div class="cgrid c11" style="margin-bottom:20px">
+    <div class="ccard">
+      <div class="ctitle">5개년 매출 추이</div>
+      <div class="csub">21~25년 연간 확정 실적</div>
+      <div class="cwrap h260"><canvas id="cHistRev"></canvas></div>
+    </div>
+    <div class="ccard">
+      <div class="ctitle">5개년 이익 추이</div>
+      <div class="csub">영업이익 / 당기순이익</div>
+      <div class="cwrap h260"><canvas id="cHistOp"></canvas></div>
+    </div>
+  </div>
+
+  <!-- PATH/빌링 목표 vs 달성 -->
+  <div class="cgrid c11" style="margin-bottom:20px">
+    <div class="ccard">
+      <div class="ctitle">PATH 사업부 목표 vs 달성 (22~25년)</div>
+      <div class="csub">단위: 억원</div>
+      <div class="cwrap h320"><canvas id="cHistPath"></canvas></div>
+    </div>
+    <div class="ccard">
+      <div class="ctitle">빌링 사업부 목표 vs 달성 (22~25년)</div>
+      <div class="csub">단위: 억원</div>
+      <div class="cwrap h320"><canvas id="cHistBill"></canvas></div>
+    </div>
+  </div>
+
+  <!-- 상세 테이블 -->
+  <div class="sh"><h2>5개년 손익 요약</h2><div class="sh-sub">단위: 억원</div></div>
+  <div class="twrap">
+    <table style="width:100%">
+      <thead>
+        <tr>
+          <th style="text-align:left;padding:9px 14px;font-size:11px;color:var(--text3);border-bottom:1.5px solid var(--border);min-width:110px">구분</th>
+          <th style="text-align:right;padding:9px 14px;font-size:11px;color:var(--text3);border-bottom:1.5px solid var(--border)">2021년</th>
+          <th style="text-align:right;padding:9px 14px;font-size:11px;color:var(--text3);border-bottom:1.5px solid var(--border)">2022년</th>
+          <th style="text-align:right;padding:9px 14px;font-size:11px;color:var(--text3);border-bottom:1.5px solid var(--border)">2023년</th>
+          <th style="text-align:right;padding:9px 14px;font-size:11px;color:var(--text3);border-bottom:1.5px solid var(--border)">2024년</th>
+          <th style="text-align:right;padding:9px 14px;font-size:11px;color:var(--text3);border-bottom:1.5px solid var(--border);background:#fffbf0">2025년</th>
+          <th style="text-align:right;padding:9px 14px;font-size:11px;color:#6366f1;border-bottom:1.5px solid var(--border);background:#f0f4ff">2026(추정)</th>
+          <th style="text-align:right;padding:9px 14px;font-size:11px;color:#6366f1;border-bottom:1.5px solid var(--border)">전년대비</th>
+        </tr>
+      </thead>
+      <tbody id="histTableBody"></tbody>
+    </table>
+  </div>
+
+  <!-- 사업부별 달성률 테이블 -->
+  <div class="sh"><h2>사업부별 목표 vs 달성 (22~25년)</h2><div class="sh-sub">단위: 억원</div></div>
+  <div class="twrap">
+    <table style="width:100%">
+      <thead>
+        <tr>
+          <th style="text-align:left;padding:9px 14px;font-size:11px;color:var(--text3);border-bottom:1.5px solid var(--border)">사업부</th>
+          <th style="text-align:right;padding:9px 14px;font-size:11px;color:var(--text3);border-bottom:1.5px solid var(--border)" colspan="3">2022년</th>
+          <th style="text-align:right;padding:9px 14px;font-size:11px;color:var(--text3);border-bottom:1.5px solid var(--border)" colspan="3">2023년</th>
+          <th style="text-align:right;padding:9px 14px;font-size:11px;color:var(--text3);border-bottom:1.5px solid var(--border)" colspan="3">2024년</th>
+          <th style="text-align:right;padding:9px 14px;font-size:11px;color:var(--text3);border-bottom:1.5px solid var(--border);background:#fffbf0" colspan="3">2025년</th>
+          <th style="text-align:right;padding:9px 14px;font-size:11px;color:#6366f1;border-bottom:1.5px solid var(--border);background:#f0f4ff" colspan="3">2026(추정)</th>
+        </tr>
+        <tr>
+          <th style="text-align:left;padding:7px 14px;font-size:11px;color:var(--text3);border-bottom:1px solid var(--border)">구분</th>
+          <th style="text-align:right;padding:7px 10px;font-size:10px;color:var(--text3);border-bottom:1px solid var(--border)">목표</th>
+          <th style="text-align:right;padding:7px 10px;font-size:10px;color:var(--text3);border-bottom:1px solid var(--border)">달성</th>
+          <th style="text-align:right;padding:7px 10px;font-size:10px;color:var(--text3);border-bottom:1px solid var(--border)">달성률</th>
+          <th style="text-align:right;padding:7px 10px;font-size:10px;color:var(--text3);border-bottom:1px solid var(--border)">목표</th>
+          <th style="text-align:right;padding:7px 10px;font-size:10px;color:var(--text3);border-bottom:1px solid var(--border)">달성</th>
+          <th style="text-align:right;padding:7px 10px;font-size:10px;color:var(--text3);border-bottom:1px solid var(--border)">달성률</th>
+          <th style="text-align:right;padding:7px 10px;font-size:10px;color:var(--text3);border-bottom:1px solid var(--border)">목표</th>
+          <th style="text-align:right;padding:7px 10px;font-size:10px;color:var(--text3);border-bottom:1px solid var(--border)">달성</th>
+          <th style="text-align:right;padding:7px 10px;font-size:10px;color:var(--text3);border-bottom:1px solid var(--border)">달성률</th>
+          <th style="text-align:right;padding:7px 10px;font-size:10px;color:var(--text3);border-bottom:1px solid var(--border);background:#fffbf0">목표</th>
+          <th style="text-align:right;padding:7px 10px;font-size:10px;color:var(--text3);border-bottom:1px solid var(--border);background:#fffbf0">달성</th>
+          <th style="text-align:right;padding:7px 10px;font-size:10px;color:var(--text3);border-bottom:1px solid var(--border);background:#fffbf0">달성률</th>
+          <th style="text-align:right;padding:7px 10px;font-size:10px;color:#6366f1;border-bottom:1px solid var(--border);background:#f0f4ff">목표</th>
+          <th style="text-align:right;padding:7px 10px;font-size:10px;color:#6366f1;border-bottom:1px solid var(--border);background:#f0f4ff">달성(추)</th>
+          <th style="text-align:right;padding:7px 10px;font-size:10px;color:#6366f1;border-bottom:1px solid var(--border);background:#f0f4ff">달성률</th>
+        </tr>
+      </thead>
+      <tbody id="histDivTableBody"></tbody>
+    </table>
+  </div>
+
+</div>
+</div>
+<button id="totop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+const MN4  = ['1월','2월','3월','4월'];
+const MN12 = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
+
+// ── 2QF 추정 데이터 (5~12월, 인덱스0=5월~7=12월)
+// 출처: 26년 손익 2QF / 매출구분 입력양식 2026 (4월기준 추정)
+const FCST = {
+  매출P:[460230716,460866916,400947916,405855716,519931166,514598166,540188766,584733766],
+  매출B:[158000000,157200000,161800000,159800000,161800000,159800000,161800000,159800000],
+  매출S:[618230716,618066916,562747916,565655716,681731166,674398166,701988766,744533766],
+  원가P:[267606415,283400535,276418872,280378872,364254872,367818872,377942872,427503872],
+  원가B:[123014359,133928439,108151610,107342709,121318359,108314359,111850359,113829359],
+  원가S:[390620774,417328974,384570482,387721581,485573231,476133231,489793231,541333231],
+  총이P:[192624301,177466381,124529044,125476844,155676294,146779294,162245894,157229894],
+  총이B:[34985641,23271561,53648390,52457291,40481641,51485641,49949641,45970641],
+  총이S:[227609942,200737942,178177434,177934135,196157935,198264935,212195535,203200535],
+  판관P:[108088590,112779210,104103280,102713890,123580760,134080170,143095680,280360890],
+  판관B:[26351888,27952936,30574532,29284922,25987719,24552309,23986799,56667256],
+  판관S:[134440478,140732146,134677812,131998812,149568479,158632479,167082479,337028146],
+  인건P:[40437090,40503710,38701600,38973940,41427390,41448290,41799420,92139000],
+  인건B:[13882310,13815690,15617800,15345460,12892010,12871110,12519980,25180400],
+  인건S:[54319400,54319400,54319400,54319400,54319400,54319400,54319400,117319400],
+  광고P:[30560000,33788290,27560000,27560000,41258310,51975000,59975000,97462910],
+  광고B:[20000,1291710,20000,20000,1206690,20000,20000,7532090],
+  광고S:[30580000,35080000,27580000,27580000,42465000,51995000,59995000,104995000],
+  기타판P:[37091500,38487210,37841680,36179950,40895060,40656880,41321260,90758980],
+  기타판B:[12449578,12845536,14936732,13919462,11889019,11661199,11446819,23954766],
+  기타판S:[49541078,51332746,52778412,50099412,52784079,52318079,52768079,114713746],
+  영업P:[84535711,64687171,20425764,22762954,32095534,12699124,19150214,-123130996],
+  영업B:[8633753,-4681375,23073858,23172369,14493922,26933332,25962842,-10696615],
+  영업S:[93169464,60005796,43499622,45935323,46589456,39632456,45113056,-133827611],
+  순이S:[95540406,89560585,56875934,58775775,80830018,56360887,58212408,-61894023],
+  원가급P:[184437520,189745860,189745860,189745860,189745860,189745860,189745860,224745860],
+  원가급B:[40165500,40165500,40165500,40165500,40165500,40165500,40165500,42165500],
+  원가상P:[30960000,30960000,30960000,30960000,100620000,116100000,116100000,116100000],
+  원가상B:[0,0,0,0,0,0,0,0],
+  원가합P:[267606415,283400535,276418872,280378872,364254872,367818872,377942872,427503872],
+  원가합B:[123014359,133928439,108151610,107342709,121318359,108314359,111850359,113829359],
+  원가기P:[52208895,62694675,55713012,59673012,73889012,61973012,72097012,86658012],
+  원가기B:[82848859,93762939,67986110,67177209,81152859,68148859,71684859,71663859],
+  // 매출구분 추정 (5~12월)
+  path_과금:[305378350,304031050,254659300,258803850,263125550,267547800,272482150,270216900],
+  path_광고:[116600000,114250000,103700000,104460000,103210000,105450000,126100000,142900000],
+  path_커머스:[36000000,36000000,36000000,36000000,117000000,135000000,135000000,135000000],
+  path_기타:[4686666,4686666,4686666,4686666,34686666,4686666,4686666,34686666],
+  bill_B2B:[122700000,120700000,125300000,123300000,125300000,123300000,125300000,123300000],
+  bill_B2C:[33500000,33500000,33500000,33500000,33500000,33500000,33500000,33500000],
+  bill_솔루션:[1800000,3000000,3000000,3000000,3000000,3000000,3000000,3000000],
+  bill_인증:[0,0,0,0,0,0,0,0],
+  CY_매출S:8452028231, CY_영업S:676119213, CY_순이S:989974810,
+};
+
+// ── 매출 구분 데이터 (과금/광고/커머스/기타 | B2B/B2C/솔루션/인증)
+const REV = {
+  // PATH 26년 실적
+  path_과금_26a:   [297067182,308926946,299843948,292468290,null,null,null,null,null,null,null,null],
+  path_광고_26a:   [109889334,107972167,121410531,116197751,null,null,null,null,null,null,null,null],
+  path_커머스_26a: [171681818,156954545,383013091,211011636,null,null,null,null,null,null,null,null],
+  path_기타_26a:   [  4783968,  5255677,  5351958,  4944129,null,null,null,null,null,null,null,null],
+  // PATH 26년 계획
+  path_과금_26p:   [234737650,239154950,243986400,245987850,247884950,249981500,248653950,252004850,256263000,261105650,265833050,270970650],
+  path_광고_26p:   [126445000,129100000,135050000,122000000,116600000,114250000,103700000,104460000,103210000,105450000,126100000,142900000],
+  path_커머스_26p: [135000000,135000000, 72000000, 72000000, 36000000, 36000000, 36000000, 36000000,117000000,135000000,135000000,135000000],
+  path_기타_26p:   [  4686666,  4686666,  4686666,  4686666,  4686666,  4686666,  4686666,  4686666, 34686666,  4686666,  4686666, 34686666],
+  // PATH 25년 실적
+  path_과금_25a:   [243509000,249326650,280809500,266236650,264355650,254627500,256815450,258404650,260538300,264729450,266449050,276583000],
+  path_광고_25a:   [ 83416370,106519273,113538400, 99379562, 86661578, 79259738, 81722781, 82553640, 97439897, 86173351, 88838275,121870997],
+  path_커머스_25a: [        0,        0,        0,        0,        0,        0,        0,        0,        0,        0, 44200000,151157273],
+  path_기타_25a:   [  7753948, 44588362,  4748217,  4553749,  4381450, 34351397,  4451086,  4362353, 34390712,  4316324, 13896739, 34603331],
+  // 빌링 26년 실적
+  bill_B2B_26a:    [170721491,124069370,128616414,122865156,null,null,null,null,null,null,null,null],
+  bill_B2C_26a:    [ 33500000, 33500000, 33500000, 33500000,null,null,null,null,null,null,null,null],
+  bill_솔루션_26a: [  2030347,  1502570,  1641642,  2455142,null,null,null,null,null,null,null,null],
+  bill_인증_26a:   [        0,        0,        0,        0,null,null,null,null,null,null,null,null],
+  // 빌링 26년 계획
+  bill_B2B_26p:    [114700000,114700000,114700000,114700000,114700000,114700000,114700000,114700000,114700000,114700000,114700000,114700000],
+  bill_B2C_26p:    [ 33500000, 33500000, 33500000, 33500000, 33500000, 33500000, 33500000, 33500000, 33500000, 33500000, 33500000, 33500000],
+  bill_솔루션_26p: [  1000000,  1000000,  4750000,  1000000,  1000000,  4750000,  1000000,  1000000,  4750000,  1000000,  1000000,  4750000],
+  bill_인증_26p:   [        0,        0,        0,        0,        0,        0,        0,        0,        0,        0,        0,        0],
+  // 빌링 25년 실적
+  bill_B2B_25a:    [129673874,124154324,130643731,120893974,116106544,114788476,114221539,129321700,126344759,120295401,118535117,117430636],
+  bill_B2C_25a:    [ 14700000, 14700000, 14700000, 14700000, 14700000, 14700000, 16450000, 15000000, 15000000, 15000000, 15000000, 15000000],
+  bill_솔루션_25a: [  1173465,  1182480,  6222265,  1278827,  1363587,  6530772,  1502455,  1575797,  6638212,  1648580,  2311835,  7719913],
+  bill_인증_25a:   [  6775300,  2773900,        0,        0,        0,        0,        0,        0,        0,        0,        0,        0],
+};
+
+// ── 검증된 원본 데이터 (26년 실적 1~4월, 5~12월은 null=미입력)
+const NULL12 = [null,null,null,null,null,null,null,null,null,null,null,null];
+function fill(arr4){ return [...arr4, null,null,null,null,null,null,null,null]; }
+
+const A26={
+  매출P:fill([583422302,579109335,809619528,624621806]),
+  매출B:fill([206251838,159071940,163758056,158820298]),
+  매출S:fill([789674140,738181275,973377584,783442104]),
+  원가P:fill([365409745,393439673,581305444,416682953]),
+  원가B:fill([101615264,104897274,108743845,108205101]),
+  원가S:fill([467025009,498336947,690049289,524888054]),
+  총이P:fill([218012557,185669662,228314084,207938853]),
+  총이B:fill([104636574,54174666,55014211,50615197]),
+  총이S:fill([322649131,239844328,283328295,258554050]),
+  판관P:fill([150664082,144397446,136180067,151930569]),
+  판관B:fill([24967746,21385565,17145594,21703084]),
+  판관S:fill([175631828,165783011,153325661,173633653]),
+  직원급P:fill([35280850,37462900,44711430,42842742]),
+  직원급B:fill([12472510,10290460,9043580,10912268]),
+  성과급P:fill([0,0,-27581270,0]),
+  성과급B:fill([0,0,-5578730,0]),
+  퇴직급P:fill([2963530,2842280,13612830,3223409]),
+  퇴직급B:fill([1047671,780739,2753412,821020]),
+  광고P:fill([75906567,62740974,42643228,61815735]),
+  광고B:fill([20000,20000,20000,20000]),
+  광고S:fill([75926567,62760974,42663228,61835735]),
+  영업P:fill([67348475,41272216,92134017,56008284]),
+  영업B:fill([79668828,32789101,37868617,28912113]),
+  영업S:fill([147017303,74061317,130002634,84920397]),
+  순이S:fill([179189771,122611243,150422121,103489685]),
+  원가급P:fill([171361255,169241930,180217432,174788907]),
+  원가급B:fill([35483951,35315888,42445333,39805721]),
+  원가상P:fill([146113101,145884227,346977428,192710646]),
+  원가상B:fill([0,0,0,0]),
+  원가합P:fill([365409745,393439673,581305444,416682953]),
+  원가합B:fill([101615264,104897274,108743845,108205101]),
+  인건P:fill([38244380,40305180,30742990,46066151],null,12),
+  인건B:fill([13520181,11071199,6218262,11733288],null,12),
+  기타판P:fill([36513135,41351292,62793849,44048683],null,12),
+  기타판B:fill([11427565,10294366,10907332,9949796],null,12),
+  원가기P:fill([47935389,78313516,54110584,49183400],null,12),
+  원가기B:fill([66131313,69581386,66298512,68399380],null,12),
+};
+// null 안전 파생값
+function safeDerived(a, b, op='add'){
+  return a.map((v,i)=>{
+    if(v===null||b[i]===null) return null;
+    return op==='add'?v+b[i]:v-b[i];
+  });
+}
+A26.인건P=A26.직원급P.map((v,i)=>v===null?null:v+A26.성과급P[i]+A26.퇴직급P[i]);
+A26.인건B=A26.직원급B.map((v,i)=>v===null?null:v+A26.성과급B[i]+A26.퇴직급B[i]);
+A26.인건S=A26.인건P.map((v,i)=>v===null?null:v+A26.인건B[i]);
+A26.기타판P=A26.판관P.map((v,i)=>v===null?null:v-A26.인건P[i]-A26.광고P[i]);
+A26.기타판B=A26.판관B.map((v,i)=>v===null?null:v-A26.인건B[i]-A26.광고B[i]);
+A26.기타판S=A26.판관S.map((v,i)=>v===null?null:v-A26.인건S[i]-A26.광고S[i]);
+A26.원가기P=A26.원가합P.map((v,i)=>v===null?null:v-A26.원가급P[i]-A26.원가상P[i]);
+A26.원가기B=A26.원가합B.map((v,i)=>v===null?null:v-A26.원가급B[i]-A26.원가상B[i]);
+
+// 실적 있는 월 수
+const 실적월수 = A26.매출S.filter(v=>v!==null).length; // 현재 4
+
+
+const P26={
+  // 26년 계획 전체 12개월 (원본 확인 완료)
+  매출S:[649369316,656612616,608337366,593686566,554344516,558015516,542030716,545875716,663707266,655765316,681886666,737837866],
+  매출P:[500169316,507412616,455387366,444486566,405144516,405065516,392830716,396675716,514469266,506527316,532648666,588599866],
+  매출B:[149200000,149200000,152950000,149200000,149200000,152950000,149200000,149200000,149238000,149238000,149238000,149238000],
+  영업S:[39855444,11776655,4641709,20854809,42154639,28414893,23976253,27349154,30519388,27693438,31804788,-109379678],
+  인건S:[51732780,51732780,54319400,54319400,54319400,54319400,54319400,54319400,54319400,54319400,54319400,54319400],
+  광고S:[55986370,56488460,46640000,34640000,30580000,35080000,35080000,35080000,35080000,35080000,35080000,35080000],
+  CY매출S:7447469442,
+  CY영업S:179661492,
+};
+
+const A25={
+  매출P:[334679318,400434285,399096117,370169961,355398678,368238635,342989317,345320643,392368909,355219125,413384064,584214601],
+  매출B:[152322639,142810704,151565996,136872801,132170131,136019248,132173994,145897497,147982971,136943981,135846952,140150549],
+  매출S:[487001957,543244989,550662113,507042762,487568809,504257883,475163311,491218140,540351880,492163106,549231016,724365150],
+  원가P:[184992539, 259361623, 217950673, 222838560, 190985482, 208498150, 199233107, 207871793, 230618006, 218681989, 255684527, 434439092],
+  원가B:[111345508, 109641947, 100235484, 104853830, 98558811, 97989357, 95340289, 96070271, 104969801, 144532856, 98340293, 115823286],
+  원가S:[296338047,369003570,318186157,327692390,289544293,306487507,294573396,303942064,335587807,363214845,354024820,550262378],
+  영업P:[53257441,38189252,46465448,10957647,45591134,49621806,36316341,42713733,38991469,41011462,42731753,-101883809],
+  영업B:[11923308,6296038,20584809,1557557,1090895,10467041,9224246,18191806,9069595,-34865432,12360968,-27268302],
+  영업S:[65180749,44485290,67050257,12515204,46682029,60088847,45540587,60905539,48061064,6146030,55092721,-129152111],
+  순이S:[108668373,85398882,69478042,47771358,61375920,80910390,58658095,69782663,71277511,27924700,62370545,-40928280],
+};
+
+// ── 유틸
+let charts={}, curM='all';
+const MN12_LABEL = MN12; // 12개월 레이블
+const SUM=(a,f,t)=>a.slice(f||0,t===undefined?a.length:t).reduce((s,v)=>s+(v||0),0);
+const gI=m=>m==='all'?null:parseInt(m)-1;
+const gV=(arr,mi)=>{
+  if(mi===null){ // 누계: null이 아닌 것만 합산
+    return arr.reduce((s,v)=>s+(v||0),0);
+  }
+  return arr[mi]; // 해당월 (null이면 null)
+};
+const hasData=(arr,mi)=>mi===null ? arr.some(v=>v!==null) : arr[mi]!==null;
+
+// 모든 텍스트 표기: 항상 X.X억원
+function fa(v){
+  if(v===null||v===undefined||!isFinite(v)) return '-';
+  const neg=v<0; const av=Math.abs(v);
+  return (neg?'-':'')+(av/1e8).toFixed(1)+'억원';
+}
+// 툴팁: X.XX억원
+function faT(v){
+  if(!isFinite(v)) return '-';
+  const neg=v<0;
+  return (neg?'-':'')+(Math.abs(v)/1e8).toFixed(2)+'억원';
+}
+// 테이블: 백만원 정수
+function fm(v){
+  if(!isFinite(v)||v===0) return '-';
+  const n=Math.round(v/1e6);
+  if(n===0) return '-';
+  if(n<0) return `<span class="neg">(${Math.abs(n).toLocaleString()})</span>`;
+  return n.toLocaleString('ko-KR');
+}
+function fp(v){ return !isFinite(v)||isNaN(v)?'-':(v*100).toFixed(1)+'%'; }
+function fdiff(a,b){
+  if(!b||b===0) return '-';
+  const r=(a-b)/Math.abs(b);
+  return `<span class="badge ${r>=0?'up':'dn'}">${r>=0?'▲':'▼'} ${fp(Math.abs(r))}</span>`;
+}
+
+const TT={backgroundColor:'rgba(26,29,35,.92)',titleColor:'#fff',bodyColor:'rgba(255,255,255,.8)',
+  borderColor:'rgba(255,255,255,.1)',borderWidth:1,padding:10,cornerRadius:8,
+  callbacks:{label:ctx=>` ${ctx.dataset.label}: ${faT(ctx.raw*1e6)}`}};
+const GC='rgba(0,0,0,.06)',TC='#9499ab';
+const BS={
+  x:{grid:{color:GC},ticks:{color:TC,font:{size:11}}},
+  y:{grid:{color:GC},ticks:{color:TC,font:{size:11},callback:v=>Math.abs(v)>=100?(v/100).toFixed(0)+'억':v+'M'}},
+  y2:{grid:{display:false},ticks:{color:TC,font:{size:11},callback:v=>Math.abs(v)>=100?(v/100).toFixed(0)+'억':v+'M'},position:'right'},
+};
+function dc(id){if(charts[id]){charts[id].destroy();delete charts[id];}}
+
+// ── 2026 렌더
+function render26(){
+  const mi=gI(curM), isAll=(mi===null);
+  const hasActual = isAll ? 실적월수>0 : A26.매출S[mi]!==null;
+  const cnt = isAll ? 실적월수 : (hasActual ? mi+1 : 0);
+
+  const 매출S  = hasActual ? gV(A26.매출S,mi)  : null;
+  const 매출P_ = hasActual ? gV(A26.매출P,mi)  : null;
+  const 매출B_ = hasActual ? gV(A26.매출B,mi)  : null;
+  const 영업S  = hasActual ? gV(A26.영업S,mi)  : null;
+  const 순이S  = hasActual ? gV(A26.순이S,mi)  : null;
+  const 영업P_val = hasActual ? gV(A26.영업P,mi) : null;
+  const 영업B_val = hasActual ? gV(A26.영업B,mi) : null;
+
+  const 매출25 = hasActual ? (isAll ? SUM(A25.매출S,0,cnt) : A25.매출S[mi]) : null;
+  const 영업25 = hasActual ? (isAll ? SUM(A25.영업S,0,cnt) : A25.영업S[mi]) : null;
+  const yoyLabel = isAll ? `전년 동기간(1~${cnt}월) 기준` : `전년 동월(25년 ${MN12[mi]}) 기준`;
+  const pBi   = (매출S && 매출P_) ? 매출P_/매출S : null;
+  const mYoY  = (매출S && 매출25) ? (매출S-매출25)/Math.abs(매출25) : null;
+  const oYoY  = (영업S!==null && 영업25) ? (영업S-영업25)/Math.abs(영업25) : null;
+  // 별칭 (하위 코드 호환)
+  const 매출P=매출P_, 매출B=매출B_;
+
+  // ① KPI 5개
+  document.getElementById('kpi26top').innerHTML=`
+    <div class="kcard accent">
+      <div class="klabel">전체 매출 ${isAll?`누계(1~${cnt}월)`:'당월'}</div>
+      <div class="kval">${매출S!==null?fa(매출S):'<span style="color:var(--text3);font-size:16px">미입력</span>'}</div>
+      <div class="ksub">${매출S?'영업이익률 '+fp(영업S/매출S):''}</div>
+      ${mYoY!==null?`<div class="ktag ${mYoY>=0?'up':'dn'}">${mYoY>=0?'▲':'▼'} ${fp(Math.abs(mYoY))} ${isAll?'전년동기':'전년동월'}</div>`:''}
+    </div>
+    <div class="kcard">
+      <div class="klabel">PATH 매출 ${isAll?'누계':'당월'}</div>
+      <div class="kval" style="color:var(--blue)">${매출P?fa(매출P):'<span style="color:var(--text3);font-size:16px">-</span>'}</div>
+      <div class="ksub">${(pBi&&매출P&&영업P_val)?'비중 '+fp(pBi)+' | 영업이익률 '+fp(영업P_val/매출P):''}</div>
+    </div>
+    <div class="kcard">
+      <div class="klabel">빌링 매출 ${isAll?'누계':'당월'}</div>
+      <div class="kval" style="color:var(--mint)">${매출B?fa(매출B):'<span style="color:var(--text3);font-size:16px">-</span>'}</div>
+      <div class="ksub">${(pBi&&매출B&&영업B_val)?'비중 '+fp(1-pBi)+' | 영업이익률 '+fp(영업B_val/매출B):''}</div>
+    </div>
+    <div class="kcard">
+      <div class="klabel">영업이익 ${isAll?'누계':'당월'}</div>
+      <div class="kval" style="color:var(--gold)">${영업S!==null?fa(영업S):'<span style="color:var(--text3);font-size:16px">-</span>'}</div>
+      <div class="ksub">${(영업S!==null&&매출S)?'영업이익률 '+fp(영업S/매출S):''}</div>
+      ${oYoY!==null?`<div class="ktag ${oYoY>=0?'up':'dn'}">${oYoY>=0?'▲':'▼'} ${fp(Math.abs(oYoY))} ${isAll?'전년동기':'전년동월'}</div>`:''}
+    </div>
+    <div class="kcard">
+      <div class="klabel">당기순이익 ${isAll?'누계':'당월'}</div>
+      <div class="kval" style="color:var(--purple)">${순이S!==null?fa(순이S):'<span style="color:var(--text3);font-size:16px">-</span>'}</div>
+      <div class="ksub">${(순이S!==null&&매출S)?'순이익률 '+fp(순이S/매출S):''}</div>
+    </div>`;
+
+  // ② 배너: 누계=연간계획 대비, 월별=해당월 계획 대비
+  if(isAll){
+    // 연간계획 배너
+    const cy매출=P26.CY매출S, cy영업=P26.CY영업S;
+    const 잔여매출=cy매출-매출S, 잔여영업=cy영업-영업S;
+    const 매출초과=잔여매출<0, 영업초과=잔여영업<0;
+    document.getElementById('planBannerWrap').innerHTML=`
+      <div class="plan-banner">
+        <div class="pb-item"><div class="pb-label">26년 연간 계획 매출</div><div class="pb-val" style="color:var(--blue)">${fa(cy매출)}</div></div>
+        <div class="pb-div"></div>
+        <div class="pb-item"><div class="pb-label">누계 실적</div><div class="pb-val">${fa(매출S)}</div></div>
+        <div class="pb-div"></div>
+        <div class="pb-item"><div class="pb-label">달성률</div><div class="pb-val" style="color:${매출S/cy매출>=.5?'var(--green)':'var(--gold)'}">${fp(매출S/cy매출)}</div></div>
+        <div class="pb-div"></div>
+        <div class="pb-item"><div class="pb-label">잔여 목표</div>
+          ${매출초과
+            ? `<div class="pb-exceed">초과달성 +${fa(Math.abs(잔여매출))}</div>`
+            : `<div class="pb-val" style="color:var(--text2)">${fa(잔여매출)}</div>`}
+        </div>
+        <div class="pb-div"></div>
+        <div class="pb-item"><div class="pb-label">26년 연간 계획 영업이익</div><div class="pb-val" style="color:var(--gold)">${fa(cy영업)}</div></div>
+        <div class="pb-div"></div>
+        <div class="pb-item"><div class="pb-label">누계 실적</div><div class="pb-val">${fa(영업S)}</div></div>
+        <div class="pb-div"></div>
+        <div class="pb-item"><div class="pb-label">달성률</div><div class="pb-val" style="color:${영업S/cy영업>=.5?'var(--green)':'var(--gold)'}">${fp(영업S/cy영업)}</div></div>
+        <div class="pb-div"></div>
+        <div class="pb-item"><div class="pb-label">잔여 목표</div>
+          ${영업초과
+            ? `<div class="pb-exceed">초과달성 +${fa(Math.abs(잔여영업))}</div>`
+            : `<div class="pb-val" style="color:var(--text2)">${fa(잔여영업)}</div>`}
+        </div>
+      </div>`;
+  } else {
+    // 월간계획 배너
+    const pm=P26.매출S[mi]||0, po=P26.영업S[mi]||0;
+    if(!hasActual){
+      // 실적 미입력 월: 계획만 표시
+      document.getElementById('planBannerWrap').innerHTML=`
+        <div class="plan-banner" style="justify-content:center">
+          <div class="pb-item"><div class="pb-label">${MN12[mi]} 계획 매출</div><div class="pb-val" style="color:var(--blue)">${fa(pm)}</div></div>
+          <div class="pb-div"></div>
+          <div class="pb-item"><div class="pb-label">${MN12[mi]} 계획 영업이익</div><div class="pb-val" style="color:var(--gold)">${fa(po)}</div></div>
+          <div class="pb-div"></div>
+          <div class="pb-item" style="text-align:center"><div class="pb-label">실적</div><div class="pb-val" style="color:var(--text3);font-size:13px">미입력</div></div>
+        </div>`;
+    } else {
+      const 잔여매출=pm-매출S, 잔여영업=po-영업S;
+      const 매출초과=잔여매출<0, 영업초과=잔여영업<0;
+      document.getElementById('planBannerWrap').innerHTML=`
+        <div class="plan-banner">
+          <div class="pb-item"><div class="pb-label">${MN12[mi]} 계획 매출</div><div class="pb-val" style="color:var(--blue)">${fa(pm)}</div></div>
+          <div class="pb-div"></div>
+          <div class="pb-item"><div class="pb-label">실적</div><div class="pb-val">${fa(매출S)}</div></div>
+          <div class="pb-div"></div>
+          <div class="pb-item"><div class="pb-label">달성률</div><div class="pb-val" style="color:${매출S/pm>=1?'var(--green)':'var(--gold)'}">${fp(매출S/pm)}</div></div>
+          <div class="pb-div"></div>
+          <div class="pb-item"><div class="pb-label">계획 대비</div>
+            ${매출초과?`<div class="pb-exceed">초과달성 +${fa(Math.abs(잔여매출))}</div>`:`<div class="pb-val" style="color:var(--red)">미달 ${fa(잔여매출)}</div>`}
+          </div>
+          <div class="pb-div"></div>
+          <div class="pb-item"><div class="pb-label">${MN12[mi]} 계획 영업이익</div><div class="pb-val" style="color:var(--gold)">${fa(po)}</div></div>
+          <div class="pb-div"></div>
+          <div class="pb-item"><div class="pb-label">실적</div><div class="pb-val">${fa(영업S)}</div></div>
+          <div class="pb-div"></div>
+          <div class="pb-item"><div class="pb-label">달성률</div><div class="pb-val" style="color:${영업S/po>=1?'var(--green)':영업S/po>=.9?'var(--gold)':'var(--red)'}">${fp(영업S/po)}</div></div>
+          <div class="pb-div"></div>
+          <div class="pb-item"><div class="pb-label">계획 대비</div>
+            ${영업초과?`<div class="pb-exceed">초과달성 +${fa(Math.abs(잔여영업))}</div>`:`<div class="pb-val" style="color:var(--red)">미달 ${fa(잔여영업)}</div>`}
+          </div>
+        </div>`;
+    }
+  }
+
+  // ③ 달성률 카드
+  const achBasis = isAll ? `연간 사업계획 대비 누계 실적(1~${cnt}월)` : `${MN12[mi]} 월간 계획 대비`;
+  const plan매출 = isAll ? P26.CY매출S : (P26.매출S[mi]||1);
+  const plan영업 = isAll ? P26.CY영업S : (P26.영업S[mi]||1);
+  const plan매출label = isAll ? '연간 계획' : `${MN12[mi]} 계획`;
+  const plan영업label = isAll ? '연간 계획' : `${MN12[mi]} 계획`;
+
+  const achCard=(label,basis,act,plan,plabel,pct,color)=>{
+    const exceed=act!==null && act>plan;
+    if(act===null) return `<div class="achcard">
+      <div class="achhead"><div><div class="achlabel">${label}</div><div class="achbasis">${basis}</div></div>
+        <div class="achpct" style="color:var(--text3)">-</div>
+      </div>
+      <div class="achbar"><div class="achfill" style="width:0%"></div></div>
+      <div class="achvals"><div class="achitem" style="color:var(--text3)">실적 미입력</div><div class="achitem">${plabel} <b>${fa(plan)}</b></div></div>
+    </div>`;
+    return `<div class="achcard">
+      <div class="achhead">
+        <div><div class="achlabel">${label}</div><div class="achbasis">${basis}</div></div>
+        <div class="achpct" style="color:${pct>=1?'var(--green)':pct>=.9?'var(--gold)':'var(--red)'}">${fp(pct)}</div>
+      </div>
+      <div class="achbar"><div class="achfill" style="width:${Math.min(pct*100,100)}%;background:${pct>=1?'var(--mint)':pct>=.9?'var(--gold)':color}"></div></div>
+      <div class="achvals">
+        <div class="achitem">실적 <b>${fa(act)}</b></div>
+        <div class="achitem">${plabel} <b>${fa(plan)}</b></div>
+        ${exceed
+          ? `<div class="ach-exceed">초과달성 +${fa(act-plan)}</div>`
+          : `<div class="achdiff neg">미달 ${fa(act-plan)}</div>`}
+      </div>
+    </div>`;
+  };
+
+  document.getElementById('ach26').innerHTML=
+    achCard('매출 목표 달성률', achBasis, 매출S, plan매출, plan매출label, 매출S!==null?매출S/plan매출:null, 'var(--blue)')+
+    achCard('영업이익 목표 달성률', achBasis, 영업S, plan영업, plan영업label, 영업S!==null?영업S/plan영업:null, 'var(--gold)')+
+    (mYoY!==null ? `<div class="achcard">
+      <div class="achhead"><div><div class="achlabel">매출 전년 성장률</div><div class="achbasis">${yoyLabel}</div></div>
+        <div class="achpct" style="color:${mYoY>=0?'var(--green)':'var(--red)'}">${mYoY>=0?'+':''}${fp(mYoY)}</div>
+      </div>
+      <div class="achbar"><div class="achfill" style="width:${Math.min(Math.abs(mYoY)*100+50,100)}%;background:${mYoY>=0?'var(--mint)':'var(--red)'}"></div></div>
+      <div class="achvals">
+        <div class="achitem">26년 실적 <b>${fa(매출S)}</b></div>
+        <div class="achitem">25년 동기 <b>${fa(매출25)}</b></div>
+        <div class="${mYoY>=0?'ach-exceed':'achdiff neg'}">${mYoY>=0?'성장 +':'감소 '}${fa(Math.abs(매출S-매출25))}</div>
+      </div>
+    </div>` : `<div class="achcard"><div class="achhead"><div><div class="achlabel">매출 전년 성장률</div><div class="achbasis">${yoyLabel}</div></div><div class="achpct" style="color:var(--text3)">-</div></div><div class="achbar"></div><div class="achvals"><div class="achitem" style="color:var(--text3)">실적 미입력</div><div class="achitem">25년 동기 <b>${fa(A25.매출S[mi])}</b></div></div></div>`);
+
+  // ④ 월별 요약 카드 (12개월, 미입력은 공란)
+  let mc='';
+  A26.매출S.forEach((ms,i)=>{
+    const os=A26.영업S[i], mp_=A26.매출P[i], mb__=A26.매출B[i];
+    const prevMs = i>0 ? A26.매출S[i-1] : null;
+    const prevOs = i>0 ? A26.영업S[i-1] : null;
+    // 매출 전월대비
+    const momM = (ms!==null && prevMs!==null) ? (ms-prevMs)/Math.abs(prevMs) : null;
+    // 영업이익 전월대비
+    const momO = (os!==null && prevOs!==null && prevOs!==0) ? (os-prevOs)/Math.abs(prevOs) : null;
+    const hasM = ms!==null;
+    const arrow = (v) => v>=0 ? `<span style="color:var(--green)">▲${fp(Math.abs(v))}</span>` : `<span style="color:var(--red)">▼${fp(Math.abs(v))}</span>`;
+    mc+=`<div class="ms-card" style="${!hasM?'opacity:.55;':''}">
+      <div class="ms-month">${MN12[i]}${!hasM?' <span style="font-size:9px;color:var(--text3)">(미입력)</span>':''}</div>
+      <div class="ms-row"><span class="ms-label">전체 매출</span><span class="ms-val" style="${!hasM?'color:var(--text3)':''}">${hasM?fa(ms):fa(P26.매출S[i])+'<span style="font-size:9px"> 계획</span>'}</span></div>
+      <div class="ms-row"><span class="ms-label" style="color:var(--blue)">PATH</span><span class="ms-val" style="color:${hasM?'var(--blue)':'var(--text3)'}">${hasM?fa(mp_):fa(P26.매출P[i])+'<span style="font-size:9px"> 계획</span>'}</span></div>
+      <div class="ms-row"><span class="ms-label" style="color:var(--mint)">빌링</span><span class="ms-val" style="color:${hasM?'var(--mint)':'var(--text3)'}">${hasM?fa(mb__):fa(P26.매출B[i])+'<span style="font-size:9px"> 계획</span>'}</span></div>
+      <div class="ms-row"><span class="ms-label">영업이익</span><span class="ms-val" style="color:${hasM?'var(--gold)':'var(--text3)'}">${hasM?fa(os):fa(P26.영업S[i])+'<span style="font-size:9px"> 계획</span>'}</span></div>
+      <div class="ms-footer" style="line-height:1.9">
+        ${hasM ? `
+          <span>영업이익률 <b>${fp(os/ms)}</b></span><br>
+          <span style="color:var(--text3)">매출 전월比 ${momM!==null ? arrow(momM) : '<span style="color:var(--border2)">-</span>'}</span><br>
+          <span style="color:var(--text3)">영업이익 전월比 ${momO!==null ? arrow(momO) : '<span style="color:var(--border2)">-</span>'}</span>
+        ` : `<span style="color:var(--text3)">계획 매출 ${fa(P26.매출S[i])}</span><br><span style="color:var(--text3)">계획 영업이익 ${fa(P26.영업S[i])}</span>`}
+      </div>
+    </div>`;
+  });
+  document.getElementById('monthCards').innerHTML=mc;
+
+  // ⑤ 차트 (12개월, null은 Chart.js null로)
+  dc('bar26');
+  const chartLabels=MN12;
+  const toM=arr=>arr.map(v=>v!==null?Math.round(v/1e6):null);
+  charts.bar26=new Chart(document.getElementById('cBar26').getContext('2d'),{
+    data:{labels:chartLabels,datasets:[
+      {type:'bar',label:'PATH 매출',data:toM(A26.매출P),backgroundColor:'rgba(75,124,243,.8)',stack:'s',borderRadius:3},
+      {type:'bar',label:'빌링 매출',data:toM(A26.매출B),backgroundColor:'rgba(30,201,151,.8)',stack:'s',borderRadius:3},
+      {type:'line',label:'영업이익(실적)',data:toM(A26.영업S),borderColor:'#d97706',borderWidth:2.5,pointBackgroundColor:'#d97706',pointRadius:5,tension:.35,yAxisID:'y2',spanGaps:false},
+      {type:'line',label:'영업이익(계획)',data:P26.영업S.map(v=>Math.round(v/1e6)),borderColor:'rgba(217,119,6,.4)',borderWidth:1.5,borderDash:[6,4],pointRadius:3,tension:.35,yAxisID:'y2'},
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{...TT,mode:'index',intersect:false}},scales:BS}
+  });
+
+  // ⑥ 파이
+  dc('pie26');
+  const pieWrap = document.getElementById('pieWrap26');
+  const pieDesc = document.getElementById('pieDesc26');
+  // 항상 캔버스 복원 (이전 실적없음 메시지로 교체됐을 수 있음)
+  if(pieWrap) pieWrap.innerHTML='<canvas id="cPie26"></canvas>';
+  if(매출P && 매출B){
+    const pvm=Math.round(매출P/1e6), bvm=Math.round(매출B/1e6);
+    charts.pie26=new Chart(document.getElementById('cPie26').getContext('2d'),{
+      type:'doughnut',
+      data:{labels:['PATH','빌링'],datasets:[{data:[pvm,bvm],backgroundColor:['rgba(75,124,243,.85)','rgba(30,201,151,.85)'],borderWidth:2,borderColor:'#fff',hoverOffset:6}]},
+      options:{responsive:true,maintainAspectRatio:false,cutout:'62%',
+        onClick:(evt)=>onPie26Click(evt,mi,isAll),
+        plugins:{legend:{display:true,position:'bottom',labels:{color:'#52576a',font:{size:11},padding:14,usePointStyle:true}},
+        tooltip:{...TT,callbacks:{label:ctx=>` ${ctx.label}: ${faT(ctx.raw*1e6)} (${fp(ctx.raw/(pvm+bvm))})`}}}}
+    });
+    if(pieDesc) pieDesc.textContent=`PATH ${fp(pBi)}  /  빌링 ${fp(1-pBi)}`;
+  } else {
+    if(pieWrap) pieWrap.innerHTML='<div style="height:200px;display:flex;align-items:center;justify-content:center;color:var(--text3);font-size:12px;flex-direction:column;gap:6px"><span style="font-size:24px">📭</span>실적 미입력</div>';
+    if(pieDesc) pieDesc.textContent='';
+  }
+  document.getElementById('pieLabel26').textContent=isAll?`누계 (1~${cnt}월) 기준`:(mi!==null?MN12[mi]+' 기준':'');
+
+  // ⑦ 테이블: 누계 시 12개월 전체 컬럼 표시 (실적 없는 달은 공란), 월별 시 해당 월만
+  const activeMIdxs = isAll ? [0,1,2,3,4,5,6,7,8,9,10,11] : (hasActual?[mi]:[]);
+
+  function thead(){
+    const STK = 'position:sticky;left:0;background:#f8f9fb;z-index:2;border-right:1px solid var(--border2)';
+
+    if(!isAll){
+      // 단일 월 — 구분 | PATH | 빌링 | 소계
+      return `<thead><tr>
+        <th style="text-align:left;width:160px">구분</th>
+        <th style="text-align:right;width:90px;color:var(--blue)">PATH</th>
+        <th style="text-align:right;width:90px;color:var(--mint)">빌링</th>
+        <th style="text-align:right;width:90px;color:var(--text2)">소계</th>
+      </tr></thead>`;
+    }
+
+    // 누계 — 구분 고정 | 1~12월 소계 숫자 | 누계 소계
+    let h = `<thead><tr>`;
+    h += `<th style="text-align:left;min-width:130px;width:140px;${STK}">구분</th>`;
+    activeMIdxs.forEach(i => {
+      const dim = A26.매출S[i] === null;
+      h += `<th style="text-align:right;width:70px;padding:7px 8px;${dim?'color:#c4c8d8;background:#f9f9f9':''}">${MN12[i]}</th>`;
+    });
+    h += `<th class="cum" style="text-align:right;width:75px;padding:7px 8px;border-left:2px solid var(--border2)">누계</th>`;
+    h += `</tr></thead>`;
+    return h;
+  }
+
+  function tc(pA, bA, sA){
+    const dash = '<span style="color:var(--border2)">-</span>';
+
+    if(!isAll){
+      const p  = pA ? pA[mi] : null;
+      const b  = bA ? bA[mi] : null;
+      const sv = sA ? sA[mi] : (p!==null && b!==null ? p+b : null);
+      return `<td class="cp" style="text-align:right">${p!==null?fm(p):dash}</td>`+
+             `<td class="cb" style="text-align:right">${b!==null?fm(b):dash}</td>`+
+             `<td style="text-align:right">${sv!==null?fm(sv):dash}</td>`;
+    }
+
+    // 누계: 각 월 소계 1칸 + 누계 소계 1칸
+    let h = '';
+    activeMIdxs.forEach(i => {
+      const p  = pA ? pA[i] : null;
+      const b  = bA ? bA[i] : null;
+      const sv = sA ? sA[i] : (p!==null&&b!==null ? p+b : (p!==null?p:b));
+      const dim = sv === null && p === null && b === null;
+      const bl = 'border-left:1px solid var(--border)';
+      h += `<td style="text-align:right;padding:6px 8px;${dim?'color:var(--border2)':''}${i===0?'':''}">`;
+      h += sv !== null ? fm(sv) : dash;
+      h += `</td>`;
+    });
+    // 누계 합산 (소계 = P+B 또는 sA)
+    const ps = pA ? pA.reduce((s,v)=>s+(v||0),0) : 0;
+    const bs = bA ? bA.reduce((s,v)=>s+(v||0),0) : 0;
+    const ss = sA ? sA.reduce((s,v)=>s+(v||0),0) : ps+bs;
+    const cumVal = ss || ps || 0;
+    h += `<td class="cum" style="text-align:right;padding:6px 8px;border-left:2px solid var(--border2)">${cumVal?fm(cumVal):'-'}</td>`;
+    return h;
+  }
+
+  // PATH 전용 행 (소계 없이 PATH 값만, 누계용)
+  function tcPath(pA){
+    const dash = '<span style="color:var(--border2)">-</span>';
+    if(!isAll) return '';
+    let h = '';
+    activeMIdxs.forEach(i => {
+      const p = pA ? pA[i] : null;
+      h += `<td class="cp" style="text-align:right;padding:5px 8px;font-size:11px">${p!==null?fm(p):dash}</td>`;
+    });
+    const pt = pA ? pA.reduce((s,v)=>s+(v||0),0) : 0;
+    h += `<td class="cp cum" style="text-align:right;padding:5px 8px;font-size:11px;border-left:2px solid var(--border2)">${pt?fm(pt):'-'}</td>`;
+    return h;
+  }
+
+  // 빌링 전용 행
+  function tcBill(bA){
+    const dash = '<span style="color:var(--border2)">-</span>';
+    if(!isAll) return '';
+    let h = '';
+    activeMIdxs.forEach(i => {
+      const b = bA ? bA[i] : null;
+      h += `<td class="cb" style="text-align:right;padding:5px 8px;font-size:11px">${b!==null?fm(b):dash}</td>`;
+    });
+    const bt = bA ? bA.reduce((s,v)=>s+(v||0),0) : 0;
+    h += `<td class="cb cum" style="text-align:right;padding:5px 8px;font-size:11px;border-left:2px solid var(--border2)">${bt?fm(bt):'-'}</td>`;
+    return h;
+  }
+  // 테이블 클래스: 누계=wide(가로스크롤), 월별=일반
+  const tableClass = isAll ? 'wide' : '';
+
+  const STK_TD = isAll
+    ? 'position:sticky;left:0;z-index:1;border-right:1px solid var(--border2);'
+    : '';
+
+  // 토글 가능한 그룹: 소계행 클릭 시 하위행 접기/펼치기
+  let toggleCounter = 0;
+  function mkToggleRow(label, rowCls, cells, children, bold=false){
+    const gid = 'grp' + (++toggleCounter);
+    const isIndRow = rowCls.includes('ind');
+    const stkBg = bold ? '#f3f4f7' : isIndRow ? '#fcfcfd' : '#fff';
+    const labelStyle = `text-align:left;padding:6px 10px;font-weight:${bold?700:isIndRow?400:500};font-size:${isIndRow?11:12}px;${STK_TD}background:${stkBg}`;
+
+    let html = `<tr class="${rowCls}" style="cursor:${children?'pointer':'default'}" onclick="${children?`toggleGroup('${gid}')`:''}" data-gid="${gid}">`;
+    html += `<td style="${labelStyle}">`;
+    if(children){
+      html += `<span id="ico_${gid}" style="display:inline-block;width:14px;font-size:10px;color:var(--text3);margin-right:2px;transition:.15s">▶</span>`;
+    }
+    html += label + '</td>';
+    html += cells;
+    html += '</tr>';
+
+    if(children){
+      html += `<tbody id="${gid}" style="display:none">`;
+      html += children;
+      html += '</tbody>';
+    }
+    return html;
+  }
+
+  function mkSubRow(label, cells, cls=''){
+    const stkBg = cls.includes('path')?'#f8fbff':cls.includes('bill')?'#f5fdf9':'#fcfcfd';
+    const labelStyle = `text-align:left;padding:5px 10px 5px 22px;font-size:11px;color:var(--text3);${STK_TD}background:${stkBg}`;
+    return `<tr class="${cls}"><td style="${labelStyle}">${label}</td>${cells}</tr>`;
+  }
+
+  const plR=[
+    {l:'매출액',    pA:A26.매출P, bA:A26.매출B, sA:A26.매출S, cls:'total sep', hasSub:true},
+    {l:'매출원가',  pA:A26.원가P, bA:A26.원가B, sA:A26.원가S, cls:'sep',       hasSub:true},
+    {l:'매출총이익',pA:A26.총이P, bA:A26.총이B, sA:A26.총이S, cls:'sub sep'},
+    {l:'판매관리비',pA:A26.판관P, bA:A26.판관B, sA:A26.판관S, cls:'sep',       hasSub:true, hasDetail:true},
+    {l:'영업이익',  pA:A26.영업P, bA:A26.영업B, sA:A26.영업S, cls:'total sep', hasSub:true},
+    {l:'당기순이익',                             sA:A26.순이S, cls:'total'},
+  ];
+
+  let h = `<table class="${tableClass}">` + thead() + '<tbody>';
+
+  plR.forEach(r => {
+    const isBold = r.cls.includes('total') || r.cls.includes('sub');
+    const mainCells = tc(r.pA||null, r.bA||null, r.sA||null);
+
+    // 하위행 구성
+    let children = '';
+    if(r.hasSub && isAll && r.pA && r.bA){
+      children += mkSubRow('ㄴ PATH', tcPath(r.pA), 'path-row');
+      children += mkSubRow('ㄴ 빌링', tcBill(r.bA), 'bill-row');
+    } else if(r.hasSub && !isAll && r.pA && r.bA){
+      // 월별에서도 PATH/빌링 접기
+      const p = r.pA[mi], b = r.bA[mi];
+      const dash = '<span style="color:var(--border2)">-</span>';
+      children += mkSubRow('ㄴ PATH',
+        `<td class="cp" style="text-align:right">${p!==null?fm(p):dash}</td><td style="text-align:right">${dash}</td><td style="text-align:right">${dash}</td>`,
+        'path-row');
+      children += mkSubRow('ㄴ 빌링',
+        `<td style="text-align:right">${dash}</td><td class="cb" style="text-align:right">${b!==null?fm(b):dash}</td><td style="text-align:right">${dash}</td>`,
+        'bill-row');
+    }
+
+    // 판관비 세부항목 (detail)
+    if(r.hasDetail){
+      const detailRows = [
+        {l:'ㄴ 인건비',    pA:A26.인건P,   bA:A26.인건B,   sA:A26.인건S},
+        {l:'ㄴ 광고선전비', pA:A26.광고P,   bA:A26.광고B,   sA:A26.광고S},
+        {l:'ㄴ 기타판관비', pA:A26.기타판P, bA:A26.기타판B, sA:A26.기타판S},
+      ];
+      if(isAll){
+        detailRows.forEach(d => {
+          children += mkSubRow(d.l,
+            tc(d.pA, d.bA, d.sA),
+            'ind-row');
+        });
+      } else {
+        detailRows.forEach(d => {
+          const p_=d.pA?d.pA[mi]:null, b_=d.bA?d.bA[mi]:null;
+          const s_=d.sA?d.sA[mi]:(p_!==null&&b_!==null?p_+b_:null);
+          const dash='<span style="color:var(--border2)">-</span>';
+          children += mkSubRow(d.l,
+            `<td class="cp" style="text-align:right">${p_!==null?fm(p_):dash}</td><td class="cb" style="text-align:right">${b_!==null?fm(b_):dash}</td><td style="text-align:right">${s_!==null?fm(s_):dash}</td>`,
+            'ind-row');
+        });
+      }
+    }
+
+    h += mkToggleRow(r.l, r.cls||'', mainCells, children||null, isBold);
+  });
+
+  document.getElementById('tPL26').innerHTML = h + '</tbody></table>';
+
+  // 원가 테이블
+  const cR=[
+    {l:'원가 합계', pA:A26.원가합P, bA:A26.원가합B, cls:'total sep', hasSub:true, hasDetail:true},
+  ];
+  let ch = `<table class="${tableClass}">` + thead() + '<tbody>';
+  cR.forEach(r => {
+    const mainCells = tc(r.pA, r.bA, null);
+    let children = '';
+    const detailRows2 = [
+      {l:'ㄴ 인건비',   pA:A26.원가급P, bA:A26.원가급B},
+      {l:'ㄴ 상품원가', pA:A26.원가상P, bA:A26.원가상B},
+      {l:'ㄴ 기타원가', pA:A26.원가기P, bA:A26.원가기B},
+    ];
+    if(r.hasSub && r.pA && r.bA){
+      if(isAll){
+        children += mkSubRow('ㄴ PATH', tcPath(r.pA), 'path-row');
+        children += mkSubRow('ㄴ 빌링', tcBill(r.bA), 'bill-row');
+        detailRows2.forEach(d => children += mkSubRow(d.l, tc(d.pA,d.bA,null), 'ind-row'));
+      } else {
+        const p=r.pA[mi], b=r.bA[mi];
+        const dash='<span style="color:var(--border2)">-</span>';
+        children += mkSubRow('ㄴ PATH',
+          `<td class="cp" style="text-align:right">${p!==null?fm(p):dash}</td><td style="text-align:right">${dash}</td><td style="text-align:right">${dash}</td>`,'path-row');
+        children += mkSubRow('ㄴ 빌링',
+          `<td style="text-align:right">${dash}</td><td class="cb" style="text-align:right">${b!==null?fm(b):dash}</td><td style="text-align:right">${dash}</td>`,'bill-row');
+        detailRows2.forEach(d => {
+          const p_=d.pA?d.pA[mi]:null, b_=d.bA?d.bA[mi]:null;
+          const s_=(p_!==null&&b_!==null?p_+b_:null);
+          children += mkSubRow(d.l,
+            `<td class="cp" style="text-align:right">${p_!==null?fm(p_):dash}</td><td class="cb" style="text-align:right">${b_!==null?fm(b_):dash}</td><td style="text-align:right">${s_!==null?fm(s_):dash}</td>`,'ind-row');
+        });
+      }
+    }
+    ch += mkToggleRow(r.l, r.cls||'', mainCells, children||null, true);
+  });
+  document.getElementById('tCost26').innerHTML = ch + '</tbody></table>';
+}
+
+// ── 2025 렌더
+function render25(){
+  const tM=SUM(A25.매출S),tO=SUM(A25.영업S),tN=SUM(A25.순이S);
+  const tMP=SUM(A25.매출P),tMB=SUM(A25.매출B);
+  document.getElementById('kpi25').innerHTML=`
+    <div class="kcard accent"><div class="klabel">연간 매출 합계</div><div class="kval">${fa(tM)}</div><div class="ksub">영업이익률 ${fp(tO/tM)}</div></div>
+    <div class="kcard"><div class="klabel">PATH 연간 매출</div><div class="kval" style="color:var(--blue)">${fa(tMP)}</div><div class="ksub">비중 ${fp(tMP/tM)}</div></div>
+    <div class="kcard"><div class="klabel">빌링 연간 매출</div><div class="kval" style="color:var(--mint)">${fa(tMB)}</div><div class="ksub">비중 ${fp(tMB/tM)}</div></div>
+    <div class="kcard"><div class="klabel">연간 영업이익</div><div class="kval" style="color:var(--gold)">${fa(tO)}</div><div class="ksub">영업이익률 ${fp(tO/tM)}</div></div>
+    <div class="kcard"><div class="klabel">연간 당기순이익</div><div class="kval" style="color:var(--purple)">${fa(tN)}</div><div class="ksub">순이익률 ${fp(tN/tM)}</div></div>`;
+
+  dc('bar25');
+  charts.bar25=new Chart(document.getElementById('cBar25').getContext('2d'),{
+    data:{labels:MN12,datasets:[
+      {type:'bar',label:'PATH 매출',data:A25.매출P.map(v=>Math.round(v/1e6)),backgroundColor:'rgba(75,124,243,.75)',stack:'s',borderRadius:2},
+      {type:'bar',label:'빌링 매출',data:A25.매출B.map(v=>Math.round(v/1e6)),backgroundColor:'rgba(30,201,151,.75)',stack:'s',borderRadius:2},
+      {type:'line',label:'영업이익',data:A25.영업S.map(v=>Math.round(v/1e6)),borderColor:'#d97706',borderWidth:2,pointRadius:4,tension:.35,pointBackgroundColor:'#d97706',yAxisID:'y2'},
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{...TT,mode:'index',intersect:false}},scales:BS}
+  });
+
+  dc('rate25');
+  charts.rate25=new Chart(document.getElementById('cRate25').getContext('2d'),{
+    type:'line',
+    data:{labels:MN12,datasets:[
+      {label:'영업이익률',data:A25.매출S.map((v,i)=>+(A25.영업S[i]/v*100).toFixed(2)),borderColor:'#d97706',borderWidth:2,pointRadius:4,tension:.35,pointBackgroundColor:'#d97706'},
+      {label:'순이익률',  data:A25.매출S.map((v,i)=>+(A25.순이S[i]/v*100).toFixed(2)),borderColor:'#7c3aed',borderWidth:1.5,borderDash:[5,4],pointRadius:3,tension:.35,pointBackgroundColor:'#7c3aed'},
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{labels:{color:'#52576a',font:{size:11},usePointStyle:true,padding:12},position:'bottom'},
+        tooltip:{backgroundColor:'rgba(26,29,35,.92)',titleColor:'#fff',bodyColor:'rgba(255,255,255,.8)',padding:8,cornerRadius:6,callbacks:{label:ctx=>` ${ctx.dataset.label}: ${ctx.raw.toFixed(1)}%`}}},
+      scales:{x:{grid:{color:GC},ticks:{color:TC,font:{size:11}}},y:{grid:{color:GC},ticks:{color:TC,font:{size:11},callback:v=>v+'%'}}}}
+  });
+
+  const COL='60px', TH_BASE='text-align:right;padding:7px 10px;font-size:11px;color:var(--text3);font-weight:500;border-bottom:1.5px solid var(--border);white-space:nowrap;width:'+COL;
+  let h=`<table class="wide"><thead><tr>`;
+  h+=`<th style="text-align:left;min-width:110px;width:120px;position:sticky;left:0;background:#f8f9fb;z-index:2;border-right:1px solid var(--border2)">구분</th>`;
+  MN12.forEach(m=>h+=`<th style="${TH_BASE}">${m}</th>`);
+  h+=`<th style="${TH_BASE};color:var(--gold);background:#fffbf0;border-left:2px solid var(--border2)">연간</th>`;
+    h+=`</tr></thead><tbody>`;
+
+  // 25년 판관비 월별
+  const A25판관S=[125483161,129756129,165425699,166835168,151342487,137681529,135049328,126370537,156703009,122802231,140113475,303254883];
+  const A25인건S=[48335951,53469282,56757635,56806600,47570914,54645589,52064556,51764742,51635167,51764560,51635165,51764560];
+  const A25광고S=[32629668,27585090,53794916,54602635,43184170,35499379,35865989,24121037,39838863,24844867,37431494,36682815];
+  const A25기타S=A25판관S.map((v,i)=>v-A25인건S[i]-A25광고S[i]);
+
+
+  const rows25=[
+    {l:'매출(소계)', arr:A25.매출S, color:'var(--text)',   bold:true, gid:'t25rev', sub:[
+      {l:'ㄴ PATH',  arr:A25.매출P, color:'var(--blue)'},
+      {l:'ㄴ 빌링',  arr:A25.매출B, color:'var(--mint)'},
+    ]},
+    {l:'매출원가',   arr:A25.원가S, color:'var(--text2)', bold:false, gid:'t25cost', sub:[
+      {l:'ㄴ PATH',  arr:A25.원가P, color:'var(--blue)'},
+      {l:'ㄴ 빌링',  arr:A25.원가B, color:'var(--mint)'},
+    ]},
+    {l:'판매관리비', arr:A25판관S,  color:'var(--text2)', bold:false, gid:'t25sga', sub:[
+      {l:'ㄴ 인건비',    arr:A25인건S, color:'var(--text3)'},
+      {l:'ㄴ 광고선전비', arr:A25광고S, color:'var(--text3)'},
+      {l:'ㄴ 기타판관비', arr:A25기타S, color:'var(--text3)'},
+    ]},
+    {l:'영업이익',   arr:A25.영업S, color:'var(--gold)',  bold:true, gid:'t25op', sub:[
+      {l:'ㄴ PATH',  arr:A25.영업P, color:'var(--blue)'},
+      {l:'ㄴ 빌링',  arr:A25.영업B, color:'var(--mint)'},
+    ]},
+    {l:'당기순이익', arr:A25.순이S, color:'var(--purple)',bold:true},
+  ];
+
+  rows25.forEach(r=>{
+    const bg=r.bold?'#f3f4f7':'#fff';
+    const stk=`position:sticky;left:0;background:${bg};z-index:1;border-right:1px solid var(--border2)`;
+    const hasToggle=!!r.gid;
+    h+=`<tr${r.bold?' class="total"':''}>`;
+    h+=`<td style="text-align:left;padding:7px 10px;font-size:12px;${stk}">`;
+    if(hasToggle) h+=`<span id="ic25_${r.gid}" style="display:inline-block;width:14px;font-size:10px;color:var(--text3);margin-right:3px;cursor:pointer" onclick="tog25('${r.gid}')">▶</span>`;
+    h+=`${r.l}</td>`;
+    r.arr.forEach(v=>h+=`<td style="text-align:right;padding:6px 10px;color:${r.color};width:${COL}">${fm(v)}</td>`);
+    h+=`<td style="text-align:right;padding:6px 10px;color:${r.color};font-weight:700;background:#fffbf0;border-left:2px solid var(--border2)">${fm(SUM(r.arr))}</td>`;
+    h+='</tr>';
+    if(r.sub){
+      h+=`<tbody id="${r.gid}" style="display:none">`;
+      r.sub.forEach(s=>{
+        h+=`<tr><td style="text-align:left;padding:5px 10px 5px 22px;font-size:11px;color:${s.color};position:sticky;left:0;background:#fafbfc;z-index:1;border-right:1px solid var(--border2)">${s.l}</td>`;
+        s.arr.forEach(v=>h+=`<td style="text-align:right;padding:5px 10px;color:${s.color};font-size:11px">${fm(v)}</td>`);
+        h+=`<td style="text-align:right;padding:5px 10px;color:${s.color};font-size:11px;font-weight:600;background:#fffbf0;border-left:2px solid var(--border2)">${fm(SUM(s.arr))}</td>`;
+        h+='</tr>';
+      });
+      h+='</tbody><tbody>';
+    }
+  });
+  document.getElementById('tPL25').innerHTML=h+'</tbody></table>';
+}
+
+// ── 성과&계획비교 렌더
+function renderCmp(){
+  const 매출26=SUM(A26.매출S,0,4), 영업26=SUM(A26.영업S,0,4), 순이26=SUM(A26.순이S,0,4);
+  const 매출25=SUM(A25.매출S,0,4), 영업25=SUM(A25.영업S,0,4), 순이25=SUM(A25.순이S,0,4);
+  const PM_매출S=SUM(P26.매출S,0,4), PM_영업S=SUM(P26.영업S,0,4);
+  const PM_매출P=SUM(P26.매출P,0,4), PM_매출B=SUM(P26.매출B,0,4);
+  const PATH26=SUM(A26.매출P,0,4), BILL26=SUM(A26.매출B,0,4);
+  const PATH25=SUM(A25.매출P,0,4), BILL25=SUM(A25.매출B,0,4);
+  const OP26=SUM(A26.영업P,0,4),   OB26=SUM(A26.영업B,0,4);
+  const OP25=SUM(A25.영업P,0,4),   OB25=SUM(A25.영업B,0,4);
+
+  // 증감 태그
+  const diffTag=(act,base)=>{
+    if(base===null||base===undefined||!isFinite(act/base)||base===0)
+      return '<span style="color:var(--text3)">-</span>';
+    const r=(act-base)/Math.abs(base);
+    const c=r>=0?'var(--green)':'var(--red)';
+    return `<span style="color:${c};font-weight:600">${r>=0?'▲':'▼'}${fp(Math.abs(r))}</span>`;
+  };
+
+  const TH='padding:8px 10px;text-align:right;font-size:11px;font-weight:500;border-bottom:1.5px solid var(--border);white-space:nowrap;color:var(--text3)';
+  const THL='padding:8px 10px;text-align:left;font-size:11px;font-weight:600;border-bottom:1.5px solid var(--border);white-space:nowrap';
+  const TD='padding:7px 10px;text-align:right;font-size:12px;white-space:nowrap';
+  const TDL='padding:7px 10px;text-align:left;font-size:12px;white-space:nowrap';
+
+  // ── 1. 전사 요약 테이블 (3행: 매출/영업이익/순이익)
+  const sumRows=[
+    {l:'매출',   act:매출26, plan:PM_매출S, prev:매출25,  bold:true},
+    {l:'영업이익',act:영업26, plan:PM_영업S, prev:영업25, bold:true},
+    {l:'순이익',  act:순이26, plan:169732104, prev:순이25,  bold:true},
+  ];
+  let sumHtml=`<div class="ccard" style="margin-bottom:14px">
+    <div class="ctitle">전사 실적 요약</div>
+    <div class="csub">26년 누계(1~4월) 기준 — 단위: 억원</div>
+    <table style="width:100%"><thead><tr>
+      <th style="${THL}">구분</th>
+      <th style="${TH};color:var(--blue)">26년 실적</th>
+      <th style="${TH}">26년 계획 (1~4월)</th>
+      <th style="${TH}">vs 계획</th>
+      <th style="${TH}">25년 동기</th>
+      <th style="${TH}">vs 전년</th>
+    </tr></thead><tbody>`;
+  sumRows.forEach(r=>{
+    const achPct=r.plan?r.act/r.plan:null;
+    const achC=achPct?(achPct>=1?'var(--green)':achPct>=.9?'var(--gold)':'var(--red)'):'var(--text3)';
+    sumHtml+=`<tr class="total">
+      <td style="${TDL};font-weight:700">${r.l}</td>
+      <td style="${TD};color:var(--blue);font-weight:700">${fa(r.act)}</td>
+      <td style="${TD};color:var(--text3)">${r.plan?fa(r.plan):'-'}</td>
+      <td style="${TD};color:${achC};font-weight:700">${achPct?fp(achPct):'-'}</td>
+      <td style="${TD};color:var(--text3)">${fa(r.prev)}</td>
+      <td style="${TD}">${diffTag(r.act,r.prev)}</td>
+    </tr>`;
+  });
+  sumHtml+='</tbody></table></div>';
+  document.getElementById('cmpSummary').innerHTML=sumHtml;
+
+  // ── 2. 차트 토글 (누계 막대 - PATH/빌링 분리, 26실적/계획/25동기 비교)
+  dc('cmpRev'); dc('cmpOp');
+  const drawCharts=()=>{
+    // 매출 누계 차트
+    charts.cmpRev=new Chart(document.getElementById('cmpChartRev').getContext('2d'),{
+      type:'bar',
+      data:{
+        labels:['PATH','빌링','전체'],
+        datasets:[
+          {label:'26년 실적', data:[Math.round(PATH26/1e6),Math.round(BILL26/1e6),Math.round(매출26/1e6)],backgroundColor:['rgba(75,124,243,.9)','rgba(30,201,151,.9)','rgba(75,124,243,.6)'],borderRadius:4},
+          {label:'26년 계획', data:[Math.round(PM_매출P/1e6),Math.round(PM_매출B/1e6),Math.round(PM_매출S/1e6)],backgroundColor:'rgba(251,191,36,.15)',borderRadius:4,borderWidth:1.5,borderColor:'rgba(217,119,6,.35)'},
+          {label:'25년 동기', data:[Math.round(PATH25/1e6),Math.round(BILL25/1e6),Math.round(매출25/1e6)],backgroundColor:'rgba(167,139,250,.15)',borderRadius:4,borderWidth:1.5,borderColor:'rgba(124,58,237,.3)',borderDash:[4,3]},
+        ]
+      },
+      options:{responsive:true,maintainAspectRatio:false,
+        plugins:{legend:{labels:{color:'#52576a',font:{size:11},usePointStyle:true,padding:12},position:'bottom'},
+          tooltip:{backgroundColor:'rgba(26,29,35,.9)',titleColor:'#fff',bodyColor:'rgba(255,255,255,.8)',padding:10,cornerRadius:8,
+            callbacks:{label:ctx=>` ${ctx.dataset.label}: ${faT(ctx.raw*1e6)}`}}},
+        scales:{x:{grid:{color:GC},ticks:{color:TC,font:{size:12,weight:'500'}}},
+          y:{grid:{color:GC},ticks:{color:TC,font:{size:11},callback:v=>Math.abs(v)>=100?(v/100).toFixed(0)+'억':v+'M'}}}}
+    });
+    // 영업이익 누계 차트
+    const planOP_P=PM_매출P?PM_영업S*(PM_매출P/(PM_매출P+PM_매출B)):0;
+    const planOP_B=PM_매출B?PM_영업S*(PM_매출B/(PM_매출P+PM_매출B)):0;
+    charts.cmpOp=new Chart(document.getElementById('cmpChartOp').getContext('2d'),{
+      type:'bar',
+      data:{
+        labels:['PATH','빌링','전체'],
+        datasets:[
+          {label:'26년 실적', data:[Math.round(OP26/1e6),Math.round(OB26/1e6),Math.round(영업26/1e6)],backgroundColor:['rgba(75,124,243,.9)','rgba(30,201,151,.9)','rgba(217,119,6,.9)'],borderRadius:4},
+          {label:'26년 계획', data:[Math.round(planOP_P/1e6),Math.round(planOP_B/1e6),Math.round(PM_영업S/1e6)],backgroundColor:'rgba(251,191,36,.15)',borderRadius:4,borderWidth:1.5,borderColor:'rgba(217,119,6,.35)'},
+          {label:'25년 동기', data:[Math.round(OP25/1e6),Math.round(OB25/1e6),Math.round(영업25/1e6)],backgroundColor:'rgba(167,139,250,.15)',borderRadius:4,borderWidth:1.5,borderColor:'rgba(124,58,237,.6)'},
+        ]
+      },
+      options:{responsive:true,maintainAspectRatio:false,
+        plugins:{legend:{labels:{color:'#52576a',font:{size:11},usePointStyle:true,padding:12},position:'bottom'},
+          tooltip:{backgroundColor:'rgba(26,29,35,.9)',titleColor:'#fff',bodyColor:'rgba(255,255,255,.8)',padding:10,cornerRadius:8,
+            callbacks:{label:ctx=>` ${ctx.dataset.label}: ${faT(ctx.raw*1e6)}`}}},
+        scales:{x:{grid:{color:GC},ticks:{color:TC,font:{size:12,weight:'500'}}},
+          y:{grid:{color:GC},ticks:{color:TC,font:{size:11},callback:v=>Math.abs(v)>=100?(v/100).toFixed(0)+'억':v+'M'}}}}
+    });
+  };
+  if(document.getElementById('chartToggleWrap').style.display!=='none') drawCharts();
+  window._drawCmpCharts=drawCharts;
+
+  // mkRow5: 전사 계획 포함 (t_plan 추가)
+  const mkRow5=(label,p_act,p_plan,p_prev,b_act,b_plan,b_prev,t_act,t_plan,t_prev,bold=false)=>{
+    const bg=bold?'class="total"':'';
+    return `<tr ${bg}>
+      <td style="${TDL};font-weight:${bold?700:400}">${label}</td>
+      <td style="${TD};color:var(--blue)">${fa(p_act)}</td>
+      <td style="${TD};color:var(--text3)">${p_plan!==null?fa(p_plan):'-'}</td>
+      <td style="${TD};color:var(--text3)">${fa(p_prev)}</td>
+      <td style="${TD}">${p_plan!==null?diffTag(p_act,p_plan):'-'}</td>
+      <td style="${TD}">${diffTag(p_act,p_prev)}</td>
+      <td style="${TD};color:var(--mint)">${fa(b_act)}</td>
+      <td style="${TD};color:var(--text3)">${b_plan!==null?fa(b_plan):'-'}</td>
+      <td style="${TD};color:var(--text3)">${fa(b_prev)}</td>
+      <td style="${TD}">${b_plan!==null?diffTag(b_act,b_plan):'-'}</td>
+      <td style="${TD}">${diffTag(b_act,b_prev)}</td>
+      <td style="${TD};border-left:2px solid var(--border2)">${fa(t_act)}</td>
+      <td style="${TD};color:var(--text3)">${t_plan!==null?fa(t_plan):'-'}</td>
+      <td style="${TD};color:var(--text3)">${fa(t_prev)}</td>
+      <td style="${TD}">${t_plan!==null?diffTag(t_act,t_plan):'-'}</td>
+      <td style="${TD}">${diffTag(t_act,t_prev)}</td>
+    </tr>`;
+  };
+
+  let tbl=`<table style="width:100%;min-width:960px"><thead>
+    <tr>
+      <th style="${THL};min-width:85px;width:90px" rowspan="2">구분</th>
+      <th colspan="5" style="${TH};text-align:center;color:var(--blue);border-left:1px solid var(--border)">PATH 사업부</th>
+      <th colspan="5" style="${TH};text-align:center;color:var(--mint);border-left:1px solid var(--border)">빌링 사업부</th>
+      <th colspan="5" style="${TH};text-align:center;color:var(--gold);border-left:2px solid var(--border2)">전사 합계</th>
+    </tr><tr>
+      <th style="${TH};border-left:1px solid var(--border);color:var(--blue)">26년 실적</th>
+      <th style="${TH}">26년 계획</th>
+      <th style="${TH}">25년 동기</th>
+      <th style="${TH}">vs 계획</th>
+      <th style="${TH}">vs 전년</th>
+      <th style="${TH};border-left:1px solid var(--border);color:var(--mint)">26년 실적</th>
+      <th style="${TH}">26년 계획</th>
+      <th style="${TH}">25년 동기</th>
+      <th style="${TH}">vs 계획</th>
+      <th style="${TH}">vs 전년</th>
+      <th style="${TH};border-left:2px solid var(--border2)">26년 실적</th>
+      <th style="${TH}">26년 계획</th>
+      <th style="${TH}">25년 동기</th>
+      <th style="${TH}">vs 계획</th>
+      <th style="${TH}">vs 전년</th>
+    </tr></thead><tbody>`;
+
+  tbl+=mkRow5('매출', PATH26,PM_매출P,PATH25, BILL26,PM_매출B,BILL25, 매출26,PM_매출S,매출25, true);
+    const PLAN_OP_P=-21672492, PLAN_OP_B=201333984;
+  tbl+=mkRow5('영업이익', OP26,PLAN_OP_P,OP25, OB26,PLAN_OP_B,OB25, 영업26,PM_영업S,영업25, true);
+  // 영업이익률 행 (계획 달성률 없이 실적/전년 비교만)
+  tbl+=`<tr>
+    <td style="${TDL}">영업이익률</td>
+    <td style="${TD};font-size:11px;color:var(--blue)">${fp(OP26/PATH26)}</td>
+    <td style="${TD};color:var(--text3)">-</td>
+    <td style="${TD};font-size:11px;color:var(--text3)">${fp(OP25/PATH25)}</td>
+    <td style="${TD}">-</td>
+    <td style="${TD}">${diffTag(OP26/PATH26,OP25/PATH25)}</td>
+    <td style="${TD};font-size:11px;color:var(--mint)">${fp(OB26/BILL26)}</td>
+    <td style="${TD};color:var(--text3)">-</td>
+    <td style="${TD};font-size:11px;color:var(--text3)">${fp(OB25/BILL25)}</td>
+    <td style="${TD}">-</td>
+    <td style="${TD}">${diffTag(OB26/BILL26,OB25/BILL25)}</td>
+    <td style="${TD};font-size:11px;border-left:2px solid var(--border2)">${fp(영업26/매출26)}</td>
+    <td style="${TD};color:var(--text3)">-</td>
+    <td style="${TD};font-size:11px;color:var(--text3)">${fp(영업25/매출25)}</td>
+    <td style="${TD}">-</td>
+    <td style="${TD}">${diffTag(영업26/매출26,영업25/매출25)}</td>
+  </tr>`;
+    // 순이익: 전사합계만 표시 (사업부 분리 불가)
+  tbl+=`<tr class="total">
+    <td style="${TDL};font-weight:700">순이익</td>
+    <td style="${TD};color:var(--text3)" colspan="5">사업부별 분리 없음</td>
+    <td style="${TD};color:var(--text3)" colspan="5">사업부별 분리 없음</td>
+    <td style="${TD};border-left:2px solid var(--border2)">${fa(순이26)}</td>
+    <td style="${TD};color:var(--text3)">${fa(169732104)}</td>
+    <td style="${TD};color:var(--text3)">${fa(SUM(A25.순이S,0,4))}</td>
+    <td style="${TD}">${diffTag(순이26,550504495)}</td>
+    <td style="${TD}">${diffTag(순이26,SUM(A25.순이S,0,4))}</td>
+  </tr>`;
+  tbl+='</tbody></table>';
+  document.getElementById('cmpTbl').innerHTML=tbl;
+}
+
+function toggleCmpChart(){
+  const wrap=document.getElementById('chartToggleWrap');
+  const btn=document.getElementById('chartToggleBtn');
+  const isOpen=wrap.style.display!=='none';
+  wrap.style.display=isOpen?'none':'';
+  btn.textContent=isOpen?'📈 차트 보기':'📈 차트 닫기';
+  if(!isOpen&&window._drawCmpCharts&&!charts.cmpRev) window._drawCmpCharts();
+}
+
+
+
+
+function toggleRevSection(type, btn){
+  const secId = type==='path' ? 'revPath' : 'revBill';
+  const sec = document.getElementById(secId);
+  const isOpen = sec.classList.contains('show');
+  sec.classList.toggle('show', !isOpen);
+  btn.classList.toggle('active', !isOpen);
+  if(!isOpen){ if(type==='path') renderRevPath(); else renderRevBill(); }
+}
+
+function toggleRevSection25(type, btn){
+  const secId = type==='path' ? 'revPath25' : 'revBill25';
+  const sec = document.getElementById(secId);
+  const isOpen = sec.classList.contains('show');
+  sec.classList.toggle('show', !isOpen);
+  btn.classList.toggle('active', !isOpen);
+  if(!isOpen){ if(type==='path') renderRev25('path'); else renderRev25('bill'); }
+}
+
+function toggleRevSectionCmp(type, btn){
+  const secId = type==='path' ? 'revPathCmp' : 'revBillCmp';
+  const sec = document.getElementById(secId);
+  const isOpen = sec.classList.contains('show');
+  sec.classList.toggle('show', !isOpen);
+  btn.classList.toggle('active', !isOpen);
+  if(!isOpen){ if(type==='path') renderRevCmp('path'); else renderRevCmp('bill'); }
+}
+
+// ── 25년 매출구분 렌더 (12개월)
+function renderRev25(type){
+  const items = type==='path' ? [
+    {label:'과금',   k:'path_과금_25a',   color:'#4b7cf3'},
+    {label:'광고',   k:'path_광고_25a',   color:'#7c3aed'},
+    {label:'커머스', k:'path_커머스_25a', color:'#059669'},
+    {label:'기타',   k:'path_기타_25a',   color:'#9499ab'},
+  ] : [
+    {label:'B2B',   k:'bill_B2B_25a',   color:'#1ec997'},
+    {label:'B2C',   k:'bill_B2C_25a',   color:'#d97706'},
+    {label:'솔루션', k:'bill_솔루션_25a', color:'#ef4444'},
+    {label:'인증',   k:'bill_인증_25a',   color:'#9499ab'},
+  ];
+  const containerId = type==='path' ? 'revPathContent25' : 'revBillContent25';
+  const dash = '<span style="color:var(--border2)">-</span>';
+  const fm_ = v => (v===null||v===0) ? dash : Math.round(v/1e6).toLocaleString('ko-KR');
+
+  let h = '<div style="overflow-x:auto"><table class="rev-table wide"><thead><tr>';
+  h += '<th style="min-width:80px">구분</th>';
+  MN12.forEach(m => h += `<th>${m}</th>`);
+  h += '<th style="color:var(--gold);background:#fffbf0;border-left:2px solid var(--border2)">연간</th>';
+  h += '</tr></thead><tbody>';
+
+  let totals = new Array(12).fill(0);
+  items.forEach(({label, k, color}) => {
+    const d = REV[k] || new Array(12).fill(0);
+    d.forEach((v,i) => { if(v) totals[i] += v; });
+    h += `<tr><td style="color:${color};border-left:3px solid ${color};font-weight:600">${label}</td>`;
+    d.forEach(v => h += `<td style="font-weight:600">${fm_(v)}</td>`);
+    const tot = d.reduce((s,v)=>s+(v||0),0);
+    h += `<td style="font-weight:700;border-left:2px solid var(--border2)">${tot?Math.round(tot/1e6).toLocaleString():dash}</td>`;
+    h += '</tr>';
+  });
+  // 합계행
+  h += '<tr class="total"><td>합계</td>';
+  totals.forEach(v => h += `<td>${v?Math.round(v/1e6).toLocaleString():dash}</td>`);
+  const grandTot = totals.reduce((s,v)=>s+v,0);
+  h += `<td style="border-left:2px solid var(--border2)">${grandTot?Math.round(grandTot/1e6).toLocaleString():dash}</td>`;
+  h += '</tr></tbody></table></div>';
+  document.getElementById(containerId).innerHTML = h;
+}
+
+// ── 비교탭 매출구분 렌더 (1~4월 누계: 26실적 vs 26계획 vs 25동기)
+function renderRevCmp(type){
+  const items = type==='path' ? [
+    {label:'과금',   k26a:'path_과금_26a',   k26p:'path_과금_26p',   k25a:'path_과금_25a',   color:'#4b7cf3'},
+    {label:'광고',   k26a:'path_광고_26a',   k26p:'path_광고_26p',   k25a:'path_광고_25a',   color:'#7c3aed'},
+    {label:'커머스', k26a:'path_커머스_26a', k26p:'path_커머스_26p', k25a:'path_커머스_25a', color:'#059669'},
+    {label:'기타',   k26a:'path_기타_26a',   k26p:'path_기타_26p',   k25a:'path_기타_25a',   color:'#9499ab'},
+  ] : [
+    {label:'B2B',   k26a:'bill_B2B_26a',   k26p:'bill_B2B_26p',   k25a:'bill_B2B_25a',   color:'#1ec997'},
+    {label:'B2C',   k26a:'bill_B2C_26a',   k26p:'bill_B2C_26p',   k25a:'bill_B2C_25a',   color:'#d97706'},
+    {label:'솔루션', k26a:'bill_솔루션_26a', k26p:'bill_솔루션_26p', k25a:'bill_솔루션_25a', color:'#ef4444'},
+    {label:'인증',   k26a:'bill_인증_26a',   k26p:'bill_인증_26p',   k25a:'bill_인증_25a',   color:'#9499ab'},
+  ];
+  const containerId = type==='path' ? 'revPathCmpContent' : 'revBillCmpContent';
+  const dash = '<span style="color:var(--border2)">-</span>';
+
+  const sum4 = arr => (arr||[]).slice(0,4).reduce((s,v)=>s+(v||0),0);
+  const fa_  = v => v ? fa(v) : dash;
+  const diffTag_ = (a,b) => {
+    if(!b) return dash;
+    const r=(a-b)/Math.abs(b);
+    const c=r>=0?'var(--green)':'var(--red)';
+    return `<span style="color:${c};font-weight:600">${r>=0?'▲':'▼'}${fp(Math.abs(r))}</span>`;
+  };
+
+  const TH='padding:7px 10px;text-align:right;font-size:11px;font-weight:500;border-bottom:1.5px solid var(--border);white-space:nowrap;color:var(--text3)';
+  const THL='padding:7px 10px;text-align:left;font-size:11px;font-weight:600;border-bottom:1.5px solid var(--border)';
+  const TD='padding:6px 10px;text-align:right;font-size:12px;white-space:nowrap';
+
+  let h = `<table style="width:100%"><thead><tr>
+    <th style="${THL};min-width:80px">구분</th>
+    <th style="${TH};color:var(--blue)">26년 실적</th>
+    <th style="${TH}">26년 계획</th>
+    <th style="${TH}">vs 계획</th>
+    <th style="${TH}">25년 동기</th>
+    <th style="${TH}">vs 전년</th>
+  </tr></thead><tbody>`;
+
+  let tot26a=0, tot26p=0, tot25a=0;
+  items.forEach(({label, k26a, k26p, k25a, color}) => {
+    const v26a = sum4(REV[k26a]);
+    const v26p = sum4(REV[k26p]);
+    const v25a = sum4(REV[k25a]);
+    tot26a+=v26a; tot26p+=v26p; tot25a+=v25a;
+    h += `<tr>
+      <td style="${TD};text-align:left;color:${color};border-left:3px solid ${color};font-weight:600">${label}</td>
+      <td style="${TD};font-weight:700;color:var(--blue)">${fa_(v26a)}</td>
+      <td style="${TD};color:var(--text3)">${fa_(v26p)}</td>
+      <td style="${TD}">${diffTag_(v26a,v26p)}</td>
+      <td style="${TD};color:var(--text3)">${fa_(v25a)}</td>
+      <td style="${TD}">${diffTag_(v26a,v25a)}</td>
+    </tr>`;
+  });
+  // 합계
+  h += `<tr class="total">
+    <td style="${TD};text-align:left;font-weight:700">합계</td>
+    <td style="${TD};font-weight:700;color:var(--blue)">${fa_(tot26a)}</td>
+    <td style="${TD};color:var(--text3)">${fa_(tot26p)}</td>
+    <td style="${TD}">${diffTag_(tot26a,tot26p)}</td>
+    <td style="${TD};color:var(--text3)">${fa_(tot25a)}</td>
+    <td style="${TD}">${diffTag_(tot26a,tot25a)}</td>
+  </tr>`;
+  h += '</tbody></table>';
+  document.getElementById(containerId).innerHTML = h;
+}
+
+function renderRevTable(containerId, items, colors){
+  const mi = gI(curM);
+  const isAll = mi===null;
+  const activeMI = isAll ? [0,1,2,3,4,5,6,7,8,9,10,11] : [mi];
+
+  // 헤더
+  let h = '<div style="overflow-x:auto"><table class="rev-table"><thead><tr>';
+  h += '<th>구분</th>';
+  activeMI.forEach(i=>{
+    const dim = !isAll && i>=4; // 미입력
+    h += `<th style="${dim?'color:#c4c8d8':''}">${MN12[i]}</th>`;
+  });
+  if(isAll) h += '<th style="color:var(--gold);background:#fffbf0;border-left:2px solid var(--border2)">누계</th>';
+  h += '</tr></thead><tbody>';
+
+  // 데이터 행
+  const dash = '<span style="color:var(--border2)">-</span>';
+  const fm_  = v => v===null||v===0 ? dash : Math.round(v/1e6).toLocaleString('ko-KR');
+
+  let totals_26a = new Array(12).fill(0);
+  let totals_26p = new Array(12).fill(0);
+  let totals_25a = new Array(12).fill(0);
+
+  items.forEach(({label, k26a, k26p, k25a, color})=>{
+    const d26a = REV[k26a] || new Array(12).fill(null);
+    const d26p = REV[k26p] || new Array(12).fill(null);
+    const d25a = REV[k25a] || new Array(12).fill(null);
+
+    // 누계 합산
+    d26a.forEach((v,i)=>{ if(v!==null) totals_26a[i]+=v; });
+    d26p.forEach((v,i)=>{ if(v!==null) totals_26p[i]+=v; });
+    d25a.forEach((v,i)=>{ if(v!==null) totals_25a[i]+=v; });
+
+    // 26실적 행 (볼드)
+    h += `<tr><td style="color:${color};border-left:3px solid ${color};font-weight:700">${label}</td>`;
+    activeMI.forEach(i=>{
+      const v = d26a[i];
+      const dim = v===null;
+      h += `<td style="font-weight:700;${dim?'color:var(--border2)':''}">${fm_(v)}</td>`;
+    });
+    if(isAll){
+      const tot = d26a.reduce((s,v)=>s+(v||0),0);
+      h += `<td style="font-weight:700;border-left:2px solid var(--border2)">${tot?Math.round(tot/1e6).toLocaleString():dash}</td>`;
+    }
+    h += '</tr>';
+
+    // 계획 행 (작게)
+    h += `<tr style="background:#f9fbff"><td style="padding-left:16px;font-size:10px;color:var(--text3);font-weight:400">계획</td>`;
+    activeMI.forEach(i=>{
+      const v = d26p[i];
+      h += `<td style="font-size:11px;color:var(--text3)">${v!==null&&v!==0?Math.round(v/1e6).toLocaleString():dash}</td>`;
+    });
+    if(isAll){
+      const tot = d26p.reduce((s,v)=>s+(v||0),0);
+      h += `<td style="font-size:11px;color:var(--text3);border-left:2px solid var(--border2)">${tot?Math.round(tot/1e6).toLocaleString():dash}</td>`;
+    }
+    h += '</tr>';
+
+    // 전년 행 (작게)
+    h += `<tr style="background:#fff9f9"><td style="padding-left:16px;font-size:10px;color:var(--text3);font-weight:400">전년</td>`;
+    activeMI.forEach(i=>{
+      const v = d25a[i];
+      h += `<td style="font-size:11px;color:var(--text3)">${v!==null&&v!==0?Math.round(v/1e6).toLocaleString():dash}</td>`;
+    });
+    if(isAll){
+      const tot = d25a.reduce((s,v)=>s+(v||0),0);
+      h += `<td style="font-size:11px;color:var(--text3);border-left:2px solid var(--border2)">${tot?Math.round(tot/1e6).toLocaleString():dash}</td>`;
+    }
+    h += '</tr>';
+  });
+
+  // 합계 행
+  h += '<tr class="total"><td>합계</td>';
+  activeMI.forEach(i=>{
+    const v = totals_26a[i];
+    h += `<td>${v?Math.round(v/1e6).toLocaleString():dash}</td>`;
+  });
+  if(isAll){
+    const tot = totals_26a.reduce((s,v)=>s+v,0);
+    h += `<td style="border-left:2px solid var(--border2)">${tot?Math.round(tot/1e6).toLocaleString():dash}</td>`;
+  }
+  h += '</tr>';
+
+  h += '</tbody></table></div>';
+  document.getElementById(containerId).innerHTML = h;
+}
+
+function renderRevPath(){
+  renderRevTable('revPathContent', [
+    {label:'과금',   k26a:'path_과금_26a',   k26p:'path_과금_26p',   k25a:'path_과금_25a',   color:'#4b7cf3'},
+    {label:'광고',   k26a:'path_광고_26a',   k26p:'path_광고_26p',   k25a:'path_광고_25a',   color:'#7c3aed'},
+    {label:'커머스', k26a:'path_커머스_26a', k26p:'path_커머스_26p', k25a:'path_커머스_25a', color:'#059669'},
+    {label:'기타',   k26a:'path_기타_26a',   k26p:'path_기타_26p',   k25a:'path_기타_25a',   color:'#9499ab'},
+  ]);
+}
+
+function renderRevBill(){
+  renderRevTable('revBillContent', [
+    {label:'B2B',   k26a:'bill_B2B_26a',   k26p:'bill_B2B_26p',   k25a:'bill_B2B_25a',   color:'#1ec997'},
+    {label:'B2C',   k26a:'bill_B2C_26a',   k26p:'bill_B2C_26p',   k25a:'bill_B2C_25a',   color:'#d97706'},
+    {label:'솔루션', k26a:'bill_솔루션_26a', k26p:'bill_솔루션_26p', k25a:'bill_솔루션_25a', color:'#ef4444'},
+    {label:'인증',   k26a:'bill_인증_26a',   k26p:'bill_인증_26p',   k25a:'bill_인증_25a',   color:'#9499ab'},
+  ]);
+}
+
+// ── 추정 탭 렌더
+function renderFcst(){
+  // 1~4월 확정 + 5~12월 추정 합산 배열 만들기
+  const ACT_CNT = 4;  // 확정 월 수
+  const FCST_CNT = 8; // 추정 월 수 (5~12월)
+
+  // 확정 + 추정 합쳐서 12개월 배열 생성
+  function merge(actArr, fcstArr){
+    return [...actArr.slice(0,4), ...fcstArr];
+  }
+
+  const 매출S12 = merge(A26.매출S, FCST.매출S);
+  const 매출P12 = merge(A26.매출P, FCST.매출P);
+  const 매출B12 = merge(A26.매출B, FCST.매출B);
+  const 영업S12 = merge(A26.영업S, FCST.영업S);
+  const 순이S12 = merge(A26.순이S, FCST.순이S);
+
+  const CY_매출 = FCST.CY_매출S;
+  const CY_영업 = FCST.CY_영업S;
+  const CY_순이 = FCST.CY_순이S;
+  const CY_매출P = SUM(매출P12);
+  const CY_매출B = SUM(매출B12);
+
+  const pBi = CY_매출P / CY_매출;
+  const 영업률 = CY_영업 / CY_매출;
+
+  // ① KPI (연간 추정 기준)
+  document.getElementById('kpiFcst').innerHTML=`
+    <div class="kcard accent">
+      <div class="klabel">연간 추정 매출</div>
+      <div class="kval">${fa(CY_매출)}</div>
+      <div class="ksub">영업이익률 ${fp(영업률)}</div>
+      <div class="ktag ${CY_매출>SUM(A25.매출S)?'up':'dn'}">${CY_매출>SUM(A25.매출S)?'▲':'▼'} ${fp(Math.abs(CY_매출/SUM(A25.매출S)-1))} YoY</div>
+    </div>
+    <div class="kcard">
+      <div class="klabel">PATH 연간 추정 매출</div>
+      <div class="kval" style="color:var(--blue)">${fa(CY_매출P)}</div>
+      <div class="ksub">비중 ${fp(pBi)}</div>
+    </div>
+    <div class="kcard">
+      <div class="klabel">빌링 연간 추정 매출</div>
+      <div class="kval" style="color:var(--mint)">${fa(CY_매출B)}</div>
+      <div class="ksub">비중 ${fp(1-pBi)}</div>
+    </div>
+    <div class="kcard">
+      <div class="klabel">연간 추정 영업이익</div>
+      <div class="kval" style="color:var(--gold)">${fa(CY_영업)}</div>
+      <div class="ksub">영업이익률 ${fp(영업률)}</div>
+    </div>
+    <div class="kcard">
+      <div class="klabel">연간 추정 순이익</div>
+      <div class="kval" style="color:var(--purple)">${fa(CY_순이)}</div>
+      <div class="ksub">순이익률 ${fp(CY_순이/CY_매출)}</div>
+    </div>`;
+
+  // ② 달성률 카드 (연간 계획 대비 추정)
+  const a매출 = CY_매출/P26.CY매출S;
+  const a영업 = CY_영업/P26.CY영업S;
+  const mYoY  = CY_매출/SUM(A25.매출S)-1;
+
+  const achCard=(label,basis,act,plan,pct,color)=>{
+    const exceed=act>plan;
+    return `<div class="achcard">
+      <div class="achhead">
+        <div><div class="achlabel">${label}</div><div class="achbasis">${basis}</div></div>
+        <div class="achpct" style="color:${pct>=1?'var(--green)':pct>=.9?'var(--gold)':'var(--red)'}">${fp(pct)}</div>
+      </div>
+      <div class="achbar"><div class="achfill" style="width:${Math.min(pct*100,100)}%;background:${pct>=1?'var(--mint)':pct>=.9?'var(--gold)':color}"></div></div>
+      <div class="achvals">
+        <div class="achitem">추정 <b>${fa(act)}</b></div>
+        <div class="achitem">계획 <b>${fa(plan)}</b></div>
+        ${exceed?`<div class="ach-exceed">초과 +${fa(act-plan)}</div>`:`<div class="achdiff neg">미달 ${fa(act-plan)}</div>`}
+      </div>
+    </div>`;
+  };
+  document.getElementById('achFcst').innerHTML=
+    achCard('매출 연간 계획 달성 추정','연간 사업계획 대비 추정',CY_매출,P26.CY매출S,a매출,'var(--blue)')+
+    achCard('영업이익 연간 계획 달성 추정','연간 사업계획 대비 추정',CY_영업,P26.CY영업S,a영업,'var(--gold)')+
+    `<div class="achcard">
+      <div class="achhead"><div><div class="achlabel">매출 전년 성장 (추정)</div><div class="achbasis">2025년 연간 대비</div></div>
+        <div class="achpct" style="color:${mYoY>=0?'var(--green)':'var(--red)'}">${mYoY>=0?'+':''}${fp(mYoY)}</div>
+      </div>
+      <div class="achbar"><div class="achfill" style="width:${Math.min(Math.abs(mYoY)*100+50,100)}%;background:${mYoY>=0?'var(--mint)':'var(--red)'}"></div></div>
+      <div class="achvals">
+        <div class="achitem">추정 <b>${fa(CY_매출)}</b></div>
+        <div class="achitem">25년 <b>${fa(SUM(A25.매출S))}</b></div>
+        <div class="${mYoY>=0?'ach-exceed':'achdiff neg'}">${mYoY>=0?'성장 +':'감소 '}${fa(Math.abs(CY_매출-SUM(A25.매출S)))}</div>
+      </div>
+    </div>`;
+
+  // ③ 월별 카드 (12개월)
+  let mc='';
+  MN12.forEach((mn,i)=>{
+    const isFcst = i>=4;
+    const ms=매출S12[i], os=영업S12[i], mp=매출P12[i], mb=매출B12[i];
+    const prev=i>0?매출S12[i-1]:null;
+    const mom=prev?(ms-prev)/Math.abs(prev):null;
+    mc+=`<div class="ms-card" style="background:${isFcst?'#e2e8f0':'var(--white)'};border-color:${isFcst?'#94a3b8':'var(--border)'}">
+      <div class="ms-month" style="color:${isFcst?'#374151':'var(--text3)'}">${mn}${isFcst?' <span style="font-size:9px;background:#e5e7eb;padding:1px 4px;border-radius:3px;color:#6b7280">추정</span>':''}</div>
+      <div class="ms-row"><span class="ms-label" style="color:#374151">전체 매출</span><span class="ms-val" style="color:#1a1d23">${fa(ms)}</span></div>
+      <div class="ms-row"><span class="ms-label" style="color:${isFcst?'#9eb5fa':'var(--blue)'}">PATH</span><span class="ms-val" style="color:${isFcst?'#9eb5fa':'var(--blue)'}">${fa(mp)}</span></div>
+      <div class="ms-row"><span class="ms-label" style="color:${isFcst?'#7ddbbe':'var(--mint)'}">빌링</span><span class="ms-val" style="color:${isFcst?'#7ddbbe':'var(--mint)'}">${fa(mb)}</span></div>
+      <div class="ms-row"><span class="ms-label" style="color:#374151">영업이익</span><span class="ms-val" style="color:${isFcst?'#b45309':'var(--gold)'}">${fa(os)}</span></div>
+      <div class="ms-footer" style="color:${isFcst?'#374151':''};line-height:1.9">
+        <span>영업이익률 ${fp(os/ms)}</span><br>
+        <span>전월比 ${mom!==null?`${mom>=0?'<span style="color:var(--green)">▲':'<span style="color:var(--red)">▼'}${fp(Math.abs(mom))}</span>`:'기준월'}</span>
+      </div>
+    </div>`;
+  });
+  document.getElementById('fcstMonthCards').innerHTML=mc;
+
+  // ④ 차트
+  dc('fcstBar'); dc('fcstPie');
+  // 확정(1~4월) vs 추정(5~12월) 색상 구분
+  const pathColors = [...Array(4).fill('rgba(75,124,243,.85)'), ...Array(8).fill('rgba(75,124,243,.35)')];
+  const billColors = [...Array(4).fill('rgba(30,201,151,.85)'), ...Array(8).fill('rgba(30,201,151,.35)')];
+
+  charts.fcstBar=new Chart(document.getElementById('cFcstBar').getContext('2d'),{
+    data:{labels:MN12,datasets:[
+      {type:'bar',label:'PATH 매출',data:매출P12.map(v=>Math.round(v/1e6)),
+       backgroundColor:pathColors,stack:'s',borderRadius:3},
+      {type:'bar',label:'빌링 매출',data:매출B12.map(v=>Math.round(v/1e6)),
+       backgroundColor:billColors,stack:'s',borderRadius:3},
+      {type:'line',label:'영업이익',data:영업S12.map(v=>Math.round(v/1e6)),
+       borderColor:'#d97706',borderWidth:2,
+       segment:{borderDash:ctx=>ctx.p0DataIndex>=3?[5,4]:undefined},
+       pointBackgroundColor:영업S12.map((_,i)=>i<4?'#d97706':'rgba(217,119,6,.45)'),
+       pointRadius:4,tension:.35,yAxisID:'y2'},
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},
+        tooltip:{...TT,mode:'index',intersect:false}},scales:BS}
+  });
+
+  charts.fcstPie=new Chart(document.getElementById('cFcstPie').getContext('2d'),{
+    type:'doughnut',
+    data:{labels:['PATH','빌링'],datasets:[{data:[Math.round(CY_매출P/1e6),Math.round(CY_매출B/1e6)],
+      backgroundColor:['rgba(75,124,243,.7)','rgba(30,201,151,.7)'],borderWidth:2,borderColor:'#fff'}]},
+    options:{responsive:true,maintainAspectRatio:false,cutout:'62%',
+      onClick:(evt)=>onPieFcstClick(evt),
+      plugins:{legend:{display:true,position:'bottom',labels:{color:'#52576a',font:{size:11},padding:14,usePointStyle:true}},
+        tooltip:{...TT,callbacks:{label:ctx=>` ${ctx.label}: ${faT(ctx.raw*1e6)}`}}}}
+  });
+  document.getElementById('fcstPieDesc').textContent=`PATH ${fp(pBi)}  /  빌링 ${fp(1-pBi)}`;
+
+  // ⑤ 손익 상세 테이블 (연간 합계)
+  const fcst_인건P = FCST.인건P, fcst_인건B = FCST.인건B, fcst_인건S = FCST.인건S;
+  function mergeSum(actArr, fcstArr){
+    return SUM(actArr,0,4) + fcstArr.reduce((s,v)=>s+v,0);
+  }
+
+  // 검증된 연간 합계값 (확정1~4월 + 추정5~12월)
+  const R25   = {매출S:6352271116,원가S:4108857274,총이S:2243413842,판관S:1860817636,인건S:628214721,광고S:446080923,기타판S:786521992,영업S:382596206,순이S:702688199};
+  const RPLAN = {매출S:7447469442,원가S:5304483899,총이S:2142985543,판관S:1963324051,인건S:709659560,광고S:544024830,기타판S:709639661,영업S:179661492,순이S:550504495};
+  // 매출구분 연간값 (CY)
+  const REV_PLAN = {
+    path_과금:3016564450, path_광고:1429265000, path_커머스:1080000000, path_기타:116239992, path_소계:5642069442,
+    bill_B2B:1376400000,  bill_B2C:402000000,  bill_솔루션:27000000,   bill_인증:0,          bill_소계:1805400000,
+  };
+  const REV_25 = {
+    path_과금:3142384850, path_광고:1127373862, path_커머스:195357273,  path_기타:196397668, path_소계:4661513653,
+    bill_B2B:1462410075,  bill_B2C:179650000,  bill_솔루션:39148188,   bill_인증:9549200,   bill_소계:1690757463,
+  };
+  // 원가 연간값 (CY)
+  const COST_PLAN = {
+    급여P:2294539720, 급여B:454630120, 상품P:928800000, 상품B:0,
+    합계P:4051677198, 합계B:1252806701, 기타P:828337478, 기타B:798176581,
+  };
+  const COST_25 = {
+    급여P:2028889345, 급여B:485893828, 상품P:165437064, 상품B:0,
+    합계P:2831155541, 합계B:1277701733, 기타P:636829132, 기타B:791807905,
+  };
+
+  const RFCST = {
+    매출S:CY_매출, 원가S:mergeSum(A26.원가S,FCST.원가S),
+    총이S:mergeSum(A26.총이S,FCST.총이S),
+    판관S:mergeSum(A26.판관S,FCST.판관S),
+    인건S:695456831, 광고S:623456504, 기타판S:703621649,
+    영업S:CY_영업, 순이S:CY_순이,
+  };
+
+  const TH='padding:8px 10px;text-align:right;font-size:11px;font-weight:500;border-bottom:1.5px solid var(--border);white-space:nowrap;color:var(--text3)';
+  const TD='padding:7px 10px;text-align:right;font-size:12px;white-space:nowrap';
+  const TDL='padding:7px 10px;text-align:left;font-size:12px;white-space:nowrap';
+  const dash='-';
+
+  // 컬럼 순서: 소계추정 | 26년계획 | 계획比 | 25년실적 | YoY
+  const diff2=(a,b)=>{
+    if(b===null||b===undefined) return `<td style="${TD};color:var(--text3)">-</td>`;
+    const r=(a-b)/Math.abs(b);
+    const c=r>=0?'var(--green)':'var(--red)';
+    return `<td style="${TD};color:${c};font-weight:600">${r>=0?'▲':'▼'}${fp(Math.abs(r))}</td>`;
+  };
+
+  // 토글 카운터
+  let fcstTglCnt=0;
+
+  function mainRow(label, fcstV, plnV, p25V, pv, bv, cls, toggleId){
+    const isBold=cls==='total'||cls==='sub';
+    const bgStyle=cls==='total'?'background:#f3f4f7':cls==='sub'?'background:#f8f9fb':'';
+    const hasToggle=!!toggleId;
+    const stkLabel=`position:sticky;left:0;background:${cls==='total'?'#f3f4f7':cls==='sub'?'#f8f9fb':'var(--white)'};z-index:1`;
+    let h=`<tr style="${bgStyle}" class="fcst-main-row">`;
+    h+=`<td style="${TDL};font-weight:${isBold?700:500};${stkLabel}">`;
+    if(hasToggle) h+=`<span id="ico_${toggleId}" style="display:inline-block;width:14px;font-size:10px;color:var(--text3);margin-right:3px;cursor:pointer" onclick="fcstToggle('${toggleId}')">▶</span>`;
+    h+=`${label}</td>`;
+    h+=`<td style="${TD};color:var(--blue)">${pv!==null?fm(pv):'-'}</td>`;
+    h+=`<td style="${TD};color:var(--mint)">${bv!==null?fm(bv):'-'}</td>`;
+    h+=`<td style="${TD};font-weight:${isBold?700:400}">${fm(fcstV)}</td>`;
+    h+=`<td style="${TD};color:var(--text3)">${plnV!==null&&plnV!==undefined?fm(plnV):'-'}</td>`;
+    h+=diff2(fcstV,plnV);
+    h+=`<td style="${TD};color:var(--text3)">${p25V!==null&&p25V!==undefined?fm(p25V):'-'}</td>`;
+    h+=diff2(fcstV,p25V);
+    h+='</tr>';
+    return h;
+  }
+
+  function subRows(gid, rows){
+    let h=`<tbody id="${gid}" style="display:none">`;
+    rows.forEach(r=>{
+      h+=`<tr style="background:#fafbfc">`;
+      h+=`<td style="${TDL};padding-left:22px;font-size:11px;color:var(--text3);position:sticky;left:0;background:#fafbfc;z-index:1">${r.l}</td>`;
+      h+=`<td style="${TD};color:#9eb5fa;font-size:11px">${r.pv!==null?fm(r.pv):'-'}</td>`;
+      h+=`<td style="${TD};color:#7ddbbe;font-size:11px">${r.bv!==null?fm(r.bv):'-'}</td>`;
+      h+=`<td style="${TD};font-size:11px">${fm(r.fcst)}</td>`;
+      h+=`<td style="${TD};color:var(--text3);font-size:11px">${r.pln!==null&&r.pln!==undefined?fm(r.pln):'-'}</td>`;
+      h+=diff2(r.fcst,r.pln);
+      h+=`<td style="${TD};color:var(--text3);font-size:11px">${r.p25!==null&&r.p25!==undefined?fm(r.p25):'-'}</td>`;
+      h+=diff2(r.fcst,r.p25);
+      h+='</tr>';
+    });
+    h+='</tbody>';
+    return h;
+  }
+
+  // 매출액 하위: PATH/빌링
+  const 매출P_fcst=mergeSum(A26.매출P,FCST.매출P), 매출B_fcst=mergeSum(A26.매출B,FCST.매출B);
+  const 원가P_fcst=mergeSum(A26.원가P,FCST.원가P), 원가B_fcst=mergeSum(A26.원가B,FCST.원가B);
+  const 영업P_fcst=mergeSum(A26.영업P,FCST.영업P), 영업B_fcst=mergeSum(A26.영업B,FCST.영업B);
+
+  // 매출구분 연간 합계 (확정 1~4 + 추정 5~12)
+  const revSum=(actArr,fcstArr)=>(actArr.slice(0,4).reduce((s,v)=>s+(v||0),0))+(fcstArr.reduce((s,v)=>s+(v||0),0));
+  const 과금_fcst=revSum(REV.path_과금_26a,FCST.path_과금);
+  const 광고R_fcst=revSum(REV.path_광고_26a,FCST.path_광고);
+  const 커머스_fcst=revSum(REV.path_커머스_26a,FCST.path_커머스);
+  const 기타R_fcst=revSum(REV.path_기타_26a,FCST.path_기타);
+  const B2B_fcst=revSum(REV.bill_B2B_26a,FCST.bill_B2B);
+  const B2C_fcst=revSum(REV.bill_B2C_26a,FCST.bill_B2C);
+  const 솔_fcst=revSum(REV.bill_솔루션_26a,FCST.bill_솔루션);
+  const 인증_fcst=revSum(REV.bill_인증_26a,FCST.bill_인증);
+
+  let tbl=`<div style="overflow-x:auto"><table style="width:100%;min-width:700px">
+  <thead><tr>
+    <th style="text-align:left;${TH};min-width:130px;position:sticky;left:0;background:#f8f9fb;z-index:2">구분</th>
+    <th style="${TH};color:var(--blue)">PATH</th>
+    <th style="${TH};color:var(--mint)">빌링</th>
+    <th style="${TH};font-weight:700">소계 추정</th>
+    <th style="${TH};color:var(--text2)">26년 계획</th>
+    <th style="${TH}">계획比</th>
+    <th style="${TH};color:var(--text3)">25년 실적</th>
+    <th style="${TH}">YoY</th>
+  </tr></thead>
+  <tbody>`;
+
+  // 매출액 + 하위 (PATH/빌링 → 매출구분)
+  tbl+=mainRow('매출액', RFCST.매출S, RPLAN.매출S, R25.매출S, 매출P_fcst, 매출B_fcst, 'total', 'fcstRev');
+  tbl+=`</tbody>`;
+  tbl+=subRows('fcstRev',[
+    {l:'ㄴ PATH',   fcst:매출P_fcst, pln:REV_PLAN.path_소계, p25:REV_25.path_소계, pv:null, bv:null},
+    {l:'  · 과금',  fcst:과금_fcst,  pln:REV_PLAN.path_과금, p25:REV_25.path_과금, pv:과금_fcst,   bv:null},
+    {l:'  · 광고',  fcst:광고R_fcst, pln:REV_PLAN.path_광고, p25:REV_25.path_광고, pv:광고R_fcst,  bv:null},
+    {l:'  · 커머스', fcst:커머스_fcst,pln:REV_PLAN.path_커머스,p25:REV_25.path_커머스,pv:커머스_fcst,bv:null},
+    {l:'  · 기타',  fcst:기타R_fcst, pln:REV_PLAN.path_기타, p25:REV_25.path_기타, pv:기타R_fcst,  bv:null},
+    {l:'ㄴ 빌링',   fcst:매출B_fcst, pln:REV_PLAN.bill_소계, p25:REV_25.bill_소계, pv:null, bv:null},
+    {l:'  · B2B',   fcst:B2B_fcst,   pln:REV_PLAN.bill_B2B,  p25:REV_25.bill_B2B,  pv:null, bv:B2B_fcst},
+    {l:'  · B2C',   fcst:B2C_fcst,   pln:REV_PLAN.bill_B2C,  p25:REV_25.bill_B2C,  pv:null, bv:B2C_fcst},
+    {l:'  · 솔루션', fcst:솔_fcst,   pln:REV_PLAN.bill_솔루션,p25:REV_25.bill_솔루션,pv:null,bv:솔_fcst},
+    {l:'  · 인증',  fcst:인증_fcst,  pln:REV_PLAN.bill_인증, p25:REV_25.bill_인증, pv:null, bv:인증_fcst},
+  ]);
+  tbl+=`<tbody>`;
+
+  // 매출원가 + 하위 (원가 구분)
+  const 원가급P_fcst=mergeSum(A26.원가급P,FCST.원가급P), 원가급B_fcst=mergeSum(A26.원가급B,FCST.원가급B);
+  const 원가상P_fcst=mergeSum(A26.원가상P,FCST.원가상P), 원가상B_fcst=mergeSum(A26.원가상B,FCST.원가상B);
+  const 원가기P_fcst=mergeSum(A26.원가기P,FCST.원가기P), 원가기B_fcst=mergeSum(A26.원가기B,FCST.원가기B);
+  tbl+=mainRow('매출원가', RFCST.원가S, RPLAN.원가S, R25.원가S, 원가P_fcst, 원가B_fcst, '', 'fcstCost');
+  tbl+=`</tbody>`;
+  tbl+=subRows('fcstCost',[
+    {l:'ㄴ 인건비',  fcst:원가급P_fcst+원가급B_fcst, pln:COST_PLAN.급여P+COST_PLAN.급여B, p25:COST_25.급여P+COST_25.급여B, pv:원가급P_fcst, bv:원가급B_fcst},
+    {l:'ㄴ 상품원가',fcst:원가상P_fcst+원가상B_fcst, pln:COST_PLAN.상품P+COST_PLAN.상품B, p25:COST_25.상품P+COST_25.상품B, pv:원가상P_fcst, bv:원가상B_fcst},
+    {l:'ㄴ 기타원가',fcst:원가기P_fcst+원가기B_fcst, pln:COST_PLAN.기타P+COST_PLAN.기타B, p25:COST_25.기타P+COST_25.기타B, pv:원가기P_fcst, bv:원가기B_fcst},
+  ]);
+  tbl+=`<tbody>`;
+
+  // 매출총이익
+  tbl+=mainRow('매출총이익', RFCST.총이S, RPLAN.총이S, R25.총이S,
+    mergeSum(A26.총이P,FCST.총이P), mergeSum(A26.총이B,FCST.총이B), 'sub', null);
+
+  // 판매관리비 + 하위 (인건/광고/기타)
+  const 인건P_fcst_v=mergeSum(A26.인건P,FCST.인건P), 인건B_fcst_v=mergeSum(A26.인건B,FCST.인건B);
+  const 광고P_fcst_v=mergeSum(A26.광고P,FCST.광고P), 광고B_fcst_v=mergeSum(A26.광고B,FCST.광고B);
+  const 기타판P_fcst_v=mergeSum(A26.기타판P,FCST.기타판P), 기타판B_fcst_v=mergeSum(A26.기타판B,FCST.기타판B);
+  tbl+=mainRow('판매관리비', RFCST.판관S, RPLAN.판관S, R25.판관S,
+    mergeSum(A26.판관P,FCST.판관P), mergeSum(A26.판관B,FCST.판관B), '', 'fcstSga');
+  tbl+=`</tbody>`;
+  tbl+=subRows('fcstSga',[
+    {l:'ㄴ 인건비',    fcst:RFCST.인건S,  pln:RPLAN.인건S,  p25:R25.인건S,  pv:인건P_fcst_v,   bv:인건B_fcst_v},
+    {l:'ㄴ 광고선전비', fcst:RFCST.광고S,  pln:RPLAN.광고S,  p25:R25.광고S,  pv:광고P_fcst_v,   bv:광고B_fcst_v},
+    {l:'ㄴ 기타판관비', fcst:RFCST.기타판S,pln:RPLAN.기타판S,p25:R25.기타판S,pv:기타판P_fcst_v, bv:기타판B_fcst_v},
+  ]);
+  tbl+=`<tbody>`;
+
+  // 영업이익, 순이익
+  tbl+=mainRow('영업이익',   RFCST.영업S, RPLAN.영업S, R25.영업S, 영업P_fcst, 영업B_fcst, 'total', null);
+  tbl+=mainRow('당기순이익', RFCST.순이S, RPLAN.순이S, R25.순이S, null, null, 'total', null);
+
+  tbl+='</tbody></table></div>';
+  document.getElementById('tFcstPL').innerHTML=tbl;
+}
+
+function toggleRevSectionFcst(type, btn){
+  const secId = type==='path' ? 'revPathFcst' : 'revBillFcst';
+  const sec = document.getElementById(secId);
+  const isOpen = sec.classList.contains('show');
+  sec.classList.toggle('show', !isOpen);
+  btn.classList.toggle('active', !isOpen);
+  if(!isOpen) renderRevFcst(type);
+}
+
+function renderRevFcst(type){
+  const items = type==='path' ? [
+    {label:'과금',   act:REV.path_과금_26a,   fcst:FCST.path_과금,   color:'#4b7cf3'},
+    {label:'광고',   act:REV.path_광고_26a,   fcst:FCST.path_광고,   color:'#7c3aed'},
+    {label:'커머스', act:REV.path_커머스_26a, fcst:FCST.path_커머스, color:'#059669'},
+    {label:'기타',   act:REV.path_기타_26a,   fcst:FCST.path_기타,   color:'#9499ab'},
+  ] : [
+    {label:'B2B',   act:REV.bill_B2B_26a,   fcst:FCST.bill_B2B,   color:'#1ec997'},
+    {label:'B2C',   act:REV.bill_B2C_26a,   fcst:FCST.bill_B2C,   color:'#d97706'},
+    {label:'솔루션', act:REV.bill_솔루션_26a, fcst:FCST.bill_솔루션, color:'#ef4444'},
+    {label:'인증',   act:REV.bill_인증_26a,   fcst:FCST.bill_인증,   color:'#9499ab'},
+  ];
+  const containerId = type==='path' ? 'revPathFcstContent' : 'revBillFcstContent';
+  const dash='<span style="color:var(--border2)">-</span>';
+  const fm_=v=>(v===null||v===0)?dash:Math.round(v/1e6).toLocaleString('ko-KR');
+
+  // 확정(1~4)+추정(5~12) 합쳐서 12개월
+  let h='<div style="overflow-x:auto"><table class="rev-table wide"><thead><tr>';
+  h+='<th style="min-width:80px">구분</th>';
+  MN12.forEach((m,i)=>{
+    const isFcst=i>=4;
+    h+=`<th style="${isFcst?'color:#9ca3af;background:#f7f7f8':''}">${m}${isFcst?' *':''}</th>`;
+  });
+  h+='<th style="color:var(--gold);background:#fffbf0;border-left:2px solid var(--border2)">연간</th>';
+  h+='</tr></thead><tbody>';
+
+  let totals=new Array(12).fill(0);
+  items.forEach(({label,act,fcst,color})=>{
+    const full12=[...act.slice(0,4),...fcst];
+    full12.forEach((v,i)=>{if(v) totals[i]+=v;});
+    h+=`<tr><td style="color:${color};border-left:3px solid ${color};font-weight:700">${label}</td>`;
+    full12.forEach((v,i)=>{
+      const isFcst=i>=4;
+      h+=`<td style="font-weight:${isFcst?400:700};color:${isFcst?'#1f2937':''};background:${isFcst?'#e2e8f0':''}">${fm_(v)}</td>`;
+    });
+    const tot=full12.reduce((s,v)=>s+(v||0),0);
+    h+=`<td style="font-weight:700;border-left:2px solid var(--border2)">${tot?Math.round(tot/1e6).toLocaleString():dash}</td>`;
+    h+='</tr>';
+  });
+  h+='<tr class="total"><td>합계</td>';
+  totals.forEach((v,i)=>{
+    const isFcst=i>=4;
+    h+=`<td style="background:${isFcst?'#f0f0f0':''}">${v?Math.round(v/1e6).toLocaleString():dash}</td>`;
+  });
+  const gt=totals.reduce((s,v)=>s+v,0);
+  h+=`<td style="border-left:2px solid var(--border2)">${gt?Math.round(gt/1e6).toLocaleString():dash}</td>`;
+  h+='</tr>';
+  h+='<tr><td colspan="14" style="padding:4px 10px;font-size:10px;color:#9ca3af;font-style:italic">* 5~12월은 추정값 (2Q 발표자료 기준)</td></tr>';
+  h+='</tbody></table></div>';
+  document.getElementById(containerId).innerHTML=h;
+}
+
+// ── 파이차트 세부 표시 함수 (공통)
+function showPieDetail(type, side, items, totalVal, titleEl, barsEl, viewEl, detailEl, nameEl){
+  // side: 'path' | 'bill'
+  viewEl.style.display='none';
+  detailEl.style.display='block';
+  const sideLabel = side==='path'?'PATH':'빌링';
+  const color = side==='path'?'var(--blue)':'var(--mint)';
+  nameEl.innerHTML = `<span style="color:${color}">${sideLabel}</span> 매출 구성`;
+  let html='';
+  items.forEach(({label, val, itemColor})=>{
+    const pct = totalVal>0 ? val/totalVal*100 : 0;
+    const barW = Math.min(pct, 100).toFixed(1);
+    html+=`
+      <div style="margin-bottom:10px">
+        <div style="display:flex;justify-content:space-between;margin-bottom:3px">
+          <span style="font-size:11px;font-weight:600;color:${itemColor||color}">${label}</span>
+          <span style="font-size:12px;font-weight:700">${pct.toFixed(1)}%</span>
+        </div>
+        <div style="height:6px;background:#eef0f4;border-radius:3px;overflow:hidden">
+          <div style="height:100%;width:${barW}%;background:${itemColor||color};border-radius:3px;transition:width .5s"></div>
+        </div>
+        <div style="font-size:10px;color:var(--text3);margin-top:2px">${fa(val)}</div>
+      </div>`;
+  });
+  barsEl.innerHTML=html;
+}
+
+// 26년 월별 파이: PATH/빌링 클릭
+function onPie26Click(evt, mi, isAll){
+  const chart=charts.pie26;
+  if(!chart) return;
+  const pts=chart.getElementsAtEventForMode(evt,'nearest',{intersect:true},true);
+  if(!pts.length) return;
+  const idx=pts[0].index; // 0=PATH, 1=빌링
+  const side=idx===0?'path':'bill';
+
+  // 현재 선택 기간
+  const gV2=(arr)=>isAll ? arr.slice(0,4).reduce((s,v)=>s+(v||0),0) : (arr[mi]||0);
+
+  let items, totalVal;
+  if(side==='path'){
+    totalVal=gV2(A26.매출P);
+    items=[
+      {label:'과금',   val:gV2(REV.path_과금_26a),   itemColor:'#3b82f6'},
+      {label:'광고',   val:gV2(REV.path_광고_26a),   itemColor:'#7c3aed'},
+      {label:'커머스', val:gV2(REV.path_커머스_26a), itemColor:'#059669'},
+      {label:'기타',   val:gV2(REV.path_기타_26a),   itemColor:'#9499ab'},
+    ];
+  } else {
+    totalVal=gV2(A26.매출B);
+    items=[
+      {label:'B2B',   val:gV2(REV.bill_B2B_26a),   itemColor:'#0d9488'},
+      {label:'B2C',   val:gV2(REV.bill_B2C_26a),   itemColor:'#d97706'},
+      {label:'솔루션', val:gV2(REV.bill_솔루션_26a), itemColor:'#ef4444'},
+      {label:'인증',   val:gV2(REV.bill_인증_26a),   itemColor:'#9499ab'},
+    ];
+  }
+  showPieDetail('26',side,items,totalVal,
+    document.getElementById('pieDetailTitle26'),
+    document.getElementById('pieDetailBars26'),
+    document.getElementById('pieView26'),
+    document.getElementById('pieDetail26'),
+    document.getElementById('pieDetailName26'));
+}
+function showPieMain26(){
+  document.getElementById('pieView26').style.display='';
+  document.getElementById('pieDetail26').style.display='none';
+}
+
+// 추정탭 파이 클릭
+function onPieFcstClick(evt){
+  const chart=charts.fcstPie;
+  if(!chart) return;
+  const pts=chart.getElementsAtEventForMode(evt,'nearest',{intersect:true},true);
+  if(!pts.length) return;
+  const idx=pts[0].index;
+  const side=idx===0?'path':'bill';
+
+  const revSum2=(actArr,fcstArr)=>(actArr.slice(0,4).reduce((s,v)=>s+(v||0),0))+(fcstArr.reduce((s,v)=>s+(v||0),0));
+  let items, totalVal;
+  if(side==='path'){
+    totalVal=revSum2(A26.매출P,FCST.매출P);
+    items=[
+      {label:'과금',   val:revSum2(REV.path_과금_26a,FCST.path_과금),   itemColor:'#3b82f6'},
+      {label:'광고',   val:revSum2(REV.path_광고_26a,FCST.path_광고),   itemColor:'#7c3aed'},
+      {label:'커머스', val:revSum2(REV.path_커머스_26a,FCST.path_커머스),itemColor:'#059669'},
+      {label:'기타',   val:revSum2(REV.path_기타_26a,FCST.path_기타),   itemColor:'#9499ab'},
+    ];
+  } else {
+    totalVal=revSum2(A26.매출B,FCST.매출B);
+    items=[
+      {label:'B2B',   val:revSum2(REV.bill_B2B_26a,FCST.bill_B2B),     itemColor:'#0d9488'},
+      {label:'B2C',   val:revSum2(REV.bill_B2C_26a,FCST.bill_B2C),     itemColor:'#d97706'},
+      {label:'솔루션', val:revSum2(REV.bill_솔루션_26a,FCST.bill_솔루션),itemColor:'#ef4444'},
+      {label:'인증',   val:revSum2(REV.bill_인증_26a,FCST.bill_인증),   itemColor:'#9499ab'},
+    ];
+  }
+  showPieDetail('fcst',side,items,totalVal,
+    document.getElementById('pieDetailTitleFcst'),
+    document.getElementById('pieDetailBarsFcst'),
+    document.getElementById('pieViewFcst'),
+    document.getElementById('pieDetailFcst'),
+    document.getElementById('pieDetailNameFcst'));
+}
+function showPieMainFcst(){
+  document.getElementById('pieViewFcst').style.display='';
+  document.getElementById('pieDetailFcst').style.display='none';
+}
+
+
+function tog25(gid){
+  const el=document.getElementById(gid);
+  const ic=document.getElementById('ic25_'+gid);
+  if(!el) return;
+  const o=el.style.display!=='none';
+  el.style.display=o?'none':'';
+  if(ic) ic.textContent=o?'▶':'▼';
+}
+
+function fcstToggle(gid){
+  const el=document.getElementById(gid);
+  const ico=document.getElementById('ico_'+gid);
+  if(!el) return;
+  const open=el.style.display!=='none';
+  el.style.display=open?'none':'';
+  if(ico) ico.textContent=open?'▶':'▼';
+}
+
+function toggleGroup(gid){
+  const el = document.getElementById(gid);
+  const ico = document.getElementById('ico_' + gid);
+  if(!el) return;
+  const isOpen = el.style.display !== 'none';
+  el.style.display = isOpen ? 'none' : '';
+  if(ico) ico.textContent = isOpen ? '▶' : '▼';
+}
+// ── 히스토리 렌더
+function renderHist(){
+  const fcstRev = FCST.CY_매출S / 1e8;
+  const fcstOp  = FCST.CY_영업S / 1e8;
+  const fcstNi  = FCST.CY_순이S / 1e8;
+  const fcstP   = (SUM(A26.매출P,0,4) + FCST.매출P.reduce((s,v)=>s+v,0)) / 1e8;
+  const fcstB   = (SUM(A26.매출B,0,4) + FCST.매출B.reduce((s,v)=>s+v,0)) / 1e8;
+
+  const setKpi=(id,val)=>{ const el=document.getElementById(id); if(el) el.textContent=val.toFixed(1)+'억'; };
+  const setDiff=(id,act,plan)=>{
+    const el=document.getElementById(id); if(!el) return;
+    const diff=act-plan; const isPos=diff>=0;
+    el.innerHTML=`<span class="ktag ${isPos?'up':'dn'}" style="margin-top:0">${isPos?'▲':'▼'}${Math.abs(diff).toFixed(1)}억</span>`;
+  };
+  setKpi('histFcstRev',fcstRev); setKpi('histFcstOp',fcstOp); setKpi('histFcstNi',fcstNi);
+  setDiff('histFcstRevDiff',fcstRev,74.5);
+  setDiff('histFcstOpDiff', fcstOp, 1.8);
+  setDiff('histFcstNiDiff', fcstNi, 5.5);
+
+  const GC='rgba(0,0,0,.06)', TC='#9499ab';
+
+  // ① 매출 추이 — 21~25확정 + 26추정(연한색)
+  dc('histRev');
+  charts.histRev = new Chart(document.getElementById('cHistRev').getContext('2d'),{
+    type:'bar',
+    data:{
+      labels:['2021','2022','2023','2024','2025','2026(추정)'],
+      datasets:[{
+        label:'매출',
+        data:[30.6,39.0,50.8,58.6,63.5,fcstRev],
+        backgroundColor:[
+          'rgba(75,124,243,.75)','rgba(75,124,243,.75)','rgba(75,124,243,.75)',
+          'rgba(75,124,243,.75)','rgba(30,201,151,.85)',
+          'rgba(148,163,184,.45)'
+        ],
+        borderColor:['transparent','transparent','transparent','transparent','transparent','rgba(100,116,139,.5)'],
+        borderWidth:[0,0,0,0,0,1.5],
+        borderRadius:4
+      }]
+    },
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},
+        tooltip:{backgroundColor:'rgba(26,29,35,.9)',titleColor:'#fff',bodyColor:'rgba(255,255,255,.8)',padding:10,cornerRadius:8,
+          callbacks:{label:ctx=>` ${ctx.raw.toFixed(1)}억 ${ctx.dataIndex===5?'(추정)':'(확정)'}`}}},
+      scales:{x:{grid:{color:GC},ticks:{color:TC,font:{size:11}}},
+        y:{grid:{color:GC},ticks:{color:TC,font:{size:11},callback:v=>v+'억'}}}}
+  });
+
+  // ② 이익 추이 — 21~25확정 + 26추정(연한색)
+  dc('histOp');
+  const opColors  = [6.9,-2.2,3.0,7.1,3.8].map(v=>v>=0?'rgba(217,119,6,.8)':'rgba(239,68,68,.7)');
+  const niColors  = Array(5).fill('rgba(124,58,237,.6)');
+  charts.histOp = new Chart(document.getElementById('cHistOp').getContext('2d'),{
+    type:'bar',
+    data:{
+      labels:['2021','2022','2023','2024','2025','2026(추정)'],
+      datasets:[
+        {label:'영업이익',
+         data:[6.9,-2.2,3.0,7.1,3.8,fcstOp],
+         backgroundColor:[...opColors, fcstOp>=0?'rgba(217,119,6,.25)':'rgba(239,68,68,.25)'],
+         borderColor:[...Array(5).fill('transparent'), fcstOp>=0?'rgba(217,119,6,.5)':'rgba(239,68,68,.5)'],
+         borderWidth:[0,0,0,0,0,1.5], borderRadius:4},
+        {label:'순이익',
+         data:[6.3,0.0,5.2,8.6,7.0,fcstNi],
+         backgroundColor:[...niColors,'rgba(124,58,237,.2)'],
+         borderColor:[...Array(5).fill('transparent'),'rgba(124,58,237,.4)'],
+         borderWidth:[0,0,0,0,0,1.5], borderRadius:4},
+      ]
+    },
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{labels:{color:'#52576a',font:{size:10},usePointStyle:true,padding:10},position:'bottom'},
+        tooltip:{backgroundColor:'rgba(26,29,35,.9)',titleColor:'#fff',bodyColor:'rgba(255,255,255,.8)',padding:10,cornerRadius:8,
+          callbacks:{label:ctx=>` ${ctx.dataset.label}: ${ctx.raw.toFixed(1)}억 ${ctx.dataIndex===5?'(추정)':''}`}}},
+      scales:{x:{grid:{color:GC},ticks:{color:TC,font:{size:11}}},
+        y:{grid:{color:GC},ticks:{color:TC,font:{size:11},callback:v=>v+'억'}}}}
+  });
+
+  // ③ PATH 목표 vs 달성 — 목표/달성 2개 데이터셋, 26년은 연한색
+  dc('histPath');
+  const P_TGT=[19.8,23.8,35.2,42.5,56.4];
+  const P_ACT=[19.9,31.2,39.6,46.6,fcstP];
+  charts.histPath = new Chart(document.getElementById('cHistPath').getContext('2d'),{
+    type:'bar',
+    data:{
+      labels:['2022','2023','2024','2025','2026(추정)'],
+      datasets:[
+        {label:'목표(계획)',
+         data:P_TGT,
+         backgroundColor:[...Array(4).fill('rgba(148,153,171,.35)'),'rgba(148,153,171,.2)'],
+         borderColor:[...Array(4).fill('rgba(148,153,171,.6)'),'rgba(148,153,171,.45)'],
+         borderWidth:1.5, borderRadius:4},
+        {label:'달성',
+         data:P_ACT,
+         backgroundColor:[...Array(4).fill('rgba(75,124,243,.8)'),'rgba(75,124,243,.3)'],
+         borderColor:[...Array(4).fill('transparent'),'rgba(75,124,243,.5)'],
+         borderWidth:[0,0,0,0,1.5], borderRadius:4},
+      ]
+    },
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{labels:{color:'#52576a',font:{size:10},usePointStyle:true,padding:10},position:'bottom'},
+        tooltip:{backgroundColor:'rgba(26,29,35,.9)',titleColor:'#fff',bodyColor:'rgba(255,255,255,.8)',padding:10,cornerRadius:8,
+          callbacks:{label:ctx=>` ${ctx.dataset.label}: ${ctx.raw.toFixed(1)}억`,
+            afterBody:ctx=>{
+              const i=ctx[0].dataIndex;
+              const pct=(P_ACT[i]/P_TGT[i]*100).toFixed(1);
+              const diff=(P_ACT[i]-P_TGT[i]).toFixed(1);
+              return [`달성률: ${pct}% (${diff>=0?'+':''}${diff}억)${i===4?' — 추정':''}` ];
+            }}}},
+      scales:{x:{grid:{color:GC},ticks:{color:TC,font:{size:11}}},
+        y:{grid:{color:GC},ticks:{color:TC,font:{size:11},callback:v=>v+'억'}}}}
+  });
+
+  // ④ 빌링 목표 vs 달성
+  dc('histBill');
+  const B_TGT=[20.8,21.0,18.7,20.5,18.1];
+  const B_ACT=[19.2,19.6,19.1,16.9,fcstB];
+  charts.histBill = new Chart(document.getElementById('cHistBill').getContext('2d'),{
+    type:'bar',
+    data:{
+      labels:['2022','2023','2024','2025','2026(추정)'],
+      datasets:[
+        {label:'목표(계획)',
+         data:B_TGT,
+         backgroundColor:[...Array(4).fill('rgba(148,153,171,.35)'),'rgba(148,153,171,.2)'],
+         borderColor:[...Array(4).fill('rgba(148,153,171,.6)'),'rgba(148,153,171,.45)'],
+         borderWidth:1.5, borderRadius:4},
+        {label:'달성',
+         data:B_ACT,
+         backgroundColor:[...Array(4).fill('rgba(30,201,151,.8)'),'rgba(30,201,151,.3)'],
+         borderColor:[...Array(4).fill('transparent'),'rgba(30,201,151,.5)'],
+         borderWidth:[0,0,0,0,1.5], borderRadius:4},
+      ]
+    },
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{labels:{color:'#52576a',font:{size:10},usePointStyle:true,padding:10},position:'bottom'},
+        tooltip:{backgroundColor:'rgba(26,29,35,.9)',titleColor:'#fff',bodyColor:'rgba(255,255,255,.8)',padding:10,cornerRadius:8,
+          callbacks:{label:ctx=>` ${ctx.dataset.label}: ${ctx.raw.toFixed(1)}억`,
+            afterBody:ctx=>{
+              const i=ctx[0].dataIndex;
+              const pct=(B_ACT[i]/B_TGT[i]*100).toFixed(1);
+              const diff=(B_ACT[i]-B_TGT[i]).toFixed(1);
+              return [`달성률: ${pct}% (${diff>=0?'+':''}${diff}억)${i===4?' — 추정':''}` ];
+            }}}},
+      scales:{x:{grid:{color:GC},ticks:{color:TC,font:{size:11}}},
+        y:{grid:{color:GC},ticks:{color:TC,font:{size:11},callback:v=>v+'억'}}}}
+  });
+
+  // ⑤ 5개년 + 26추정 손익 테이블
+  const TD='padding:8px 14px;text-align:right;font-size:12px;white-space:nowrap';
+  const TDL='padding:8px 14px;text-align:left;font-size:12px;font-weight:600;white-space:nowrap';
+  const rows=[
+    {l:'매출',      vals:[30.6,39.0,50.8,58.6,63.5], fcst:fcstRev, color:'var(--text)'},
+    {l:'영업이익',  vals:[6.9,-2.2,3.0,7.1,3.8],     fcst:fcstOp,  color:'var(--gold)'},
+    {l:'당기순이익',vals:[6.3,0.0,5.2,8.6,7.0],      fcst:fcstNi,  color:'var(--purple)'},
+  ];
+  let tbody='';
+  rows.forEach(r=>{
+    const diff=(r.fcst-r.vals[4]).toFixed(1);
+    const isPos=r.fcst>=r.vals[4];
+    tbody+=`<tr><td style="${TDL}">${r.l}</td>`;
+    r.vals.forEach((v,i)=>{
+      const bg=i===4?'background:#fffbf0':'';
+      tbody+=`<td style="${TD};color:${r.color};${bg}">${v.toFixed(1)}억</td>`;
+    });
+    tbody+=`<td style="${TD};color:${r.color};background:#f0f4ff;font-weight:600">${r.fcst.toFixed(1)}억</td>`;
+    tbody+=`<td style="${TD};color:${isPos?'var(--green)':'var(--red)'};font-weight:700">${isPos?'▲':'▼'}${Math.abs(diff)}억</td>`;
+    tbody+='</tr>';
+  });
+  document.getElementById('histTableBody').innerHTML=tbody;
+
+  // ⑥ 사업부별 달성률 (22~25확정 + 26추정)
+  const divRows=[
+    {l:'PATH', tgt:[19.8,23.8,35.2,42.5,56.4], act:[19.9,31.2,39.6,46.6,fcstP], color:'var(--blue)'},
+    {l:'빌링', tgt:[20.8,21.0,18.7,20.5,18.1], act:[19.2,19.6,19.1,16.9,fcstB], color:'var(--mint)'},
+  ];
+  let divBody='';
+  divRows.forEach(r=>{
+    divBody+=`<tr><td style="${TDL};color:${r.color}">${r.l}</td>`;
+    r.tgt.forEach((t,i)=>{
+      const a=r.act[i];
+      const pct=(a/t*100).toFixed(1);
+      const diff=(a-t).toFixed(1);
+      const isPos=a>=t;
+      const is25=i===3; const is26=i===4;
+      const bg=is25?'background:#fffbf0':is26?'background:#f0f4ff':'';
+      const estMark=is26?`<span style="font-size:9px;color:#94a3b8"> (추)</span>`:'';
+      divBody+=`<td style="${TD};color:var(--text3);${bg}">${t.toFixed(1)}억</td>`;
+      divBody+=`<td style="${TD};color:${r.color};${bg}">${a.toFixed(1)}억${estMark}</td>`;
+      divBody+=`<td style="${TD};color:${isPos?'var(--green)':'var(--red)'};font-weight:600;${bg}">${pct}%</td>`;
+    });
+    divBody+='</tr>';
+  });
+  document.getElementById('histDivTableBody').innerHTML=divBody;
+}
+
+
+
+function pg(id,btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('on'));
+  document.getElementById(id).classList.add('on'); btn.classList.add('on');
+  if(id==='pcmp') renderCmp();
+  if(id==='pfcst') renderFcst();
+  if(id==='phist') renderHist();
+}
+function setM(m,btn){
+  curM=m;
+  document.querySelectorAll('.fb').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on'); render26();
+  // 열려있는 매출구분 섹션 갱신
+  if(document.getElementById('revPath').classList.contains('show')) renderRevPath();
+  if(document.getElementById('revBill').classList.contains('show')) renderRevBill();
+}
+render26(); render25();
+window.addEventListener('scroll',()=>document.getElementById('totop').classList.toggle('show',window.scrollY>300));
+</script>
+</body>
+</html>

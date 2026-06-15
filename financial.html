@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>에스씨지랩 재무제표 2020–2025</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js" crossorigin="anonymous"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#F8FAFC; --bg2:#FFFFFF; --bg3:#F1F5F9;
+  --border:#E2E8F0; --border2:#CBD5E1;
+  --text:#1E293B; --text2:#475569; --text3:#94A3B8;
+  --blue:#2563EB; --blue-dim:#EFF6FF;
+  --green:#059669; --green-dim:#ECFDF5;
+  --amber:#D97706; --amber-dim:#FFFBEB;
+  --red:#DC2626; --red-dim:#FEF2F2;
+  --purple:#7C3AED;
+  --radius:10px;
+  --shadow:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.04);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-serif;font-size:14px;line-height:1.6;min-height:100vh;}
+
+/* Header */
+.header{background:var(--bg2);border-bottom:1px solid var(--border);padding:20px 40px 16px;display:flex;align-items:center;justify-content:space-between;}
+.header-left{display:flex;align-items:center;gap:14px;}
+.header-logo{width:36px;height:36px;background:var(--blue);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff;font-weight:700;}
+.header-left h1{font-size:18px;font-weight:700;color:var(--text);letter-spacing:-.3px;}
+.header-left p{font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;margin-top:2px;}
+.header-right{display:flex;gap:10px;align-items:center;}
+.badge{font-size:11px;font-family:'DM Mono',monospace;background:var(--blue-dim);color:var(--blue);border:1px solid rgba(37,99,235,.15);border-radius:20px;padding:3px 12px;}
+.back-btn{font-size:12px;font-weight:500;background:var(--bg3);color:var(--text2);border:1px solid var(--border);border-radius:8px;padding:6px 14px;cursor:pointer;text-decoration:none;transition:background .15s;}
+.back-btn:hover{background:var(--border);}
+
+/* Tabs */
+.tab-bar{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 40px;position:sticky;top:0;z-index:10;display:flex;gap:0;}
+.tab{font-size:13px;font-weight:400;padding:14px 22px;cursor:pointer;color:var(--text3);border:none;background:none;border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .15s,border-color .15s;font-family:'Noto Sans KR',sans-serif;white-space:nowrap;}
+.tab:hover{color:var(--text2);}
+.tab.active{color:var(--blue);border-bottom-color:var(--blue);font-weight:600;}
+
+/* Layout */
+.main{padding:28px 40px 48px;max-width:1300px;margin:0 auto;}
+.panel{display:none;}
+.panel.active{display:block;}
+
+/* KPI */
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px;}
+.kpi{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;box-shadow:var(--shadow);}
+.kpi-label{font-size:11px;color:var(--text3);font-weight:500;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;}
+.kpi-value{font-size:24px;font-weight:700;color:var(--text);font-family:'DM Mono',monospace;letter-spacing:-1px;}
+.kpi-value span{font-size:13px;font-weight:400;color:var(--text3);margin-left:3px;}
+.kpi-sub{font-size:12px;color:var(--text3);margin-top:4px;}
+.kpi-badge{display:inline-block;margin-top:6px;font-size:11px;font-weight:600;padding:2px 8px;border-radius:12px;font-family:'DM Mono',monospace;}
+.up{background:var(--green-dim);color:var(--green);}
+.down{background:var(--red-dim);color:var(--red);}
+.flat{background:var(--amber-dim);color:var(--amber);}
+
+/* Cards */
+.chart-grid{display:grid;gap:16px;}
+.chart-grid-2{grid-template-columns:1fr 1fr;}
+.chart-grid-1{grid-template-columns:1fr;}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:20px 24px;box-shadow:var(--shadow);}
+.card-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px;}
+.card-sub{font-size:11px;color:var(--text3);margin-bottom:16px;}
+.chart-wrap{position:relative;height:240px;}
+
+/* Table */
+.fin-table{width:100%;border-collapse:collapse;font-size:13px;}
+.fin-table th{background:var(--bg3);color:var(--text2);font-weight:600;padding:10px 14px;text-align:right;border-bottom:2px solid var(--border2);font-family:'DM Mono',monospace;font-size:12px;}
+.fin-table th:first-child{text-align:left;}
+.fin-table td{padding:9px 14px;text-align:right;border-bottom:1px solid var(--border);color:var(--text2);font-family:'DM Mono',monospace;}
+.fin-table td:first-child{text-align:left;color:var(--text);font-family:'Noto Sans KR',sans-serif;}
+.fin-table tr:hover td{background:var(--bg3);}
+.fin-table .section-row td{background:var(--bg3);color:var(--text);font-weight:600;}
+.fin-table .highlight-row td{color:var(--blue);font-weight:700;}
+.fin-table .neg{color:var(--red)!important;}
+.fin-table .pos-g{color:var(--green)!important;}
+.table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:var(--radius);}
+
+/* Tooltip */
+.tip{cursor:help;border-bottom:1px dashed var(--text3);}
+#tooltip{
+  position:fixed;
+  background:#1E293B;
+  color:#fff;
+  font-size:12px;
+  font-family:'Noto Sans KR',sans-serif;
+  line-height:1.7;
+  padding:10px 14px;
+  border-radius:8px;
+  max-width:260px;
+  pointer-events:none;
+  opacity:0;
+  transition:opacity .15s;
+  z-index:9999;
+  box-shadow:0 4px 16px rgba(0,0,0,.25);
+  white-space:normal;
+}
+#tooltip.show{opacity:1;}
+#tooltip .tip-formula{color:#93C5FD;font-size:11px;margin-bottom:4px;font-family:'DM Mono',monospace;}
+#tooltip .tip-desc{color:#fff;}
+#tooltip .tip-note{color:#94A3B8;font-size:11px;margin-top:3px;}
+
+.legend{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:14px;}
+.legend-item{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text2);}
+.legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.legend-line{width:18px;height:2px;flex-shrink:0;}
+.sec-title{font-size:12px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin:24px 0 12px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+
+@media(max-width:900px){
+  .header,.tab-bar,.main{padding-left:20px;padding-right:20px;}
+  .kpi-grid{grid-template-columns:repeat(2,1fr);}
+  .chart-grid-2{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <div class="header-logo">S</div>
+    <div>
+      <h1>에스씨지랩 재무제표</h1>
+      <p>SCGLAB Financial Statements · 2020 – 2025</p>
+    </div>
+  </div>
+  <div class="header-right">
+    <span class="badge">단위: 억원 (표·차트 공통)</span>
+    <a href="index.html" class="back-btn">← 허브로</a>
+  </div>
+</div>
+
+<div class="tab-bar">
+  <button class="tab active" onclick="sw('pl',this)">손익계산서</button>
+  <button class="tab" onclick="sw('bs',this)">재무상태표</button>
+  <button class="tab" onclick="sw('ratio',this)">재무비율</button>
+  <button class="tab" onclick="sw('cf',this)">현금흐름</button>
+</div>
+
+<div class="main">
+
+<!-- ① 손익계산서 -->
+<div id="panel-pl" class="panel active">
+  <div class="kpi-grid">
+    <div class="kpi">
+      <div class="kpi-label">2025 매출액</div>
+      <div class="kpi-value">63.5<span>억원</span></div>
+      <div class="kpi-sub">전년 58.7억원</div>
+      <div class="kpi-badge up">▲ +8.3%</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">2025 영업이익</div>
+      <div class="kpi-value">3.8<span>억원</span></div>
+      <div class="kpi-sub">영업이익률 6.0%</div>
+      <div class="kpi-badge down">▼ -46.3%</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">2025 당기순이익</div>
+      <div class="kpi-value">7.0<span>억원</span></div>
+      <div class="kpi-sub">순이익률 11.1%</div>
+      <div class="kpi-badge down">▼ -18.1%</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">2025 매출총이익률</div>
+      <div class="kpi-value">35.3<span>%</span></div>
+      <div class="kpi-sub">전년 39.3%</div>
+      <div class="kpi-badge down">▼ -4.0%p</div>
+    </div>
+  </div>
+
+  <div class="chart-grid chart-grid-2">
+    <div class="card">
+      <div class="card-title">손익 추이 (억원)</div>
+      <div class="card-sub">매출액 · 매출총이익 · 영업이익 · 순이익(꺾은선)</div>
+      <div class="legend">
+        <div class="legend-item"><div class="legend-dot" style="background:#3B82F6"></div>매출액</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#10B981"></div>매출총이익</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#F59E0B"></div>영업이익</div>
+        <div class="legend-item"><div class="legend-line" style="background:#7C3AED"></div>순이익(선)</div>
+      </div>
+      <div class="chart-wrap"><canvas id="plC"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">이익률 추이 (%)</div>
+      <div class="card-sub">매출총이익률 · 영업이익률 · 순이익률</div>
+      <div class="legend">
+        <div class="legend-item"><div class="legend-line" style="background:#10B981"></div>매출총이익률</div>
+        <div class="legend-item"><div class="legend-line" style="background:#F59E0B"></div>영업이익률</div>
+        <div class="legend-item"><div class="legend-line" style="background:#7C3AED"></div>순이익률</div>
+      </div>
+      <div class="chart-wrap"><canvas id="marginC"></canvas></div>
+    </div>
+  </div>
+
+  <div class="sec-title" style="margin-top:28px">손익계산서 연간 상세 (단위: 억원)</div>
+  <div class="table-wrap">
+    <table class="fin-table">
+      <thead>
+        <tr><th>항목</th><th>2020</th><th>2021</th><th>2022</th><th>2023</th><th>2024</th><th>2025</th></tr>
+      </thead>
+      <tbody>
+        <tr class="highlight-row"><td>매출액</td><td>17.7</td><td>30.6</td><td>39.0</td><td>50.8</td><td>58.7</td><td>63.5</td></tr>
+        <tr><td>　매출원가</td><td>8.7</td><td>13.3</td><td>24.8</td><td>34.7</td><td>35.6</td><td>41.1</td></tr>
+        <tr class="section-row"><td>매출총이익</td><td>9.0</td><td>17.3</td><td>14.3</td><td>16.1</td><td>23.1</td><td>22.4</td></tr>
+        <tr><td>　매출총이익률</td><td>50.7%</td><td>56.5%</td><td>36.5%</td><td>31.8%</td><td>39.3%</td><td>35.3%</td></tr>
+        <tr><td>　판매관리비</td><td>6.9</td><td>10.4</td><td>16.4</td><td>13.1</td><td>15.9</td><td>18.6</td></tr>
+        <tr class="section-row"><td>영업이익</td><td class="pos-g">2.1</td><td class="pos-g">6.9</td><td class="neg">-2.2</td><td class="pos-g">3.0</td><td class="pos-g">7.1</td><td class="pos-g">3.8</td></tr>
+        <tr><td>　영업이익률</td><td>11.7%</td><td>22.5%</td><td class="neg">-5.6%</td><td>5.9%</td><td>12.2%</td><td>6.0%</td></tr>
+        <tr><td>　영업외수익</td><td>0.4</td><td>0.4</td><td>2.4</td><td>3.2</td><td>2.9</td><td>4.9</td></tr>
+        <tr><td>　영업외비용</td><td>0.3</td><td>1.0</td><td>0.2</td><td>1.0</td><td>1.4</td><td>1.6</td></tr>
+        <tr class="highlight-row"><td>당기순이익</td><td class="pos-g">2.2</td><td class="pos-g">6.3</td><td class="neg">-0.0</td><td class="pos-g">5.2</td><td class="pos-g">8.6</td><td class="pos-g">7.0</td></tr>
+        <tr><td>　순이익률</td><td>12.4%</td><td>20.6%</td><td class="neg">-0.1%</td><td>10.3%</td><td>14.7%</td><td>11.1%</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ② 재무상태표 -->
+<div id="panel-bs" class="panel">
+  <div class="kpi-grid">
+    <div class="kpi">
+      <div class="kpi-label">2025 자산총계</div>
+      <div class="kpi-value">61.0<span>억원</span></div>
+      <div class="kpi-sub">전년 51.5억원</div>
+      <div class="kpi-badge up">▲ +18.5%</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">2025 자본총계</div>
+      <div class="kpi-value">43.3<span>억원</span></div>
+      <div class="kpi-sub">자기자본비율 71.0%</div>
+      <div class="kpi-badge up">▲ +19.4%</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">2025 부채총계</div>
+      <div class="kpi-value">17.7<span>억원</span></div>
+      <div class="kpi-sub">부채비율 40.9%</div>
+      <div class="kpi-badge flat">▲ +16.3%</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">2025 유동비율</div>
+      <div class="kpi-value">245<span>%</span></div>
+      <div class="kpi-sub">전년 263%</div>
+      <div class="kpi-badge down">▼ -18%p</div>
+    </div>
+  </div>
+
+  <div class="chart-grid chart-grid-1">
+    <div class="card">
+      <div class="card-title">자산 · 부채 · 자본 추이 (억원)</div>
+      <div class="card-sub">6개년 재무상태 변화</div>
+      <div class="legend">
+        <div class="legend-item"><div class="legend-dot" style="background:#3B82F6"></div>자산총계</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#EF4444"></div>부채총계</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#10B981"></div>자본총계</div>
+      </div>
+      <div class="chart-wrap" style="height:280px"><canvas id="bsC"></canvas></div>
+    </div>
+  </div>
+
+  <div class="sec-title" style="margin-top:28px">재무상태표 연간 상세 (단위: 억원)</div>
+  <div class="table-wrap">
+    <table class="fin-table">
+      <thead>
+        <tr><th>항목</th><th>2020</th><th>2021</th><th>2022</th><th>2023</th><th>2024</th><th>2025</th></tr>
+      </thead>
+      <tbody>
+        <tr class="section-row"><td>자산총계</td><td>19.9</td><td>33.4</td><td>30.9</td><td>39.7</td><td>51.5</td><td>61.0</td></tr>
+        <tr class="section-row"><td>부채총계</td><td>3.7</td><td>10.9</td><td>8.4</td><td>12.0</td><td>15.2</td><td>17.7</td></tr>
+        <tr class="highlight-row"><td>자본총계</td><td>16.2</td><td>22.5</td><td>22.4</td><td>27.7</td><td>36.3</td><td>43.3</td></tr>
+        <tr><td>　자기자본비율</td><td>81.4%</td><td>67.3%</td><td>72.7%</td><td>69.8%</td><td>70.4%</td><td>71.0%</td></tr>
+        <tr><td>　부채비율</td><td>22.8%</td><td>48.5%</td><td>37.6%</td><td>43.3%</td><td>42.0%</td><td>40.9%</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ③ 재무비율 -->
+<div id="panel-ratio" class="panel">
+  <div class="kpi-grid">
+    <div class="kpi">
+      <div class="kpi-label"><span class="tip" data-formula="당기순이익 ÷ 자본총계 × 100" data-desc="보유 자본으로 얼마나 이익을 냈는지" data-note="높을수록 자본을 효율적으로 활용한 것">2025 ROE ⓘ</span></div>
+      <div class="kpi-value">16.2<span>%</span></div>
+      <div class="kpi-sub">전년 23.7%</div>
+      <div class="kpi-badge down">▼ -7.5%p</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label"><span class="tip" data-formula="자본총계 ÷ 자산총계 × 100" data-desc="회사 자산 중 내 돈(빚 아닌 것)의 비율" data-note="높을수록 재무적으로 안정적">2025 자기자본비율 ⓘ</span></div>
+      <div class="kpi-value">71.0<span>%</span></div>
+      <div class="kpi-sub">전년 70.4%</div>
+      <div class="kpi-badge up">▲ +0.6%p</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label"><span class="tip" data-formula="유동자산 ÷ 유동부채 × 100" data-desc="단기 빚을 갚을 수 있는 여유" data-note="200% 이상이면 안정적">2025 유동비율 ⓘ</span></div>
+      <div class="kpi-value">245<span>%</span></div>
+      <div class="kpi-sub">전년 263%</div>
+      <div class="kpi-badge down">▼ -18%p</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label"><span class="tip" data-formula="부채총계 ÷ 자본총계 × 100" data-desc="내 돈 대비 빌린 돈의 비율" data-note="낮을수록 재무 안전">2025 부채비율 ⓘ</span></div>
+      <div class="kpi-value">40.9<span>%</span></div>
+      <div class="kpi-sub">전년 42.0%</div>
+      <div class="kpi-badge up">▼ -1.1%p 개선</div>
+    </div>
+  </div>
+
+  <div class="chart-grid chart-grid-2">
+    <div class="card">
+      <div class="card-title">안정성 지표 (%)</div>
+      <div class="card-sub">유동비율 · 자기자본비율 · 부채비율 · ROE</div>
+      <div class="legend">
+        <div class="legend-item"><div class="legend-line" style="background:#3B82F6"></div>유동비율</div>
+        <div class="legend-item"><div class="legend-line" style="background:#10B981"></div>자기자본비율</div>
+        <div class="legend-item"><div class="legend-line" style="background:#EF4444"></div>부채비율</div>
+        <div class="legend-item"><div class="legend-line" style="background:#F59E0B"></div>ROE</div>
+      </div>
+      <div class="chart-wrap"><canvas id="ratioC"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">수익성 지표 (%)</div>
+      <div class="card-sub">영업이익률 · 순이익률</div>
+      <div class="legend">
+        <div class="legend-item"><div class="legend-line" style="background:#F59E0B"></div>영업이익률</div>
+        <div class="legend-item"><div class="legend-line" style="background:#7C3AED"></div>순이익률</div>
+      </div>
+      <div class="chart-wrap"><canvas id="profitC"></canvas></div>
+    </div>
+  </div>
+
+  <div class="sec-title" style="margin-top:28px">재무비율 연간 상세</div>
+  <div class="table-wrap">
+    <table class="fin-table">
+      <thead>
+        <tr><th>지표</th><th>2020</th><th>2021</th><th>2022</th><th>2023</th><th>2024</th><th>2025</th></tr>
+      </thead>
+      <tbody>
+        <tr class="section-row"><td colspan="7">수익성</td></tr>
+        <tr><td><span class="tip" data-formula="매출총이익 ÷ 매출액 × 100" data-desc="물건 팔고 원가 빼고 남은 비율" data-note="높을수록 원가 경쟁력이 좋은 것">　매출총이익률 ⓘ</span></td><td>50.7%</td><td>56.5%</td><td>36.5%</td><td>31.8%</td><td>39.3%</td><td>35.3%</td></tr>
+        <tr><td><span class="tip" data-formula="영업이익 ÷ 매출액 × 100" data-desc="본업으로 얼마나 남겼는지" data-note="판관비까지 빼고 남은 비율">　영업이익률 ⓘ</span></td><td>11.7%</td><td>22.5%</td><td class="neg">-5.6%</td><td>5.9%</td><td>12.2%</td><td>6.0%</td></tr>
+        <tr><td><span class="tip" data-formula="당기순이익 ÷ 매출액 × 100" data-desc="세금·이자 다 내고 최종으로 남은 비율" data-note="회사의 실질적인 수익성 지표">　순이익률 ⓘ</span></td><td>12.4%</td><td>20.6%</td><td class="neg">-0.1%</td><td>10.3%</td><td>14.7%</td><td>11.1%</td></tr>
+        <tr><td><span class="tip" data-formula="당기순이익 ÷ 자본총계 × 100" data-desc="보유 자본으로 얼마나 이익을 냈는지" data-note="높을수록 자본을 효율적으로 활용한 것">　ROE ⓘ</span></td><td>13.6%</td><td>28.0%</td><td class="neg">-0.1%</td><td>18.9%</td><td>23.7%</td><td>16.2%</td></tr>
+        <tr class="section-row"><td colspan="7">안정성</td></tr>
+        <tr><td><span class="tip" data-formula="유동자산 ÷ 유동부채 × 100" data-desc="단기 빚을 갚을 수 있는 여유" data-note="200% 이상이면 안정적">　유동비율 ⓘ</span></td><td>596%</td><td>334%</td><td>274%</td><td>244%</td><td>263%</td><td>245%</td></tr>
+        <tr><td><span class="tip" data-formula="자본총계 ÷ 자산총계 × 100" data-desc="회사 자산 중 내 돈(빚 아닌 것)의 비율" data-note="높을수록 재무적으로 안정적">　자기자본비율 ⓘ</span></td><td>81.4%</td><td>67.3%</td><td>72.7%</td><td>69.8%</td><td>70.4%</td><td>71.0%</td></tr>
+        <tr><td><span class="tip" data-formula="부채총계 ÷ 자본총계 × 100" data-desc="내 돈 대비 빌린 돈의 비율" data-note="낮을수록 재무 안전">　부채비율 ⓘ</span></td><td>22.8%</td><td>48.5%</td><td>37.6%</td><td>43.3%</td><td>42.0%</td><td>40.9%</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ④ 현금흐름 -->
+<div id="panel-cf" class="panel">
+  <div class="kpi-grid">
+    <div class="kpi">
+      <div class="kpi-label">2025 영업활동 CF</div>
+      <div class="kpi-value">11.6<span>억원</span></div>
+      <div class="kpi-sub">전년 12.3억원</div>
+      <div class="kpi-badge down">▼ -5.6%</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">2025 투자활동 CF</div>
+      <div class="kpi-value" style="color:var(--red)">-13.1<span>억원</span></div>
+      <div class="kpi-sub">전년 -14.0억원</div>
+      <div class="kpi-badge up">투자규모 축소</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">2025 기말현금</div>
+      <div class="kpi-value">10.6<span>억원</span></div>
+      <div class="kpi-sub">전년 12.0억원</div>
+      <div class="kpi-badge down">▼ -11.8%</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">영업CF / 순이익</div>
+      <div class="kpi-value">165<span>%</span></div>
+      <div class="kpi-sub">현금전환율</div>
+      <div class="kpi-badge up">양호</div>
+    </div>
+  </div>
+
+  <div class="chart-grid chart-grid-1">
+    <div class="card">
+      <div class="card-title">현금흐름 추이 (억원)</div>
+      <div class="card-sub">영업 · 투자활동 현금흐름 및 기말현금(꺾은선)</div>
+      <div class="legend">
+        <div class="legend-item"><div class="legend-dot" style="background:#10B981"></div>영업활동</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#EF4444"></div>투자활동</div>
+        <div class="legend-item"><div class="legend-line" style="background:#3B82F6"></div>기말현금(선)</div>
+      </div>
+      <div class="chart-wrap" style="height:280px"><canvas id="cfC"></canvas></div>
+    </div>
+  </div>
+
+  <div class="sec-title" style="margin-top:28px">현금흐름표 연간 상세 (단위: 억원)</div>
+  <div class="table-wrap">
+    <table class="fin-table">
+      <thead>
+        <tr><th>항목</th><th>2020</th><th>2021</th><th>2022</th><th>2023</th><th>2024</th><th>2025</th></tr>
+      </thead>
+      <tbody>
+        <tr class="highlight-row"><td>영업활동 현금흐름</td><td class="pos-g">2.5</td><td class="pos-g">10.9</td><td class="neg">-0.2</td><td class="pos-g">7.7</td><td class="pos-g">12.3</td><td class="pos-g">11.6</td></tr>
+        <tr class="highlight-row"><td>투자활동 현금흐름</td><td>-0.2</td><td class="neg">-8.8</td><td>1.8</td><td class="neg">-3.2</td><td class="neg">-14.0</td><td class="neg">-13.1</td></tr>
+        <tr><td>재무활동 현금흐름</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+        <tr class="section-row"><td>기말현금</td><td>5.5</td><td>7.6</td><td>9.2</td><td>13.7</td><td>12.0</td><td>10.6</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+</div><!-- /main -->
+
+<script>
+// ── 공통 설정
+var yr  = ['2020','2021','2022','2023','2024','2025'];
+var GC  = 'rgba(0,0,0,0.05)';
+var TC  = '#94A3B8';
+
+// 억원 단위 포맷 함수
+function fmtAuk(v) {
+  var abs = Math.abs(v);
+  if (abs === 0) return '0';
+  if (abs >= 100) return (v / 100).toFixed(0) + '억';
+  return (v / 100).toFixed(1) + '억';
+}
+
+// 공통 플러그인 옵션
+var pluginOpts = {
+  legend: { display: false },
+  tooltip: {
+    callbacks: {
+      label: function(ctx) {
+        var v = ctx.parsed.y;
+        return ' ' + ctx.dataset.label + ': ' + fmtAuk(v) + '원';
+      }
+    }
+  }
+};
+
+// 공통 스케일 (금액용)
+function moneyScale() {
+  return {
+    x: { grid: { color: GC }, ticks: { color: TC, font: { size: 11 } } },
+    y: { grid: { color: GC }, ticks: { color: TC, font: { size: 11 }, callback: fmtAuk } }
+  };
+}
+// 공통 스케일 (% 비율용)
+function pctScale() {
+  return {
+    x: { grid: { color: GC }, ticks: { color: TC, font: { size: 11 } } },
+    y: { grid: { color: GC }, ticks: { color: TC, font: { size: 11 }, callback: function(v){ return v + '%'; } } }
+  };
+}
+// 비율 tooltip
+var pctPlugin = {
+  legend: { display: false },
+  tooltip: {
+    callbacks: {
+      label: function(ctx) { return ' ' + ctx.dataset.label + ': ' + ctx.parsed.y + '%'; }
+    }
+  }
+};
+
+// ── 탭 전환
+function sw(id, el) {
+  document.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('active'); });
+  document.querySelectorAll('.panel').forEach(function(p){ p.classList.remove('active'); });
+  el.classList.add('active');
+  document.getElementById('panel-' + id).classList.add('active');
+  if (id === 'pl'    && !window._pl)  { buildPL();    window._pl    = true; }
+  if (id === 'bs'    && !window._bs)  { buildBS();    window._bs    = true; }
+  if (id === 'ratio' && !window._rt)  { buildRatio(); window._rt    = true; }
+  if (id === 'cf'    && !window._cf)  { buildCF();    window._cf    = true; }
+}
+
+// ── 손익계산서
+function buildPL() {
+  // 손익 추이 (혼합 차트)
+  new Chart(document.getElementById('plC'), {
+    type: 'bar',
+    data: {
+      labels: yr,
+      datasets: [
+        { label: '매출액',     data: [1771,3062,3904,5078,5866,6352], backgroundColor: 'rgba(59,130,246,0.7)', order: 2 },
+        { label: '매출총이익', data: [898,1729,1425,1613,2307,2243],  backgroundColor: 'rgba(16,185,129,0.7)',  order: 2 },
+        { label: '영업이익',   data: [207,689,-217,301,713,383],      backgroundColor: 'rgba(245,158,11,0.7)',  order: 2 },
+        { label: '순이익', type: 'line', data: [220,630,-3,524,860,704],
+          borderColor: '#7C3AED', backgroundColor: 'transparent',
+          pointBackgroundColor: '#7C3AED', pointRadius: 5, tension: 0.35, order: 1 }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: pluginOpts,
+      scales: moneyScale()
+    }
+  });
+
+  // 이익률
+  new Chart(document.getElementById('marginC'), {
+    type: 'line',
+    data: {
+      labels: yr,
+      datasets: [
+        { label: '매출총이익률', data: [50.7,56.5,36.5,31.8,39.3,35.3], borderColor: '#10B981', backgroundColor: 'transparent', pointRadius: 4, tension: 0.3 },
+        { label: '영업이익률',   data: [11.7,22.5,-5.6,5.9,12.2,6.0],   borderColor: '#F59E0B', backgroundColor: 'transparent', pointRadius: 4, tension: 0.3, borderDash: [5,3] },
+        { label: '순이익률',     data: [12.4,20.6,-0.1,10.3,14.7,11.1], borderColor: '#7C3AED', backgroundColor: 'transparent', pointRadius: 4, tension: 0.3, borderDash: [3,3] }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: pctPlugin,
+      scales: pctScale()
+    }
+  });
+}
+
+// ── 재무상태표
+function buildBS() {
+  new Chart(document.getElementById('bsC'), {
+    type: 'bar',
+    data: {
+      labels: yr,
+      datasets: [
+        { label: '자산총계', data: [1986,3336,3087,3965,5150,6103], backgroundColor: 'rgba(59,130,246,0.65)' },
+        { label: '부채총계', data: [369,1090,843,1197,1523,1771],   backgroundColor: 'rgba(239,68,68,0.65)' },
+        { label: '자본총계', data: [1616,2246,2244,2767,3627,4332], backgroundColor: 'rgba(16,185,129,0.65)' }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: pluginOpts,
+      scales: moneyScale()
+    }
+  });
+}
+
+// ── 재무비율
+function buildRatio() {
+  new Chart(document.getElementById('ratioC'), {
+    type: 'line',
+    data: {
+      labels: yr,
+      datasets: [
+        { label: '유동비율',     data: [596,334,274,244,263,245],     borderColor: '#3B82F6', backgroundColor: 'rgba(59,130,246,0.04)', fill: true, tension: 0.35, pointRadius: 5 },
+        { label: '자기자본비율', data: [81.4,67.3,72.7,69.8,70.4,71.0], borderColor: '#10B981', backgroundColor: 'transparent', tension: 0.35, pointRadius: 5, borderDash: [6,3] },
+        { label: '부채비율',     data: [22.8,48.5,37.6,43.3,42.0,40.9],  borderColor: '#EF4444', backgroundColor: 'transparent', tension: 0.35, pointRadius: 5, borderDash: [3,3] },
+        { label: 'ROE',          data: [13.6,28.0,-0.1,18.9,23.7,16.2],   borderColor: '#F59E0B', backgroundColor: 'transparent', tension: 0.35, pointRadius: 5, borderDash: [8,3] }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: pctPlugin,
+      scales: pctScale()
+    }
+  });
+
+  new Chart(document.getElementById('profitC'), {
+    type: 'line',
+    data: {
+      labels: yr,
+      datasets: [
+        { label: '영업이익률', data: [11.7,22.5,-5.6,5.9,12.2,6.0],   borderColor: '#F59E0B', backgroundColor: 'rgba(245,158,11,0.05)', fill: true, tension: 0.3, pointRadius: 5 },
+        { label: '순이익률',   data: [12.4,20.6,-0.1,10.3,14.7,11.1], borderColor: '#7C3AED', backgroundColor: 'transparent', tension: 0.3, pointRadius: 5, borderDash: [4,3] }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: pctPlugin,
+      scales: pctScale()
+    }
+  });
+}
+
+// ── 현금흐름
+function buildCF() {
+  new Chart(document.getElementById('cfC'), {
+    type: 'bar',
+    data: {
+      labels: yr,
+      datasets: [
+        { label: '영업활동', data: [249,1088,-16,770,1232,1163],    backgroundColor: 'rgba(16,185,129,0.7)',  order: 2 },
+        { label: '투자활동', data: [-17,-878,176,-321,-1401,-1305], backgroundColor: 'rgba(239,68,68,0.65)', order: 2 },
+        { label: '기말현금', type: 'line', data: [554,764,924,1373,1204,1062],
+          borderColor: '#3B82F6', backgroundColor: 'transparent',
+          pointBackgroundColor: '#3B82F6', pointRadius: 5, tension: 0.35, order: 1 }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: pluginOpts,
+      scales: moneyScale()
+    }
+  });
+}
+
+// 초기 로드
+window.addEventListener('DOMContentLoaded', function() { buildPL(); });
+</script>
+<!-- Tooltip -->
+<div id="tooltip">
+  <div class="tip-formula" id="tip-formula"></div>
+  <div class="tip-desc"   id="tip-desc"></div>
+  <div class="tip-note"   id="tip-note"></div>
+</div>
+<script>
+var tt = document.getElementById('tooltip');
+document.querySelectorAll('.tip').forEach(function(el) {
+  el.addEventListener('mouseenter', function(e) {
+    document.getElementById('tip-formula').textContent = '계산식: ' + (el.dataset.formula || '');
+    document.getElementById('tip-desc').textContent   = el.dataset.desc   || '';
+    document.getElementById('tip-note').textContent   = el.dataset.note   || '';
+    tt.classList.add('show');
+    posTooltip(e);
+  });
+  el.addEventListener('mousemove', posTooltip);
+  el.addEventListener('mouseleave', function() { tt.classList.remove('show'); });
+});
+function posTooltip(e) {
+  var x = e.clientX + 14;
+  var y = e.clientY - tt.offsetHeight - 14;
+  // 오른쪽 벗어나면 왼쪽으로
+  if (x + tt.offsetWidth > window.innerWidth - 10) x = e.clientX - tt.offsetWidth - 14;
+  // 위로 벗어나면 아래로
+  if (y < 8) y = e.clientY + 18;
+  tt.style.left = x + 'px';
+  tt.style.top  = y + 'px';
+}
+</script>
+</body>
+</html>
