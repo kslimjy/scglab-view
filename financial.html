@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>에스씨지랩 재무제표 2020–2025</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js" crossorigin="anonymous"></script>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root {
   --bg:#F8FAFC; --bg2:#FFFFFF; --bg3:#F1F5F9;
@@ -20,14 +20,14 @@
   --shadow:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.04);
 }
 *{box-sizing:border-box;margin:0;padding:0;}
-body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-serif;font-size:14px;line-height:1.6;min-height:100vh;}
+body{background:var(--bg);color:var(--text);font-family:'Pretendard',sans-serif;font-size:14px;line-height:1.6;min-height:100vh;;letter-spacing:-.2px}
 
 /* Header */
-.header{background:var(--bg2);border-bottom:1px solid var(--border);padding:20px 40px 16px;display:flex;align-items:center;justify-content:space-between;}
+.header{background:#0F172A;padding:20px 40px;display:flex;align-items:center;justify-content:space-between;}
 .header-left{display:flex;align-items:center;gap:14px;}
 .header-logo{width:36px;height:36px;background:var(--blue);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff;font-weight:700;}
-.header-left h1{font-size:18px;font-weight:700;color:var(--text);letter-spacing:-.3px;}
-.header-left p{font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;margin-top:2px;}
+.header-left h1{font-size:18px;font-weight:800;color:#fff;letter-spacing:-.4px;}
+.header-left p{font-size:11px;color:#64748B;font-family:'DM Mono',monospace;margin-top:2px;}
 .header-right{display:flex;gap:10px;align-items:center;}
 .badge{font-size:11px;font-family:'DM Mono',monospace;background:var(--blue-dim);color:var(--blue);border:1px solid rgba(37,99,235,.15);border-radius:20px;padding:3px 12px;}
 .back-btn{font-size:12px;font-weight:500;background:var(--bg3);color:var(--text2);border:1px solid var(--border);border-radius:8px;padding:6px 14px;cursor:pointer;text-decoration:none;transition:background .15s;}
@@ -35,7 +35,7 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
 
 /* Tabs */
 .tab-bar{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 40px;position:sticky;top:0;z-index:10;display:flex;gap:0;}
-.tab{font-size:13px;font-weight:400;padding:14px 22px;cursor:pointer;color:var(--text3);border:none;background:none;border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .15s,border-color .15s;font-family:'Noto Sans KR',sans-serif;white-space:nowrap;}
+.tab{font-size:13px;font-weight:400;padding:14px 22px;cursor:pointer;color:var(--text3);border:none;background:none;border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .15s,border-color .15s;font-family:'Pretendard',sans-serif;white-space:nowrap;}
 .tab:hover{color:var(--text2);}
 .tab.active{color:var(--blue);border-bottom-color:var(--blue);font-weight:600;}
 
@@ -70,7 +70,7 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
 .fin-table th{background:var(--bg3);color:var(--text2);font-weight:600;padding:10px 14px;text-align:right;border-bottom:2px solid var(--border2);font-family:'DM Mono',monospace;font-size:12px;}
 .fin-table th:first-child{text-align:left;}
 .fin-table td{padding:9px 14px;text-align:right;border-bottom:1px solid var(--border);color:var(--text2);font-family:'DM Mono',monospace;}
-.fin-table td:first-child{text-align:left;color:var(--text);font-family:'Noto Sans KR',sans-serif;}
+.fin-table td:first-child{text-align:left;color:var(--text);font-family:'Pretendard',sans-serif;}
 .fin-table tr:hover td{background:var(--bg3);}
 .fin-table .section-row td{background:var(--bg3);color:var(--text);font-weight:600;}
 .fin-table .highlight-row td{color:var(--blue);font-weight:700;}
@@ -85,7 +85,7 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
   background:#1E293B;
   color:#fff;
   font-size:12px;
-  font-family:'Noto Sans KR',sans-serif;
+  font-family:'Pretendard',sans-serif;
   line-height:1.7;
   padding:10px 14px;
   border-radius:8px;
@@ -114,6 +114,7 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
   .chart-grid-2{grid-template-columns:1fr;}
 }
 </style>
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
 </head>
 <body>
 

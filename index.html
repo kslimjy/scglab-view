@@ -4,21 +4,20 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>에스씨지랩 경영정보 허브</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body {
   background: #F8FAFC;
-  font-family: 'Noto Sans KR', sans-serif;
+  font-family: 'Pretendard', sans-serif;
   min-height: 100vh;
   display: flex; flex-direction: column;
 }
 
 /* ── Header */
 .header {
-  background: #fff;
-  border-bottom: 1px solid #E2E8F0;
-  padding: 24px 48px;
+  background: #0F172A;
+  padding: 22px 48px;
   display: flex; align-items: center; justify-content: space-between;
 }
 .brand { display: flex; align-items: center; gap: 14px; }
@@ -30,18 +29,44 @@ body {
   font-size: 20px; color: white; font-weight: 800;
   box-shadow: 0 2px 8px rgba(37,99,235,.25);
 }
-.brand-text h1 { font-size: 20px; font-weight: 700; color: #1E293B; letter-spacing: -.4px; }
-.brand-text p  { font-size: 12px; color: #94A3B8; font-family: 'DM Mono', monospace; margin-top: 2px; }
-.header-meta { font-size: 11px; color: #94A3B8; font-family: 'DM Mono', monospace; }
+.brand-text h1 { font-size: 20px; font-weight: 800; color: #fff; letter-spacing: -.6px; }
+.brand-text p  { font-size: 12px; color: #64748B; font-family: 'DM Mono', monospace; margin-top: 2px; }
+.header-meta { font-size: 11px; color: #64748B; font-family: 'DM Mono', monospace; }
 
 /* ── Hero */
 .hero {
   background: linear-gradient(160deg, #EFF6FF 0%, #F8FAFC 60%);
   border-bottom: 1px solid #E2E8F0;
   padding: 52px 48px 44px;
+  display: flex; align-items: center; justify-content: space-between; gap: 36px;
 }
-.hero h2 { font-size: 28px; font-weight: 700; color: #1E293B; letter-spacing: -.5px; line-height: 1.3; }
-.hero p  { font-size: 15px; color: #64748B; margin-top: 10px; line-height: 1.6; max-width: 560px; }
+.hero-text { flex: 1; min-width: 0; }
+.hero-char {
+  flex-shrink: 0; width: 560px; text-align: center;
+}
+.hero-char img {
+  width: 100%; border-radius: 14px; display: block;
+  box-shadow: 0 6px 20px rgba(0,0,0,.12);
+  animation: charFloat 6s ease-in-out infinite;
+}
+.hero-char-cap {
+  margin-top: 12px; display: flex; flex-direction: column;
+  align-items: center; gap: 5px;
+}
+.hero-char-cap .month-tag {
+  font-family: 'DM Mono', monospace; font-size: 11px; font-weight: 600;
+  letter-spacing: .5px; padding: 4px 12px; border-radius: 20px;
+  background: #1E293B; color: #fff;
+}
+.hero-char-cap .month-sub {
+  font-size: 12px; color: #64748B; font-family: 'DM Mono', monospace;
+}
+@keyframes charFloat {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+.hero h2 { font-size: 32px; font-weight: 800; color: #0F172A; letter-spacing: -1px; line-height: 1.25; }
+.hero p  { font-size: 15px; color: #64748B; margin-top: 12px; line-height: 1.7; max-width: 520px; letter-spacing: -.2px; }
 .hero-badges { display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
 .hero-badge {
   font-size: 11px; font-family: 'DM Mono', monospace;
@@ -54,57 +79,30 @@ body {
 /* ── Main Grid */
 .main { padding: 44px 48px 60px; flex: 1; }
 .grid-label {
-  font-size: 11px; font-weight: 600; color: #94A3B8;
-  text-transform: uppercase; letter-spacing: 1px;
-  margin-bottom: 18px;
+  font-size: 13px; font-weight: 700; color: #0F172A;
+  letter-spacing: -.3px; margin-bottom: 18px;
+  display: flex; align-items: center; gap: 8px;
 }
-.month-banner {
-  position: relative; border-radius: 18px; overflow: hidden;
-  margin-bottom: 36px; box-shadow: 0 8px 28px rgba(0,0,0,.16);
-  background: #0F172A; animation: bannerFloat 6s ease-in-out infinite;
+.grid-label::before {
+  content: ''; width: 4px; height: 16px; background: #2563EB; border-radius: 2px;
 }
-.month-banner img {
-  width: 100%; display: block; object-fit: contain;
-  background: #0F172A;
-}
-.month-overlay {
-  position: absolute; left: 0; bottom: 0; right: 0;
-  padding: 20px 28px 18px;
-  background: linear-gradient(to top, rgba(15,23,42,.88) 0%, rgba(15,23,42,.4) 60%, transparent 100%);
-  color: #fff;
-}
-.month-tag {
-  display: inline-block; font-family: 'DM Mono', monospace; font-size: 12px;
-  font-weight: 600; letter-spacing: 1px; padding: 4px 12px;
-  background: rgba(255,255,255,.18); border: 1px solid rgba(255,255,255,.3);
-  border-radius: 20px; margin-bottom: 10px; backdrop-filter: blur(4px);
-}
-.month-title { font-size: 24px; font-weight: 700; letter-spacing: -.5px; }
-.month-sub { font-size: 13px; opacity: .85; margin-top: 4px; font-family: 'DM Mono', monospace; }
-@keyframes bannerFloat {
-  0%,100% { transform: translateY(0); }
-  50% { transform: translateY(-6px); }
-}
-@media(max-width:600px){
-  .month-title { font-size: 18px; }
-  .month-overlay { padding: 18px 20px 16px; }
-}
+
 .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
 
 /* ── Dashboard Card */
 .dash-card {
   background: #fff;
   border: 1px solid #E2E8F0;
-  border-radius: 14px;
-  padding: 28px;
+  border-radius: 16px;
+  padding: 30px;
   text-decoration: none;
-  transition: transform .15s, box-shadow .15s, border-color .15s;
+  transition: transform .18s, box-shadow .18s, border-color .18s;
   display: block;
-  box-shadow: 0 1px 3px rgba(0,0,0,.06);
+  box-shadow: 0 2px 8px rgba(15,23,42,.05);
 }
 .dash-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 24px rgba(0,0,0,.1);
+  transform: translateY(-4px);
+  box-shadow: 0 14px 32px rgba(15,23,42,.12);
   border-color: #BFDBFE;
 }
 .card-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 16px; }
@@ -122,7 +120,7 @@ body {
   background: #F1F5F9; color: #64748B;
 }
 
-.card-title { font-size: 17px; font-weight: 700; color: #1E293B; letter-spacing: -.3px; }
+.card-title { font-size: 18px; font-weight: 700; color: #0F172A; letter-spacing: -.5px; }
 .card-desc  { font-size: 13px; color: #64748B; margin-top: 6px; line-height: 1.6; }
 
 .card-meta { margin-top: 20px; padding-top: 16px; border-top: 1px solid #F1F5F9; }
@@ -144,17 +142,26 @@ body {
 /* ── Stats row */
 .stats-row {
   display: grid; grid-template-columns: repeat(3, 1fr);
-  gap: 14px; margin-top: 20px;
+  gap: 18px; margin-top: 20px;
 }
 .stat-box {
+  position: relative; overflow: hidden;
   background: #fff; border: 1px solid #E2E8F0;
-  border-radius: 10px; padding: 16px 18px;
-  box-shadow: 0 1px 2px rgba(0,0,0,.04);
+  border-radius: 14px; padding: 22px 24px;
+  box-shadow: 0 2px 10px rgba(15,23,42,.05);
+  transition: transform .15s, box-shadow .15s;
 }
-.stat-label { font-size: 11px; color: #94A3B8; text-transform: uppercase; letter-spacing: .5px; font-weight: 500; }
-.stat-val   { font-size: 20px; font-weight: 700; color: #1E293B; font-family: 'DM Mono', monospace;
-              margin-top: 4px; letter-spacing: -.5px; }
-.stat-sub   { font-size: 11px; color: #64748B; margin-top: 2px; }
+.stat-box:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(15,23,42,.09); }
+.stat-box::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+}
+.stat-box:nth-child(1)::before { background: #2563EB; }
+.stat-box:nth-child(2)::before { background: #059669; }
+.stat-box:nth-child(3)::before { background: #D97706; }
+.stat-label { font-size: 11px; color: #94A3B8; text-transform: uppercase; letter-spacing: .8px; font-weight: 600; }
+.stat-val   { font-size: 30px; font-weight: 800; color: #0F172A; font-family: 'Pretendard', sans-serif;
+              margin-top: 8px; letter-spacing: -1.2px; line-height: 1; }
+.stat-sub   { font-size: 12px; color: #64748B; margin-top: 8px; font-weight: 500; }
 
 /* ── Footer */
 .footer {
@@ -167,10 +174,13 @@ body {
 
 @media (max-width: 768px) {
   .header, .hero, .main, .footer { padding-left: 20px; padding-right: 20px; }
-  .hero h2 { font-size: 22px; }
+  .hero { flex-direction: column; align-items: flex-start; }
+  .hero-char { width: 100%; max-width: 320px; margin: 0 auto; }
+  .hero h2 { font-size: 24px; }
   .stats-row { grid-template-columns: 1fr 1fr; }
 }
 </style>
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
 </head>
 <body>
 
@@ -188,26 +198,26 @@ body {
 
 <!-- Hero -->
 <div class="hero">
-  <h2>경영정보 대시보드</h2>
-  <p>에스씨지랩의 경영현황과 재무성과를 한눈에 확인하세요.<br>월별 실적부터 6개년 재무제표까지 통합 제공합니다.</p>
-  <div class="hero-badges">
-    <span class="hero-badge b-blue">2020 – 2026</span>
-    <span class="hero-badge b-green">매출 · 손익 · 재무비율</span>
-    <span class="hero-badge b-amber">거래처별 · 사업부별</span>
+  <div class="hero-text">
+    <h2>경영정보 대시보드</h2>
+    <p>에스씨지랩의 경영현황과 재무성과를 한눈에 확인하세요.<br>월별 실적부터 6개년 재무제표까지 통합 제공합니다.</p>
+    <div class="hero-badges">
+      <span class="hero-badge b-blue">2020 – 2026</span>
+      <span class="hero-badge b-green">매출 · 손익 · 재무비율</span>
+      <span class="hero-badge b-amber">거래처별 · 사업부별</span>
+    </div>
+  </div>
+  <div class="hero-char">
+    <img id="monthImg" src="images/month-04.png" alt="이달의 캐릭터">
+    <div class="hero-char-cap">
+      <span class="month-tag" id="monthTag">로딩중…</span>
+      <span class="month-sub" id="monthSub"></span>
+    </div>
   </div>
 </div>
 
 <!-- Main -->
 <div class="main">
-
-  <!-- 월별 캐릭터 배너 -->
-  <div class="month-banner">
-    <img id="monthImg" src="images/month-04.png" alt="이달의 캐릭터">
-    <div class="month-overlay">
-      <div class="month-tag" id="monthTag">로딩중…</div>
-      <div class="month-sub" id="monthSub"></div>
-    </div>
-  </div>
 
   <!-- Key Metrics -->
   <div class="stats-row" style="margin-bottom:36px; margin-top:0">
@@ -326,29 +336,20 @@ body {
     cy + '년 월별 확정·계획부터 ' + py + '년 연간 손익,<br>' +
     hist + '~' + cy + '년 5개년 히스토리까지 사업부별로 확인합니다.';
 
-  // ───── 월별 캐릭터 배너 (자동 감지) ─────
-  // images 폴더에서 가장 최신 월 이미지를 찾아 표시.
-  // month-05.png를 올리면 5월이 자동으로 뜸. (코드 수정 불필요)
+  // ───── 월별 캐릭터 배너 ─────
+  // ★ 정산 확정월 (매월 데이터 업데이트 시 이 숫자만 변경) ★
+  var settledMonth = 4;   // 현재 4월까지 정산 확정
+
   var monthNames = ['JANUARY','FEBRUARY','MARCH','APRIL','MAY','JUNE',
                     'JULY','AUGUST','SEPTEMBER','OCTOBER','NOVEMBER','DECEMBER'];
 
-  function setBanner(m){
+  (function setBanner(m){
     var mStr = String(m).padStart(2,'0');
     document.getElementById('monthImg').src = 'images/month-' + mStr + '.png';
     document.getElementById('monthTag').textContent = monthNames[m-1] + ' · ' + m + '월';
     document.getElementById('monthSub').textContent = yyyy + '년 ' + m + '월 정산 완료';
-  }
+  })(settledMonth);
 
-  // 12월부터 거꾸로 확인 → 존재하는 가장 최신 월 이미지를 채택
-  function detectLatestMonth(candidate){
-    if(candidate < 1){ return; }          // 이미지가 하나도 없으면 종료
-    var testImg = new Image();
-    var mStr = String(candidate).padStart(2,'0');
-    testImg.onload  = function(){ setBanner(candidate); };       // 있으면 표시
-    testImg.onerror = function(){ detectLatestMonth(candidate-1); }; // 없으면 전월 시도
-    testImg.src = 'images/month-' + mStr + '.png';
-  }
-  detectLatestMonth(12);
 
 
 </script>
