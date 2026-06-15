@@ -58,6 +58,37 @@ body {
   text-transform: uppercase; letter-spacing: 1px;
   margin-bottom: 18px;
 }
+.month-banner {
+  position: relative; border-radius: 18px; overflow: hidden;
+  margin-bottom: 36px; box-shadow: 0 8px 28px rgba(0,0,0,.16);
+  background: #0F172A; animation: bannerFloat 6s ease-in-out infinite;
+}
+.month-banner img {
+  width: 100%; display: block; object-fit: contain;
+  background: #0F172A;
+}
+.month-overlay {
+  position: absolute; left: 0; bottom: 0; right: 0;
+  padding: 20px 28px 18px;
+  background: linear-gradient(to top, rgba(15,23,42,.88) 0%, rgba(15,23,42,.4) 60%, transparent 100%);
+  color: #fff;
+}
+.month-tag {
+  display: inline-block; font-family: 'DM Mono', monospace; font-size: 12px;
+  font-weight: 600; letter-spacing: 1px; padding: 4px 12px;
+  background: rgba(255,255,255,.18); border: 1px solid rgba(255,255,255,.3);
+  border-radius: 20px; margin-bottom: 10px; backdrop-filter: blur(4px);
+}
+.month-title { font-size: 24px; font-weight: 700; letter-spacing: -.5px; }
+.month-sub { font-size: 13px; opacity: .85; margin-top: 4px; font-family: 'DM Mono', monospace; }
+@keyframes bannerFloat {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+@media(max-width:600px){
+  .month-title { font-size: 18px; }
+  .month-overlay { padding: 18px 20px 16px; }
+}
 .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
 
 /* ── Dashboard Card */
@@ -168,6 +199,15 @@ body {
 
 <!-- Main -->
 <div class="main">
+
+  <!-- 월별 캐릭터 배너 -->
+  <div class="month-banner">
+    <img id="monthImg" src="images/month-04.png" alt="이달의 캐릭터">
+    <div class="month-overlay">
+      <div class="month-tag" id="monthTag">MAY · 5월</div>
+      <div class="month-sub" id="monthSub">2026년 5월 정산 완료</div>
+    </div>
+  </div>
 
   <!-- Key Metrics -->
   <div class="stats-row" style="margin-bottom:36px; margin-top:0">
@@ -284,6 +324,18 @@ body {
   document.getElementById('mgmt-desc').innerHTML =
     cy + '년 월별 확정·계획부터 ' + py + '년 연간 손익,<br>' +
     hist + '~' + cy + '년 5개년 히스토리까지 사업부별로 확인합니다.';
+
+  // ───── 월별 캐릭터 배너 설정 ─────
+  // 정산 완료된 월로 직접 지정 (정산 끝나면 이 숫자만 바꾸세요. 예: 6)
+  var currentMonth = 4;
+
+  var monthNames = ['JANUARY','FEBRUARY','MARCH','APRIL','MAY','JUNE',
+                    'JULY','AUGUST','SEPTEMBER','OCTOBER','NOVEMBER','DECEMBER'];
+  var mStr = String(currentMonth).padStart(2,'0');
+  document.getElementById('monthImg').src = 'images/month-' + mStr + '.png';
+  document.getElementById('monthTag').textContent = monthNames[currentMonth-1] + ' · ' + currentMonth + '월';
+  document.getElementById('monthSub').textContent = yyyy + '년 ' + currentMonth + '월 정산 완료';
+
 </script>
 </body>
 </html>
