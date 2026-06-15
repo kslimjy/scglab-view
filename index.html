@@ -204,8 +204,8 @@ body {
   <div class="month-banner">
     <img id="monthImg" src="images/month-04.png" alt="이달의 캐릭터">
     <div class="month-overlay">
-      <div class="month-tag" id="monthTag">MAY · 5월</div>
-      <div class="month-sub" id="monthSub">2026년 5월 정산 완료</div>
+      <div class="month-tag" id="monthTag">로딩중…</div>
+      <div class="month-sub" id="monthSub"></div>
     </div>
   </div>
 
@@ -311,6 +311,7 @@ body {
 </div>
 
 <script>
+
   const d    = new Date();
   const yyyy = d.getFullYear();
   const mm   = String(d.getMonth()+1).padStart(2,'0');
@@ -325,16 +326,30 @@ body {
     cy + '년 월별 확정·계획부터 ' + py + '년 연간 손익,<br>' +
     hist + '~' + cy + '년 5개년 히스토리까지 사업부별로 확인합니다.';
 
-  // ───── 월별 캐릭터 배너 설정 ─────
-  // 정산 완료된 월로 직접 지정 (정산 끝나면 이 숫자만 바꾸세요. 예: 6)
-  var currentMonth = 4;
-
+  // ───── 월별 캐릭터 배너 (자동 감지) ─────
+  // images 폴더에서 가장 최신 월 이미지를 찾아 표시.
+  // month-05.png를 올리면 5월이 자동으로 뜸. (코드 수정 불필요)
   var monthNames = ['JANUARY','FEBRUARY','MARCH','APRIL','MAY','JUNE',
                     'JULY','AUGUST','SEPTEMBER','OCTOBER','NOVEMBER','DECEMBER'];
-  var mStr = String(currentMonth).padStart(2,'0');
-  document.getElementById('monthImg').src = 'images/month-' + mStr + '.png';
-  document.getElementById('monthTag').textContent = monthNames[currentMonth-1] + ' · ' + currentMonth + '월';
-  document.getElementById('monthSub').textContent = yyyy + '년 ' + currentMonth + '월 정산 완료';
+
+  function setBanner(m){
+    var mStr = String(m).padStart(2,'0');
+    document.getElementById('monthImg').src = 'images/month-' + mStr + '.png';
+    document.getElementById('monthTag').textContent = monthNames[m-1] + ' · ' + m + '월';
+    document.getElementById('monthSub').textContent = yyyy + '년 ' + m + '월 정산 완료';
+  }
+
+  // 12월부터 거꾸로 확인 → 존재하는 가장 최신 월 이미지를 채택
+  function detectLatestMonth(candidate){
+    if(candidate < 1){ return; }          // 이미지가 하나도 없으면 종료
+    var testImg = new Image();
+    var mStr = String(candidate).padStart(2,'0');
+    testImg.onload  = function(){ setBanner(candidate); };       // 있으면 표시
+    testImg.onerror = function(){ detectLatestMonth(candidate-1); }; // 없으면 전월 시도
+    testImg.src = 'images/month-' + mStr + '.png';
+  }
+  detectLatestMonth(12);
+
 
 </script>
 </body>
