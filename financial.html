@@ -46,6 +46,17 @@ body{background:var(--bg);color:var(--text);font-family:'Pretendard',sans-serif;
 
 /* KPI */
 .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px;}
+.cash-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:8px;}
+.cash-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:18px 20px;position:relative;overflow:hidden;}
+.cash-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:#2563EB;}
+.cash-card:nth-child(2)::before{background:#059669;}
+.cash-card:nth-child(3)::before{background:#D97706;}
+.cash-card:nth-child(4)::before{background:#7C3AED;}
+.cash-label{font-size:11px;color:var(--text3);font-weight:500;margin-bottom:8px;}
+.cash-value{font-size:26px;font-weight:800;color:var(--text);font-family:'Pretendard',sans-serif;letter-spacing:-1px;}
+.cash-value span{font-size:13px;font-weight:400;color:var(--text3);margin-left:3px;}
+.cash-sub{font-size:11px;color:var(--text3);margin-top:6px;}
+@media(max-width:700px){.cash-grid{grid-template-columns:repeat(2,1fr);}}
 .kpi{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;box-shadow:var(--shadow);}
 .kpi-label{font-size:11px;color:var(--text3);font-weight:500;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;}
 .kpi-value{font-size:24px;font-weight:700;color:var(--text);font-family:'DM Mono',monospace;letter-spacing:-1px;}
@@ -405,6 +416,52 @@ body{background:var(--bg);color:var(--text);font-family:'Pretendard',sans-serif;
       </tbody>
     </table>
   </div>
+
+  <!-- 자금현황 (마감 기준 스냅샷) -->
+  <div class="sec-title" style="margin-top:36px">보유 자금 현황 <span style="font-size:12px;color:#94A3B8;font-weight:400">— 2026년 4월 말일 기준 (정산 마감 시점)</span></div>
+  <div style="background:#FFFBEB;border:1px solid #FDE68A;border-radius:8px;padding:10px 14px;margin-bottom:16px;font-size:12px;color:#92400E;">
+    ※ 실시간 잔액이 아니라 <strong>정산 완료된 월의 말일 기준</strong> 스냅샷입니다. 가장 최근 마감 자료(4월) 기준이며, 이후 거래는 반영되지 않습니다.
+  </div>
+  <div class="cash-grid">
+    <div class="cash-card">
+      <div class="cash-label">현금성 자산 (가용시재+금융상품)</div>
+      <div class="cash-value">40.5<span>억원</span></div>
+      <div class="cash-sub">즉시·단기 동원 가능</div>
+    </div>
+    <div class="cash-card">
+      <div class="cash-label">가용시재 (즉시 사용 가능)</div>
+      <div class="cash-value">10.5<span>억원</span></div>
+      <div class="cash-sub">보통예금 2.3억 + MMT 8.2억</div>
+    </div>
+    <div class="cash-card">
+      <div class="cash-label">금융상품 (사용제한)</div>
+      <div class="cash-value">30.0<span>억원</span></div>
+      <div class="cash-sub">발행어음·회사채·정기예금</div>
+    </div>
+    <div class="cash-card">
+      <div class="cash-label">퇴직연금 (신한 DB)</div>
+      <div class="cash-value">10.7<span>억원</span></div>
+      <div class="cash-sub">사외적립</div>
+    </div>
+  </div>
+  <div class="table-wrap" style="margin-top:16px">
+    <table class="fin-table">
+      <thead>
+        <tr><th>구분</th><th>상세</th><th>금액(억원)</th><th>비고</th></tr>
+      </thead>
+      <tbody>
+        <tr class="highlight-row"><td>가용시재 합계</td><td>원화 보통예금 + MMT</td><td class="pos-g">10.5</td><td>즉시 사용 가능</td></tr>
+        <tr><td>　보통예금</td><td>신한 외 다수 계좌</td><td>2.3</td><td>—</td></tr>
+        <tr><td>　MMT</td><td>NH투자증권</td><td>8.2</td><td>연 2.47%</td></tr>
+        <tr class="highlight-row"><td>금융상품 소계</td><td>사용제한 예금</td><td>30.0</td><td>만기 보유</td></tr>
+        <tr><td>　NH 발행어음</td><td>—</td><td>15.0</td><td>26.10.29 만기</td></tr>
+        <tr><td>　NH 회사채(삼성에프엔리츠)</td><td>—</td><td>5.0</td><td>27.09.13 만기</td></tr>
+        <tr><td>　NH 정기예금(지역수협)</td><td>—</td><td>10.0</td><td>27.04.29 만기</td></tr>
+        <tr class="highlight-row"><td>퇴직연금</td><td>신한 DB형</td><td>10.7</td><td>사외적립</td></tr>
+        <tr class="section-row"><td>총 보유자금</td><td>가용시재 + 금융상품 + 퇴직연금</td><td>51.2</td><td>차입금 0</td></tr>
+      </tbody>
+    </table>
+  </div>
 </div>
 
 </div><!-- /main -->
@@ -415,11 +472,17 @@ var yr  = ['2020','2021','2022','2023','2024','2025'];
 var GC  = 'rgba(0,0,0,0.05)';
 var TC  = '#94A3B8';
 
-// 억원 단위 포맷 함수
+// 억원 단위 포맷 함수 (축 눈금용)
 function fmtAuk(v) {
   var abs = Math.abs(v);
   if (abs === 0) return '0';
   if (abs >= 100) return (v / 100).toFixed(0) + '억';
+  return (v / 100).toFixed(1) + '억';
+}
+
+// 툴팁용 포맷 (항상 소수점 1자리)
+function fmtAukTip(v) {
+  if (v === 0) return '0.0억';
   return (v / 100).toFixed(1) + '억';
 }
 
@@ -430,7 +493,7 @@ var pluginOpts = {
     callbacks: {
       label: function(ctx) {
         var v = ctx.parsed.y;
-        return ' ' + ctx.dataset.label + ': ' + fmtAuk(v) + '원';
+        return ' ' + ctx.dataset.label + ': ' + fmtAukTip(v) + '원';
       }
     }
   }
