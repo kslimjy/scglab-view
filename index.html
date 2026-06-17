@@ -138,10 +138,18 @@ body {
   transition: background .15s;
 }
 .dash-card:hover .arrow-btn { background: #DBEAFE; }
+.img-card {
+  padding: 16px; overflow: hidden; display: flex; align-items: center; justify-content: center;
+  background: #fff;
+}
+.img-card img {
+  max-width: 100%; max-height: 100%; width: auto; height: auto;
+  object-fit: contain; display: block; border-radius: 8px;
+}
 
 /* ── Stats row */
 .stats-row {
-  display: grid; grid-template-columns: repeat(3, 1fr);
+  display: grid; grid-template-columns: repeat(4, 1fr);
   gap: 18px; margin-top: 20px;
 }
 .stat-box {
@@ -158,10 +166,23 @@ body {
 .stat-box:nth-child(1)::before { background: #2563EB; }
 .stat-box:nth-child(2)::before { background: #059669; }
 .stat-box:nth-child(3)::before { background: #D97706; }
+.stat-box:nth-child(4)::before { background: #7C3AED; }
 .stat-label { font-size: 11px; color: #94A3B8; text-transform: uppercase; letter-spacing: .8px; font-weight: 600; }
 .stat-val   { font-size: 30px; font-weight: 800; color: #0F172A; font-family: 'Pretendard', sans-serif;
               margin-top: 8px; letter-spacing: -1.2px; line-height: 1; }
 .stat-sub   { font-size: 12px; color: #64748B; margin-top: 8px; font-weight: 500; }
+.stat-ref   { font-size: 11px; color: #94A3B8; margin-top: 8px; font-weight: 400; }
+.data-notice {
+  display: flex; align-items: center; gap: 10px;
+  background: #EFF6FF; border: 1px solid #BFDBFE; border-radius: 10px;
+  padding: 12px 18px; margin-bottom: 24px;
+}
+.notice-dot {
+  width: 8px; height: 8px; border-radius: 50%; background: #2563EB;
+  flex-shrink: 0; box-shadow: 0 0 0 3px rgba(37,99,235,.15);
+}
+.notice-text { font-size: 13px; color: #1E40AF; line-height: 1.5; }
+.notice-text strong { font-weight: 700; }
 
 /* ── Footer */
 .footer {
@@ -175,7 +196,6 @@ body {
 @media (max-width: 768px) {
   .header, .hero, .main, .footer { padding-left: 20px; padding-right: 20px; }
   .hero { flex-direction: column; align-items: flex-start; }
-  .hero-char { width: 100%; max-width: 320px; margin: 0 auto; }
   .hero h2 { font-size: 24px; }
   .stats-row { grid-template-columns: 1fr 1fr; }
 }
@@ -208,7 +228,7 @@ body {
     </div>
   </div>
   <div class="hero-char">
-    <img id="monthImg" src="images/month-04.png" alt="이달의 캐릭터">
+    <img id="monthImg" src="images/month-05.png" alt="이달의 캐릭터">
     <div class="hero-char-cap">
       <span class="month-tag" id="monthTag">로딩중…</span>
       <span class="month-sub" id="monthSub"></span>
@@ -220,21 +240,32 @@ body {
 <div class="main">
 
   <!-- Key Metrics -->
+  <!-- 데이터 기준 안내 -->
+  <div class="data-notice">
+    <span class="notice-dot"></span>
+    <span class="notice-text"><strong>2026년 5월 실적 반영 완료</strong> · 2026년 추정값은 <strong>1~5월 실적 + 6~12월 2QF 추정</strong> 기준입니다.</span>
+  </div>
+
   <div class="stats-row" style="margin-bottom:36px; margin-top:0">
     <div class="stat-box">
       <div class="stat-label">2025 연간 매출</div>
       <div class="stat-val">63.5억</div>
-      <div class="stat-sub">전년비 +8.3%</div>
+      <div class="stat-ref">PATH 46.6억 · 빌링 16.9억</div>
     </div>
     <div class="stat-box">
       <div class="stat-label">2025 영업이익</div>
       <div class="stat-val">3.8억</div>
-      <div class="stat-sub">영업이익률 6.0%</div>
+      <div class="stat-ref">당기순이익 7.0억</div>
     </div>
     <div class="stat-box">
       <div class="stat-label">2026 추정 매출</div>
-      <div class="stat-val">84.5억</div>
-      <div class="stat-sub">2QF 기준</div>
+      <div class="stat-val">85.7억</div>
+      <div class="stat-ref">PATH 65.8억 · 빌링 19.9억</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-label">2026 추정 영업이익</div>
+      <div class="stat-val">6.4억</div>
+      <div class="stat-ref">당기순이익 9.7억</div>
     </div>
   </div>
 
@@ -311,6 +342,11 @@ body {
       </div>
     </a>
 
+    <!-- 이미지 카드 (CEO평가 카드 자리 대체, 월별 카드 이미지) -->
+    <div class="dash-card img-card">
+      <img id="cardImg" src="images/card-05.png" alt="이달의 이미지">
+    </div>
+
   </div>
 </div>
 
@@ -338,7 +374,7 @@ body {
 
   // ───── 월별 캐릭터 배너 ─────
   // ★ 정산 확정월 (매월 데이터 업데이트 시 이 숫자만 변경) ★
-  var settledMonth = 4;   // 현재 4월까지 정산 확정
+  var settledMonth = 5;   // 현재 5월까지 정산 확정
 
   var monthNames = ['JANUARY','FEBRUARY','MARCH','APRIL','MAY','JUNE',
                     'JULY','AUGUST','SEPTEMBER','OCTOBER','NOVEMBER','DECEMBER'];
@@ -346,6 +382,7 @@ body {
   (function setBanner(m){
     var mStr = String(m).padStart(2,'0');
     document.getElementById('monthImg').src = 'images/month-' + mStr + '.png';
+    document.getElementById('cardImg').src = 'images/card-' + mStr + '.png';
     document.getElementById('monthTag').textContent = monthNames[m-1] + ' · ' + m + '월';
     document.getElementById('monthSub').textContent = yyyy + '년 ' + m + '월 정산 완료';
   })(settledMonth);

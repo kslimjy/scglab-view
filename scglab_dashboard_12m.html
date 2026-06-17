@@ -184,7 +184,7 @@ td.cum{background:#fffbf0 !important;font-weight:700;color:var(--text)}
 
 <div class="hdr">
   <div class="logo">에스씨지<em>랩</em> 경영현황</div>
-  <div class="hdr-meta">최종 업데이트: <b>2026년 4월</b></div>
+  <div class="hdr-meta">최종 업데이트: <b>2026년 5월</b></div>
 </div>
 
 <div class="tabs">
@@ -206,7 +206,7 @@ td.cum{background:#fffbf0 !important;font-weight:700;color:var(--text)}
     <button class="fb confirmed" onclick="setM('2',this)">2월 ✓</button>
     <button class="fb confirmed" onclick="setM('3',this)">3월 ✓</button>
     <button class="fb confirmed" onclick="setM('4',this)">4월 ✓</button>
-    <button class="fb" onclick="setM('5',this)">5월</button>
+    <button class="fb confirmed" onclick="setM('5',this)">5월 ✓</button>
     <button class="fb" onclick="setM('6',this)">6월</button>
     <button class="fb" onclick="setM('7',this)">7월</button>
     <button class="fb" onclick="setM('8',this)">8월</button>
@@ -371,7 +371,7 @@ td.cum{background:#fffbf0 !important;font-weight:700;color:var(--text)}
   <!-- 사업부별 실적 비교 -->
   <div class="ccard">
     <div class="ctitle">사업부별 실적 비교</div>
-    <div class="csub">26년 누계(1~4월) — 실적 · 계획 · 전년 동기 · 증감률</div>
+    <div class="csub">26년 누계(1~5월) — 실적 · 계획 · 전년 동기 · 증감률</div>
     <div id="cmpTbl"></div>
   </div>
 
@@ -384,7 +384,7 @@ td.cum{background:#fffbf0 !important;font-weight:700;color:var(--text)}
     <span style="font-size:18px">📋</span>
     <div>
       <div style="font-size:13px;font-weight:700;color:#374151">2026년 추정 — 2Q 발표자료 기준 (4월 기준 추정)</div>
-      <div style="font-size:11px;color:#6b7280;margin-top:2px">1~4월: 확정 실적 &nbsp;|&nbsp; 5~12월: 추정값 (회색 배경으로 표시) &nbsp;|&nbsp; 연간 합계: 매출 83.4억 / 영업이익 6.9억</div>
+      <div style="font-size:11px;color:#6b7280;margin-top:2px">1~5월: 확정 실적 &nbsp;|&nbsp; 6~12월: 추정값 (회색 배경으로 표시) &nbsp;|&nbsp; 연간 합계: 매출 85.7억 / 영업이익 6.4억</div>
     </div>
   </div>
 
@@ -392,14 +392,14 @@ td.cum{background:#fffbf0 !important;font-weight:700;color:var(--text)}
   <div class="ach3" id="achFcst"></div>
 
   <!-- 월별 요약 카드 -->
-  <div class="sh"><h2>월별 요약</h2><div class="sh-sub">1~4월 확정 · 5~12월 추정</div></div>
+  <div class="sh"><h2>월별 요약</h2><div class="sh-sub">1~5월 확정 · 6~12월 추정</div></div>
   <div id="fcstMonthCards" style="display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:16px"></div>
 
   <!-- 차트 -->
   <div class="cgrid c21">
     <div class="ccard">
       <div class="ctitle">매출 / 영업이익 월별 추이</div>
-      <div class="csub">실선=확정(1~4월) · 점선=추정(5~12월)</div>
+      <div class="csub">실선=확정(1~5월) · 점선=추정(6~12월)</div>
       <div class="cwrap h260"><canvas id="cFcstBar"></canvas></div>
       <div class="legend">
         <div class="li"><div class="ld" style="background:var(--blue)"></div>PATH 매출(확정)</div>
@@ -434,12 +434,12 @@ td.cum{background:#fffbf0 !important;font-weight:700;color:var(--text)}
   </div>
   <div class="rev-section" id="revPathFcst">
     <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px">PATH 매출 구분 (추정)</div>
-    <div style="font-size:11px;color:var(--text3);margin-bottom:14px">1~4월 확정 / 5~12월 추정 — 단위: 백만원</div>
+    <div style="font-size:11px;color:var(--text3);margin-bottom:14px">1~5월 확정 / 6~12월 추정 — 단위: 백만원</div>
     <div id="revPathFcstContent"></div>
   </div>
   <div class="rev-section" id="revBillFcst">
     <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px">빌링 매출 구분 (추정)</div>
-    <div style="font-size:11px;color:var(--text3);margin-bottom:14px">1~4월 확정 / 5~12월 추정 — 단위: 백만원</div>
+    <div style="font-size:11px;color:var(--text3);margin-bottom:14px">1~5월 확정 / 6~12월 추정 — 단위: 백만원</div>
     <div id="revBillFcstContent"></div>
   </div>
 
@@ -585,21 +585,21 @@ td.cum{background:#fffbf0 !important;font-weight:700;color:var(--text)}
 const MN4  = ['1월','2월','3월','4월'];
 const MN12 = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
 
-// ── 2QF 추정 데이터 (5~12월, 인덱스0=5월~7=12월)
-// 출처: 26년 손익 2QF / 매출구분 입력양식 2026 (4월기준 추정)
+// ── 2QF 추정 데이터 (6~12월 추정, 인덱스0=5월(실적)~7=12월)
+// 출처: 26년 손익 2QF. 5월은 실적, 6~12월 추정 (5월 Monthly 반영)
 const FCST = {
-  매출P:[460230716,460866916,400947916,405855716,519931166,514598166,540188766,584733766],
-  매출B:[158000000,157200000,161800000,159800000,161800000,159800000,161800000,159800000],
-  매출S:[618230716,618066916,562747916,565655716,681731166,674398166,701988766,744533766],
-  원가P:[267606415,283400535,276418872,280378872,364254872,367818872,377942872,427503872],
-  원가B:[123014359,133928439,108151610,107342709,121318359,108314359,111850359,113829359],
-  원가S:[390620774,417328974,384570482,387721581,485573231,476133231,489793231,541333231],
-  총이P:[192624301,177466381,124529044,125476844,155676294,146779294,162245894,157229894],
-  총이B:[34985641,23271561,53648390,52457291,40481641,51485641,49949641,45970641],
-  총이S:[227609942,200737942,178177434,177934135,196157935,198264935,212195535,203200535],
-  판관P:[108088590,112779210,104103280,102713890,123580760,134080170,143095680,280360890],
-  판관B:[26351888,27952936,30574532,29284922,25987719,24552309,23986799,56667256],
-  판관S:[134440478,140732146,134677812,131998812,149568479,158632479,167082479,337028146],
+  매출P:[557102151,460866916,400947916,405855716,519931166,514598166,540188766,584733766],
+  매출B:[178279770,157200000,161800000,159800000,161800000,159800000,161800000,159800000],
+  매출S:[735381921,618066916,562747916,565655716,681731166,674398166,701988766,744533766],
+  원가P:[391630801,283400535,276418872,280378872,364254872,367818872,377942872,427503872],
+  원가B:[110225675,133928439,108151610,107342709,121318359,108314359,111850359,113829359],
+  원가S:[501856476,417328974,384570482,387721581,485573231,476133231,489793231,541333231],
+  총이P:[165471350,177466381,124529044,125476844,155676294,146779294,162245894,157229894],
+  총이B:[68054095,23271561,53648390,52457291,40481641,51485641,49949641,45970641],
+  총이S:[233525445,200737942,178177434,177934135,196157935,198264935,212195535,203200535],
+  판관P:[141359893,112779210,104103280,102713890,123580760,134080170,143095680,280360890],
+  판관B:[33078013,27952936,30574532,29284922,25987719,24552309,23986799,56667256],
+  판관S:[174437906,140732146,134677812,131998812,149568479,158632479,167082479,337028146],
   인건P:[40437090,40503710,38701600,38973940,41427390,41448290,41799420,92139000],
   인건B:[13882310,13815690,15617800,15345460,12892010,12871110,12519980,25180400],
   인건S:[54319400,54319400,54319400,54319400,54319400,54319400,54319400,117319400],
@@ -609,10 +609,10 @@ const FCST = {
   기타판P:[37091500,38487210,37841680,36179950,40895060,40656880,41321260,90758980],
   기타판B:[12449578,12845536,14936732,13919462,11889019,11661199,11446819,23954766],
   기타판S:[49541078,51332746,52778412,50099412,52784079,52318079,52768079,114713746],
-  영업P:[84535711,64687171,20425764,22762954,32095534,12699124,19150214,-123130996],
-  영업B:[8633753,-4681375,23073858,23172369,14493922,26933332,25962842,-10696615],
-  영업S:[93169464,60005796,43499622,45935323,46589456,39632456,45113056,-133827611],
-  순이S:[95540406,89560585,56875934,58775775,80830018,56360887,58212408,-61894023],
+  영업P:[24111457,64687171,20425764,22762954,32095534,12699124,19150214,-123130996],
+  영업B:[34976082,-4681375,23073858,23172369,14493922,26933332,25962842,-10696615],
+  영업S:[59087539,60005796,43499622,45935323,46589456,39632456,45113056,-133827611],
+  순이S:[70863662,89560585,56875934,58775775,80830018,56360887,58212408,-61894023],
   원가급P:[184437520,189745860,189745860,189745860,189745860,189745860,189745860,224745860],
   원가급B:[40165500,40165500,40165500,40165500,40165500,40165500,40165500,42165500],
   원가상P:[30960000,30960000,30960000,30960000,100620000,116100000,116100000,116100000],
@@ -636,10 +636,10 @@ const FCST = {
 // ── 매출 구분 데이터 (과금/광고/커머스/기타 | B2B/B2C/솔루션/인증)
 const REV = {
   // PATH 26년 실적
-  path_과금_26a:   [297067182,308926946,299843948,292468290,null,null,null,null,null,null,null,null],
-  path_광고_26a:   [109889334,107972167,121410531,116197751,null,null,null,null,null,null,null,null],
-  path_커머스_26a: [171681818,156954545,383013091,211011636,null,null,null,null,null,null,null,null],
-  path_기타_26a:   [  4783968,  5255677,  5351958,  4944129,null,null,null,null,null,null,null,null],
+  path_과금_26a:   [297067182,308926946,299843948,292468290,285139950,null,null,null,null,null,null,null],
+  path_광고_26a:   [109889334,107972167,121410531,116197751,100727962,null,null,null,null,null,null,null],
+  path_커머스_26a: [171681818,156954545,383013091,211011636,159272909,null,null,null,null,null,null,null],
+  path_기타_26a:   [4783968,5255677,5351958,4944129,4692348,null,null,null,null,null,null,null],
   // PATH 26년 계획
   path_과금_26p:   [234737650,239154950,243986400,245987850,247884950,249981500,248653950,252004850,256263000,261105650,265833050,270970650],
   path_광고_26p:   [126445000,129100000,135050000,122000000,116600000,114250000,103700000,104460000,103210000,105450000,126100000,142900000],
@@ -651,10 +651,10 @@ const REV = {
   path_커머스_25a: [        0,        0,        0,        0,        0,        0,        0,        0,        0,        0, 44200000,151157273],
   path_기타_25a:   [  7753948, 44588362,  4748217,  4553749,  4381450, 34351397,  4451086,  4362353, 34390712,  4316324, 13896739, 34603331],
   // 빌링 26년 실적
-  bill_B2B_26a:    [170721491,124069370,128616414,122865156,null,null,null,null,null,null,null,null],
-  bill_B2C_26a:    [ 33500000, 33500000, 33500000, 33500000,null,null,null,null,null,null,null,null],
-  bill_솔루션_26a: [  2030347,  1502570,  1641642,  2455142,null,null,null,null,null,null,null,null],
-  bill_인증_26a:   [        0,        0,        0,        0,null,null,null,null,null,null,null,null],
+  bill_B2B_26a:    [170721491,124069370,128616414,122865156,141907660,null,null,null,null,null,null,null],
+  bill_B2C_26a:    [33500000,33500000,33500000,33500000,33500000,null,null,null,null,null,null,null],
+  bill_솔루션_26a: [2030347,1502570,1641642,2455142,2872110,null,null,null,null,null,null,null],
+  bill_인증_26a:   [0,0,0,0,0,null,null,null,null,null,null,null],
   // 빌링 26년 계획
   bill_B2B_26p:    [114700000,114700000,114700000,114700000,114700000,114700000,114700000,114700000,114700000,114700000,114700000,114700000],
   bill_B2C_26p:    [ 33500000, 33500000, 33500000, 33500000, 33500000, 33500000, 33500000, 33500000, 33500000, 33500000, 33500000, 33500000],
@@ -667,42 +667,42 @@ const REV = {
   bill_인증_25a:   [  6775300,  2773900,        0,        0,        0,        0,        0,        0,        0,        0,        0,        0],
 };
 
-// ── 검증된 원본 데이터 (26년 실적 1~4월, 5~12월은 null=미입력)
+// ── 검증된 원본 데이터 (26년 실적 1~5월, 6~12월은 null=미입력)
 const NULL12 = [null,null,null,null,null,null,null,null,null,null,null,null];
 function fill(arr4){ return [...arr4, null,null,null,null,null,null,null,null]; }
 
 const A26={
-  매출P:fill([583422302,579109335,809619528,624621806]),
-  매출B:fill([206251838,159071940,163758056,158820298]),
-  매출S:fill([789674140,738181275,973377584,783442104]),
-  원가P:fill([365409745,393439673,581305444,416682953]),
-  원가B:fill([101615264,104897274,108743845,108205101]),
-  원가S:fill([467025009,498336947,690049289,524888054]),
-  총이P:fill([218012557,185669662,228314084,207938853]),
-  총이B:fill([104636574,54174666,55014211,50615197]),
-  총이S:fill([322649131,239844328,283328295,258554050]),
-  판관P:fill([150664082,144397446,136180067,151930569]),
-  판관B:fill([24967746,21385565,17145594,21703084]),
-  판관S:fill([175631828,165783011,153325661,173633653]),
-  직원급P:fill([35280850,37462900,44711430,42842742]),
-  직원급B:fill([12472510,10290460,9043580,10912268]),
-  성과급P:fill([0,0,-27581270,0]),
-  성과급B:fill([0,0,-5578730,0]),
-  퇴직급P:fill([2963530,2842280,13612830,3223409]),
-  퇴직급B:fill([1047671,780739,2753412,821020]),
-  광고P:fill([75906567,62740974,42643228,61815735]),
-  광고B:fill([20000,20000,20000,20000]),
-  광고S:fill([75926567,62760974,42663228,61835735]),
-  영업P:fill([67348475,41272216,92134017,56008284]),
-  영업B:fill([79668828,32789101,37868617,28912113]),
-  영업S:fill([147017303,74061317,130002634,84920397]),
-  순이S:fill([179189771,122611243,150422121,103489685]),
-  원가급P:fill([171361255,169241930,180217432,174788907]),
-  원가급B:fill([35483951,35315888,42445333,39805721]),
-  원가상P:fill([146113101,145884227,346977428,192710646]),
-  원가상B:fill([0,0,0,0]),
-  원가합P:fill([365409745,393439673,581305444,416682953]),
-  원가합B:fill([101615264,104897274,108743845,108205101]),
+  매출P:[583422302,579109335,809619528,624621806,557102151,null,null,null,null,null,null,null],
+  매출B:[206251838,159071940,163758056,158820298,178279770,null,null,null,null,null,null,null],
+  매출S:[789674140,738181275,973377584,783442104,735381921,null,null,null,null,null,null,null],
+  원가P:[365409745,393439673,581305444,416682953,391630801,null,null,null,null,null,null,null],
+  원가B:[101615264,104897274,108743845,108205101,110225675,null,null,null,null,null,null,null],
+  원가S:[467025009,498336947,690049289,524888054,501856476,null,null,null,null,null,null,null],
+  총이P:[218012557,185669662,228314084,207938853,165471350,null,null,null,null,null,null,null],
+  총이B:[104636574,54174666,55014211,50615197,68054095,null,null,null,null,null,null,null],
+  총이S:[322649131,239844328,283328295,258554050,233525445,null,null,null,null,null,null,null],
+  판관P:[150664082,144397446,136180067,151930569,141359893,null,null,null,null,null,null,null],
+  판관B:[24967746,21385565,17145594,21703084,33078013,null,null,null,null,null,null,null],
+  판관S:[175631828,165783011,153325661,173633653,174437906,null,null,null,null,null,null,null],
+  직원급P:[35280850,37462900,44711430,42842742,40746297,null,null,null,null,null,null,null],
+  직원급B:[12472510,10290460,9043580,10912268,13008713,null,null,null,null,null,null,null],
+  성과급P:[0,0,-27581270,0,0,null,null,null,null,null,null,null],
+  성과급B:[0,0,-5578730,0,0,null,null,null,null,null,null,null],
+  퇴직급P:[2963530,2842280,13612830,3223409,22399148,null,null,null,null,null,null,null],
+  퇴직급B:[1047671,780739,2753412,821020,7151180,null,null,null,null,null,null,null],
+  광고P:[75906567,62740974,42643228,61815735,34104190,null,null,null,null,null,null,null],
+  광고B:[20000,20000,20000,20000,20000,null,null,null,null,null,null,null],
+  광고S:[75926567,62760974,42663228,61835735,34124190,null,null,null,null,null,null,null],
+  영업P:[67348475,41272216,92134017,56008284,24111457,null,null,null,null,null,null,null],
+  영업B:[79668828,32789101,37868617,28912113,34976082,null,null,null,null,null,null,null],
+  영업S:[147017303,74061317,130002634,84920397,59087539,null,null,null,null,null,null,null],
+  순이S:[179189771,122611243,150422121,103489685,70863662,null,null,null,null,null,null,null],
+  원가급P:[171361255,169241930,180217432,174788907,188348584,null,null,null,null,null,null,null],
+  원가급B:[35483951,35315888,42445333,39805721,44577482,null,null,null,null,null,null,null],
+  원가상P:[146113101,145884227,346977428,192710646,145634373,null,null,null,null,null,null,null],
+  원가상B:[0,0,0,0,0,null,null,null,null,null,null,null],
+  원가합P:[365409745,393439673,581305444,416682953,391630801,null,null,null,null,null,null,null],
+  원가합B:[101615264,104897274,108743845,108205101,110225675,null,null,null,null,null,null,null],
   인건P:fill([38244380,40305180,30742990,46066151],null,12),
   인건B:fill([13520181,11071199,6218262,11733288],null,12),
   기타판P:fill([36513135,41351292,62793849,44048683],null,12),
@@ -727,7 +727,7 @@ A26.원가기P=A26.원가합P.map((v,i)=>v===null?null:v-A26.원가급P[i]-A26.�
 A26.원가기B=A26.원가합B.map((v,i)=>v===null?null:v-A26.원가급B[i]-A26.원가상B[i]);
 
 // 실적 있는 월 수
-const 실적월수 = A26.매출S.filter(v=>v!==null).length; // 현재 4
+const 실적월수 = A26.매출S.filter(v=>v!==null).length; // 현재 5
 
 
 const P26={
@@ -1399,11 +1399,11 @@ function renderCmp(){
   ];
   let sumHtml=`<div class="ccard" style="margin-bottom:14px">
     <div class="ctitle">전사 실적 요약</div>
-    <div class="csub">26년 누계(1~4월) 기준 — 단위: 억원</div>
+    <div class="csub">26년 누계(1~5월) 기준 — 단위: 억원</div>
     <table style="width:100%"><thead><tr>
       <th style="${THL}">구분</th>
       <th style="${TH};color:var(--blue)">26년 실적</th>
-      <th style="${TH}">26년 계획 (1~4월)</th>
+      <th style="${TH}">26년 계획 (1~5월)</th>
       <th style="${TH}">vs 계획</th>
       <th style="${TH}">25년 동기</th>
       <th style="${TH}">vs 전년</th>
@@ -1633,7 +1633,7 @@ function renderRev25(type){
   document.getElementById(containerId).innerHTML = h;
 }
 
-// ── 비교탭 매출구분 렌더 (1~4월 누계: 26실적 vs 26계획 vs 25동기)
+// ── 비교탭 매출구분 렌더 (1~5월 누계: 26실적 vs 26계획 vs 25동기)
 function renderRevCmp(type){
   const items = type==='path' ? [
     {label:'과금',   k26a:'path_과금_26a',   k26p:'path_과금_26p',   k25a:'path_과금_25a',   color:'#4b7cf3'},
@@ -1649,7 +1649,7 @@ function renderRevCmp(type){
   const containerId = type==='path' ? 'revPathCmpContent' : 'revBillCmpContent';
   const dash = '<span style="color:var(--border2)">-</span>';
 
-  const sum4 = arr => (arr||[]).slice(0,4).reduce((s,v)=>s+(v||0),0);
+  const sum4 = arr => (arr||[]).slice(0,5).reduce((s,v)=>s+(v||0),0);  // 1~5월 누계
   const fa_  = v => v ? fa(v) : dash;
   const diffTag_ = (a,b) => {
     if(!b) return dash;
@@ -1708,7 +1708,7 @@ function renderRevTable(containerId, items, colors){
   let h = '<div style="overflow-x:auto"><table class="rev-table"><thead><tr>';
   h += '<th>구분</th>';
   activeMI.forEach(i=>{
-    const dim = !isAll && i>=4; // 미입력
+    const dim = !isAll && i>=5; // 미입력 (5월까지 확정)
     h += `<th style="${dim?'color:#c4c8d8':''}">${MN12[i]}</th>`;
   });
   if(isAll) h += '<th style="color:var(--gold);background:#fffbf0;border-left:2px solid var(--border2)">누계</th>';
@@ -1806,13 +1806,13 @@ function renderRevBill(){
 
 // ── 추정 탭 렌더
 function renderFcst(){
-  // 1~4월 확정 + 5~12월 추정 합산 배열 만들기
-  const ACT_CNT = 4;  // 확정 월 수
-  const FCST_CNT = 8; // 추정 월 수 (5~12월)
+  // 1~5월 확정 + 6~12월 추정 합산 배열 만들기
+  const ACT_CNT = 5;  // 확정 월 수
+  const FCST_CNT = 7; // 추정 월 수 (6~12월)
 
   // 확정 + 추정 합쳐서 12개월 배열 생성
   function merge(actArr, fcstArr){
-    return [...actArr.slice(0,4), ...fcstArr];
+    return [...actArr.slice(0,5), ...fcstArr.slice(1)];  // 1~5월 실적+6~12월 추정
   }
 
   const 매출S12 = merge(A26.매출S, FCST.매출S);
@@ -1897,7 +1897,7 @@ function renderFcst(){
   // ③ 월별 카드 (12개월)
   let mc='';
   MN12.forEach((mn,i)=>{
-    const isFcst = i>=4;
+    const isFcst = i>=5;  // 6월부터 추정
     const ms=매출S12[i], os=영업S12[i], mp=매출P12[i], mb=매출B12[i];
     const prev=i>0?매출S12[i-1]:null;
     const mom=prev?(ms-prev)/Math.abs(prev):null;
@@ -1917,9 +1917,9 @@ function renderFcst(){
 
   // ④ 차트
   dc('fcstBar'); dc('fcstPie');
-  // 확정(1~4월) vs 추정(5~12월) 색상 구분
-  const pathColors = [...Array(4).fill('rgba(75,124,243,.85)'), ...Array(8).fill('rgba(75,124,243,.35)')];
-  const billColors = [...Array(4).fill('rgba(30,201,151,.85)'), ...Array(8).fill('rgba(30,201,151,.35)')];
+  // 확정(1~5월) vs 추정(6~12월) 색상 구분
+  const pathColors = [...Array(5).fill('rgba(75,124,243,.85)'), ...Array(7).fill('rgba(75,124,243,.35)')];
+  const billColors = [...Array(5).fill('rgba(30,201,151,.85)'), ...Array(7).fill('rgba(30,201,151,.35)')];
 
   charts.fcstBar=new Chart(document.getElementById('cFcstBar').getContext('2d'),{
     data:{labels:MN12,datasets:[
@@ -1929,8 +1929,8 @@ function renderFcst(){
        backgroundColor:billColors,stack:'s',borderRadius:3},
       {type:'line',label:'영업이익',data:영업S12.map(v=>Math.round(v/1e6)),
        borderColor:'#d97706',borderWidth:2,
-       segment:{borderDash:ctx=>ctx.p0DataIndex>=3?[5,4]:undefined},
-       pointBackgroundColor:영업S12.map((_,i)=>i<4?'#d97706':'rgba(217,119,6,.45)'),
+       segment:{borderDash:ctx=>ctx.p0DataIndex>=4?[5,4]:undefined},
+       pointBackgroundColor:영업S12.map((_,i)=>i<5?'#d97706':'rgba(217,119,6,.45)'),
        pointRadius:4,tension:.35,yAxisID:'y2'},
     ]},
     options:{responsive:true,maintainAspectRatio:false,
@@ -1952,10 +1952,10 @@ function renderFcst(){
   // ⑤ 손익 상세 테이블 (연간 합계)
   const fcst_인건P = FCST.인건P, fcst_인건B = FCST.인건B, fcst_인건S = FCST.인건S;
   function mergeSum(actArr, fcstArr){
-    return SUM(actArr,0,4) + fcstArr.reduce((s,v)=>s+v,0);
+    return SUM(actArr,0,5) + fcstArr.slice(1).reduce((s,v)=>s+(v||0),0);  // 1~5월 실적+6~12월 추정
   }
 
-  // 검증된 연간 합계값 (확정1~4월 + 추정5~12월)
+  // 검증된 연간 합계값 (확정1~5월 + 추정6~12월)
   const R25   = {매출S:6352271116,원가S:4108857274,총이S:2243413842,판관S:1860817636,인건S:628214721,광고S:446080923,기타판S:786521992,영업S:382596206,순이S:702688199};
   const RPLAN = {매출S:7447469442,원가S:5304483899,총이S:2142985543,판관S:1963324051,인건S:709659560,광고S:544024830,기타판S:709639661,영업S:179661492,순이S:550504495};
   // 매출구분 연간값 (CY)
@@ -2044,8 +2044,8 @@ function renderFcst(){
   const 원가P_fcst=mergeSum(A26.원가P,FCST.원가P), 원가B_fcst=mergeSum(A26.원가B,FCST.원가B);
   const 영업P_fcst=mergeSum(A26.영업P,FCST.영업P), 영업B_fcst=mergeSum(A26.영업B,FCST.영업B);
 
-  // 매출구분 연간 합계 (확정 1~4 + 추정 5~12)
-  const revSum=(actArr,fcstArr)=>(actArr.slice(0,4).reduce((s,v)=>s+(v||0),0))+(fcstArr.reduce((s,v)=>s+(v||0),0));
+  // 매출구분 연간 합계 (확정 1~5 + 추정 6~12)
+  const revSum=(actArr,fcstArr)=>(actArr.slice(0,5).reduce((s,v)=>s+(v||0),0))+(fcstArr.slice(1).reduce((s,v)=>s+(v||0),0));
   const 과금_fcst=revSum(REV.path_과금_26a,FCST.path_과금);
   const 광고R_fcst=revSum(REV.path_광고_26a,FCST.path_광고);
   const 커머스_fcst=revSum(REV.path_커머스_26a,FCST.path_커머스);
@@ -2149,11 +2149,11 @@ function renderRevFcst(type){
   const dash='<span style="color:var(--border2)">-</span>';
   const fm_=v=>(v===null||v===0)?dash:Math.round(v/1e6).toLocaleString('ko-KR');
 
-  // 확정(1~4)+추정(5~12) 합쳐서 12개월
+  // 확정(1~5)+추정(6~12) 합쳐서 12개월
   let h='<div style="overflow-x:auto"><table class="rev-table wide"><thead><tr>';
   h+='<th style="min-width:80px">구분</th>';
   MN12.forEach((m,i)=>{
-    const isFcst=i>=4;
+    const isFcst=i>=5;
     h+=`<th style="${isFcst?'color:#9ca3af;background:#f7f7f8':''}">${m}${isFcst?' *':''}</th>`;
   });
   h+='<th style="color:var(--gold);background:#fffbf0;border-left:2px solid var(--border2)">연간</th>';
@@ -2161,11 +2161,11 @@ function renderRevFcst(type){
 
   let totals=new Array(12).fill(0);
   items.forEach(({label,act,fcst,color})=>{
-    const full12=[...act.slice(0,4),...fcst];
+    const full12=[...act.slice(0,5),...fcst.slice(1)];  // 1~5월 실적+6~12월 추정
     full12.forEach((v,i)=>{if(v) totals[i]+=v;});
     h+=`<tr><td style="color:${color};border-left:3px solid ${color};font-weight:700">${label}</td>`;
     full12.forEach((v,i)=>{
-      const isFcst=i>=4;
+      const isFcst=i>=5;
       h+=`<td style="font-weight:${isFcst?400:700};color:${isFcst?'#1f2937':''};background:${isFcst?'#e2e8f0':''}">${fm_(v)}</td>`;
     });
     const tot=full12.reduce((s,v)=>s+(v||0),0);
@@ -2174,7 +2174,7 @@ function renderRevFcst(type){
   });
   h+='<tr class="total"><td>합계</td>';
   totals.forEach((v,i)=>{
-    const isFcst=i>=4;
+    const isFcst=i>=5;
     h+=`<td style="background:${isFcst?'#f0f0f0':''}">${v?Math.round(v/1e6).toLocaleString():dash}</td>`;
   });
   const gt=totals.reduce((s,v)=>s+v,0);
@@ -2222,7 +2222,7 @@ function onPie26Click(evt, mi, isAll){
   const side=idx===0?'path':'bill';
 
   // 현재 선택 기간
-  const gV2=(arr)=>isAll ? arr.slice(0,4).reduce((s,v)=>s+(v||0),0) : (arr[mi]||0);
+  const gV2=(arr)=>isAll ? arr.slice(0,5).reduce((s,v)=>s+(v||0),0) : (arr[mi]||0);
 
   let items, totalVal;
   if(side==='path'){
@@ -2263,7 +2263,7 @@ function onPieFcstClick(evt){
   const idx=pts[0].index;
   const side=idx===0?'path':'bill';
 
-  const revSum2=(actArr,fcstArr)=>(actArr.slice(0,4).reduce((s,v)=>s+(v||0),0))+(fcstArr.reduce((s,v)=>s+(v||0),0));
+  const revSum2=(actArr,fcstArr)=>(actArr.slice(0,5).reduce((s,v)=>s+(v||0),0))+(fcstArr.slice(1).reduce((s,v)=>s+(v||0),0));
   let items, totalVal;
   if(side==='path'){
     totalVal=revSum2(A26.매출P,FCST.매출P);
