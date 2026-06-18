@@ -19,7 +19,7 @@ html{background:var(--bg)}
 body{font-family:'Pretendard',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:13px;-webkit-font-smoothing:antialiased;letter-spacing:-.2px}
 
 .hdr{background:#0F172A;padding:0 32px;display:flex;align-items:center;justify-content:space-between;height:60px;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(15,23,42,.15)}
-.logo{font-size:17px;font-weight:800;color:#fff;letter-spacing:-.4px} .logo em{color:#60A5FA;font-style:normal}
+.logo{font-size:17px;font-weight:800;color:#fff;letter-spacing:-.4px} .logo em{color:#fff;font-style:normal}
 .hdr-meta{font-size:11px;color:#64748B} .hdr-meta b{color:#CBD5E1}
 
 .tabs{background:var(--white);border-bottom:1px solid var(--border);padding:0 32px;display:flex}
@@ -35,6 +35,11 @@ body{font-family:'Pretendard',sans-serif;background:var(--bg);color:var(--text);
 .fb:hover{border-color:var(--mint);color:var(--mint)} .fb.on{background:var(--text);border-color:var(--text);color:#fff}
 .fb.confirmed{background:#e0f2fe;border-color:#38bdf8;color:#0369a1;font-weight:600}
 .fb.confirmed.on{background:#0ea5e9;border-color:#0284c7;color:#fff}
+.fb.confirmed.on::after{content:' ✓';font-weight:700}
+.fb:disabled{background:#f1f5f9;border-color:#e2e8f0;color:#cbd5e1;cursor:not-allowed}
+.fb:disabled:hover{border-color:#e2e8f0;color:#cbd5e1}
+.fb.mbtn:hover{border-color:#0284c7;color:#0284c7}
+.fb.mbtn.confirmed:hover{background:#bae6fd}
 
 .kpi-row{display:grid;gap:12px;margin-bottom:16px}
 .kpi5{grid-template-columns:repeat(5,1fr)}
@@ -183,7 +188,7 @@ td.cum{background:#fffbf0 !important;font-weight:700;color:var(--text)}
 <body>
 
 <div class="hdr">
-  <div class="logo">에스씨지<em>랩</em> 경영현황</div>
+  <div class="logo">에스씨지랩 경영현황</div>
   <div class="hdr-meta">최종 업데이트: <b>2026년 5월</b></div>
 </div>
 
@@ -201,19 +206,19 @@ td.cum{background:#fffbf0 !important;font-weight:700;color:var(--text)}
 <div class="page on" id="p26">
   <div class="fbar">
     <span class="flabel">기간 선택</span>
-    <button class="fb confirmed on" onclick="setM('all',this)">누계 (확정)</button>
-    <button class="fb confirmed" onclick="setM('1',this)">1월 ✓</button>
-    <button class="fb confirmed" onclick="setM('2',this)">2월 ✓</button>
-    <button class="fb confirmed" onclick="setM('3',this)">3월 ✓</button>
-    <button class="fb confirmed" onclick="setM('4',this)">4월 ✓</button>
-    <button class="fb confirmed" onclick="setM('5',this)">5월 ✓</button>
-    <button class="fb" onclick="setM('6',this)">6월</button>
-    <button class="fb" onclick="setM('7',this)">7월</button>
-    <button class="fb" onclick="setM('8',this)">8월</button>
-    <button class="fb" onclick="setM('9',this)">9월</button>
-    <button class="fb" onclick="setM('10',this)">10월</button>
-    <button class="fb" onclick="setM('11',this)">11월</button>
-    <button class="fb" onclick="setM('12',this)">12월</button>
+    <button class="fb confirmed allbtn on" onclick="setAll(this)">누계 (확정)</button>
+    <button class="fb confirmed mbtn" data-m="1" onclick="toggleM(1,this)">1월</button>
+    <button class="fb confirmed mbtn" data-m="2" onclick="toggleM(2,this)">2월</button>
+    <button class="fb confirmed mbtn" data-m="3" onclick="toggleM(3,this)">3월</button>
+    <button class="fb confirmed mbtn" data-m="4" onclick="toggleM(4,this)">4월</button>
+    <button class="fb confirmed mbtn" data-m="5" onclick="toggleM(5,this)">5월</button>
+    <button class="fb" disabled>6월</button>
+    <button class="fb" disabled>7월</button>
+    <button class="fb" disabled>8월</button>
+    <button class="fb" disabled>9월</button>
+    <button class="fb" disabled>10월</button>
+    <button class="fb" disabled>11월</button>
+    <button class="fb" disabled>12월</button>
   </div>
 
   <div class="kpi-row kpi5" id="kpi26top"></div>
@@ -756,10 +761,36 @@ const A25={
 };
 
 // ── 유틸
-let charts={}, curM='all';
+let charts={};
 const MN12_LABEL = MN12; // 12개월 레이블
 const SUM=(a,f,t)=>a.slice(f||0,t===undefined?a.length:t).reduce((s,v)=>s+(v||0),0);
 const gI=m=>m==='all'?null:parseInt(m)-1;
+// ── 다중 선택 상태: selMonths=선택된 월인덱스 배열. 빈배열=전체 마감월(누계)
+const CONFIRMED_MAX = 5; // 마감 완료 월 수 (매월 갱신: 6월마감시 6)
+let selMonths = []; // 비어있으면 전체 누계
+// 현재 표시 대상 월 인덱스 배열 반환 (정렬됨)
+function activeMonths(){
+  if(selMonths.length===0){ // 전체 누계
+    return Array.from({length:CONFIRMED_MAX},(_,i)=>i);
+  }
+  return [...selMonths].sort((a,b)=>a-b);
+}
+// 선택 배열의 합산 (여러 월 누계)
+function sumSel(arr){
+  return activeMonths().reduce((s,i)=>s+(arr[i]||0),0);
+}
+// 선택이 "전체 누계"인지
+function isAllSel(){ return selMonths.length===0; }
+// 연속 월 여부 (라벨용)
+function selLabel(){
+  const ms=activeMonths();
+  if(ms.length===0) return '';
+  const first=ms[0]+1, last=ms[ms.length-1]+1;
+  // 연속이면 N~M월, 아니면 나열
+  const isSeq = ms.every((v,k)=>k===0||v===ms[k-1]+1);
+  if(isSeq) return first===last?`${first}월`:`${first}~${last}월`;
+  return ms.map(i=>i+1).join(',')+'월';
+}
 const gV=(arr,mi)=>{
   if(mi===null){ // 누계: null이 아닌 것만 합산
     return arr.reduce((s,v)=>s+(v||0),0);
@@ -808,58 +839,64 @@ function dc(id){if(charts[id]){charts[id].destroy();delete charts[id];}}
 
 // ── 2026 렌더
 function render26(){
-  const mi=gI(curM), isAll=(mi===null);
-  const hasActual = isAll ? 실적월수>0 : A26.매출S[mi]!==null;
-  const cnt = isAll ? 실적월수 : (hasActual ? mi+1 : 0);
+  const ms = activeMonths();           // 표시 대상 월 인덱스들
+  const isAll = isAllSel();            // 전체 누계 여부
+  const cnt = ms.length;              // 선택 월 수
+  const single = (cnt===1);          // 단일 월 선택
+  const mi = single ? ms[0] : null;  // 단일일 때만 인덱스
+  const periodLabel = selLabel();    // "1~3월" 등
+  const hasActual = cnt>0 && ms.every(i=>A26.매출S[i]!==null);
 
-  const 매출S  = hasActual ? gV(A26.매출S,mi)  : null;
-  const 매출P_ = hasActual ? gV(A26.매출P,mi)  : null;
-  const 매출B_ = hasActual ? gV(A26.매출B,mi)  : null;
-  const 영업S  = hasActual ? gV(A26.영업S,mi)  : null;
-  const 순이S  = hasActual ? gV(A26.순이S,mi)  : null;
-  const 영업P_val = hasActual ? gV(A26.영업P,mi) : null;
-  const 영업B_val = hasActual ? gV(A26.영업B,mi) : null;
+  // 선택된 월들의 합산 (단일이면 그 달 값, 다중이면 누계)
+  const 매출S  = hasActual ? sumSel(A26.매출S)  : null;
+  const 매출P_ = hasActual ? sumSel(A26.매출P)  : null;
+  const 매출B_ = hasActual ? sumSel(A26.매출B)  : null;
+  const 영업S  = hasActual ? sumSel(A26.영업S)  : null;
+  const 순이S  = hasActual ? sumSel(A26.순이S)  : null;
+  const 영업P_val = hasActual ? sumSel(A26.영업P) : null;
+  const 영업B_val = hasActual ? sumSel(A26.영업B) : null;
 
-  const 매출25 = hasActual ? (isAll ? SUM(A25.매출S,0,cnt) : A25.매출S[mi]) : null;
-  const 영업25 = hasActual ? (isAll ? SUM(A25.영업S,0,cnt) : A25.영업S[mi]) : null;
-  const yoyLabel = isAll ? `전년 동기간(1~${cnt}월) 기준` : `전년 동월(25년 ${MN12[mi]}) 기준`;
+  // 전년 동기간: 선택된 같은 월들의 25년 합
+  const 매출25 = hasActual ? ms.reduce((s,i)=>s+(A25.매출S[i]||0),0) : null;
+  const 영업25 = hasActual ? ms.reduce((s,i)=>s+(A25.영업S[i]||0),0) : null;
+  const yoyLabel = `전년 동기간(${periodLabel}) 기준`;
   const pBi   = (매출S && 매출P_) ? 매출P_/매출S : null;
   const mYoY  = (매출S && 매출25) ? (매출S-매출25)/Math.abs(매출25) : null;
   const oYoY  = (영업S!==null && 영업25) ? (영업S-영업25)/Math.abs(영업25) : null;
-  // 별칭 (하위 코드 호환)
   const 매출P=매출P_, 매출B=매출B_;
+  const periodTag = isAll ? `누계(${periodLabel})` : (single?`${periodLabel}`:`선택 누계(${periodLabel})`);
 
   // ① KPI 5개
   document.getElementById('kpi26top').innerHTML=`
     <div class="kcard accent">
-      <div class="klabel">전체 매출 ${isAll?`누계(1~${cnt}월)`:'당월'}</div>
+      <div class="klabel">전체 매출 ${periodTag}</div>
       <div class="kval">${매출S!==null?fa(매출S):'<span style="color:var(--text3);font-size:16px">미입력</span>'}</div>
       <div class="ksub">${매출S?'영업이익률 '+fp(영업S/매출S):''}</div>
-      ${mYoY!==null?`<div class="ktag ${mYoY>=0?'up':'dn'}">${mYoY>=0?'▲':'▼'} ${fp(Math.abs(mYoY))} ${isAll?'전년동기':'전년동월'}</div>`:''}
+      ${mYoY!==null?`<div class="ktag ${mYoY>=0?'up':'dn'}">${mYoY>=0?'▲':'▼'} ${fp(Math.abs(mYoY))} 전년동기</div>`:''}
     </div>
     <div class="kcard">
-      <div class="klabel">PATH 매출 ${isAll?'누계':'당월'}</div>
+      <div class="klabel">PATH 매출 ${periodTag}</div>
       <div class="kval" style="color:var(--blue)">${매출P?fa(매출P):'<span style="color:var(--text3);font-size:16px">-</span>'}</div>
       <div class="ksub">${(pBi&&매출P&&영업P_val)?'비중 '+fp(pBi)+' | 영업이익률 '+fp(영업P_val/매출P):''}</div>
     </div>
     <div class="kcard">
-      <div class="klabel">빌링 매출 ${isAll?'누계':'당월'}</div>
+      <div class="klabel">빌링 매출 ${periodTag}</div>
       <div class="kval" style="color:var(--mint)">${매출B?fa(매출B):'<span style="color:var(--text3);font-size:16px">-</span>'}</div>
       <div class="ksub">${(pBi&&매출B&&영업B_val)?'비중 '+fp(1-pBi)+' | 영업이익률 '+fp(영업B_val/매출B):''}</div>
     </div>
     <div class="kcard">
-      <div class="klabel">영업이익 ${isAll?'누계':'당월'}</div>
+      <div class="klabel">영업이익 ${periodTag}</div>
       <div class="kval" style="color:var(--gold)">${영업S!==null?fa(영업S):'<span style="color:var(--text3);font-size:16px">-</span>'}</div>
       <div class="ksub">${(영업S!==null&&매출S)?'영업이익률 '+fp(영업S/매출S):''}</div>
-      ${oYoY!==null?`<div class="ktag ${oYoY>=0?'up':'dn'}">${oYoY>=0?'▲':'▼'} ${fp(Math.abs(oYoY))} ${isAll?'전년동기':'전년동월'}</div>`:''}
+      ${oYoY!==null?`<div class="ktag ${oYoY>=0?'up':'dn'}">${oYoY>=0?'▲':'▼'} ${fp(Math.abs(oYoY))} 전년동기</div>`:''}
     </div>
     <div class="kcard">
-      <div class="klabel">당기순이익 ${isAll?'누계':'당월'}</div>
+      <div class="klabel">당기순이익 ${periodTag}</div>
       <div class="kval" style="color:var(--purple)">${순이S!==null?fa(순이S):'<span style="color:var(--text3);font-size:16px">-</span>'}</div>
       <div class="ksub">${(순이S!==null&&매출S)?'순이익률 '+fp(순이S/매출S):''}</div>
     </div>`;
 
-  // ② 배너: 누계=연간계획 대비, 월별=해당월 계획 대비
+  // ② 배너: 전체누계=연간계획 대비 / 선택=해당기간 계획 대비
   if(isAll){
     // 연간계획 배너
     const cy매출=P26.CY매출S, cy영업=P26.CY영업S;
@@ -892,15 +929,15 @@ function render26(){
         </div>
       </div>`;
   } else {
-    // 월간계획 배너
-    const pm=P26.매출S[mi]||0, po=P26.영업S[mi]||0;
+    // 선택 기간 계획 배너 (선택된 월들의 계획 합계 대비)
+    const pm=sumSel(P26.매출S), po=sumSel(P26.영업S);
     if(!hasActual){
-      // 실적 미입력 월: 계획만 표시
+      // 실적 미입력 포함: 계획만 표시
       document.getElementById('planBannerWrap').innerHTML=`
         <div class="plan-banner" style="justify-content:center">
-          <div class="pb-item"><div class="pb-label">${MN12[mi]} 계획 매출</div><div class="pb-val" style="color:var(--blue)">${fa(pm)}</div></div>
+          <div class="pb-item"><div class="pb-label">${periodLabel} 계획 매출</div><div class="pb-val" style="color:var(--blue)">${fa(pm)}</div></div>
           <div class="pb-div"></div>
-          <div class="pb-item"><div class="pb-label">${MN12[mi]} 계획 영업이익</div><div class="pb-val" style="color:var(--gold)">${fa(po)}</div></div>
+          <div class="pb-item"><div class="pb-label">${periodLabel} 계획 영업이익</div><div class="pb-val" style="color:var(--gold)">${fa(po)}</div></div>
           <div class="pb-div"></div>
           <div class="pb-item" style="text-align:center"><div class="pb-label">실적</div><div class="pb-val" style="color:var(--text3);font-size:13px">미입력</div></div>
         </div>`;
@@ -909,7 +946,7 @@ function render26(){
       const 매출초과=잔여매출<0, 영업초과=잔여영업<0;
       document.getElementById('planBannerWrap').innerHTML=`
         <div class="plan-banner">
-          <div class="pb-item"><div class="pb-label">${MN12[mi]} 계획 매출</div><div class="pb-val" style="color:var(--blue)">${fa(pm)}</div></div>
+          <div class="pb-item"><div class="pb-label">${periodLabel} 계획 매출</div><div class="pb-val" style="color:var(--blue)">${fa(pm)}</div></div>
           <div class="pb-div"></div>
           <div class="pb-item"><div class="pb-label">실적</div><div class="pb-val">${fa(매출S)}</div></div>
           <div class="pb-div"></div>
@@ -919,7 +956,7 @@ function render26(){
             ${매출초과?`<div class="pb-exceed">초과달성 +${fa(Math.abs(잔여매출))}</div>`:`<div class="pb-val" style="color:var(--red)">미달 ${fa(잔여매출)}</div>`}
           </div>
           <div class="pb-div"></div>
-          <div class="pb-item"><div class="pb-label">${MN12[mi]} 계획 영업이익</div><div class="pb-val" style="color:var(--gold)">${fa(po)}</div></div>
+          <div class="pb-item"><div class="pb-label">${periodLabel} 계획 영업이익</div><div class="pb-val" style="color:var(--gold)">${fa(po)}</div></div>
           <div class="pb-div"></div>
           <div class="pb-item"><div class="pb-label">실적</div><div class="pb-val">${fa(영업S)}</div></div>
           <div class="pb-div"></div>
@@ -933,11 +970,11 @@ function render26(){
   }
 
   // ③ 달성률 카드
-  const achBasis = isAll ? `연간 사업계획 대비 누계 실적(1~${cnt}월)` : `${MN12[mi]} 월간 계획 대비`;
-  const plan매출 = isAll ? P26.CY매출S : (P26.매출S[mi]||1);
-  const plan영업 = isAll ? P26.CY영업S : (P26.영업S[mi]||1);
-  const plan매출label = isAll ? '연간 계획' : `${MN12[mi]} 계획`;
-  const plan영업label = isAll ? '연간 계획' : `${MN12[mi]} 계획`;
+  const achBasis = isAll ? `연간 사업계획 대비 누계 실적(${periodLabel})` : `${periodLabel} 계획 대비`;
+  const plan매출 = isAll ? P26.CY매출S : (sumSel(P26.매출S)||1);
+  const plan영업 = isAll ? P26.CY영업S : (sumSel(P26.영업S)||1);
+  const plan매출label = isAll ? '연간 계획' : `${periodLabel} 계획`;
+  const plan영업label = isAll ? '연간 계획' : `${periodLabel} 계획`;
 
   const achCard=(label,basis,act,plan,plabel,pct,color)=>{
     const exceed=act!==null && act>plan;
@@ -977,7 +1014,7 @@ function render26(){
         <div class="achitem">25년 동기 <b>${fa(매출25)}</b></div>
         <div class="${mYoY>=0?'ach-exceed':'achdiff neg'}">${mYoY>=0?'성장 +':'감소 '}${fa(Math.abs(매출S-매출25))}</div>
       </div>
-    </div>` : `<div class="achcard"><div class="achhead"><div><div class="achlabel">매출 전년 성장률</div><div class="achbasis">${yoyLabel}</div></div><div class="achpct" style="color:var(--text3)">-</div></div><div class="achbar"></div><div class="achvals"><div class="achitem" style="color:var(--text3)">실적 미입력</div><div class="achitem">25년 동기 <b>${fa(A25.매출S[mi])}</b></div></div></div>`);
+    </div>` : `<div class="achcard"><div class="achhead"><div><div class="achlabel">매출 전년 성장률</div><div class="achbasis">${yoyLabel}</div></div><div class="achpct" style="color:var(--text3)">-</div></div><div class="achbar"></div><div class="achvals"><div class="achitem" style="color:var(--text3)">실적 미입력</div><div class="achitem">25년 동기 <b>${fa(ms.reduce((s,i)=>s+(A25.매출S[i]||0),0))}</b></div></div></div>`);
 
   // ④ 월별 요약 카드 (12개월, 미입력은 공란)
   let mc='';
@@ -1034,7 +1071,7 @@ function render26(){
       type:'doughnut',
       data:{labels:['PATH','빌링'],datasets:[{data:[pvm,bvm],backgroundColor:['rgba(75,124,243,.85)','rgba(30,201,151,.85)'],borderWidth:2,borderColor:'#fff',hoverOffset:6}]},
       options:{responsive:true,maintainAspectRatio:false,cutout:'62%',
-        onClick:(evt)=>onPie26Click(evt,mi,isAll),
+        onClick:(evt)=>onPie26Click(evt,single?mi:null,isAll),
         plugins:{legend:{display:true,position:'bottom',labels:{color:'#52576a',font:{size:11},padding:14,usePointStyle:true}},
         tooltip:{...TT,callbacks:{label:ctx=>` ${ctx.label}: ${faT(ctx.raw*1e6)} (${fp(ctx.raw/(pvm+bvm))})`}}}}
     });
@@ -1043,10 +1080,10 @@ function render26(){
     if(pieWrap) pieWrap.innerHTML='<div style="height:200px;display:flex;align-items:center;justify-content:center;color:var(--text3);font-size:12px;flex-direction:column;gap:6px"><span style="font-size:24px">📭</span>실적 미입력</div>';
     if(pieDesc) pieDesc.textContent='';
   }
-  document.getElementById('pieLabel26').textContent=isAll?`누계 (1~${cnt}월) 기준`:(mi!==null?MN12[mi]+' 기준':'');
+  document.getElementById('pieLabel26').textContent=isAll?`누계 (${periodLabel}) 기준`:`${periodLabel} 기준`;
 
   // ⑦ 테이블: 누계 시 12개월 전체 컬럼 표시 (실적 없는 달은 공란), 월별 시 해당 월만
-  const activeMIdxs = isAll ? [0,1,2,3,4,5,6,7,8,9,10,11] : (hasActual?[mi]:[]);
+  const activeMIdxs = isAll ? [0,1,2,3,4,5,6,7,8,9,10,11] : (hasActual?ms:[]);
 
   function thead(){
     const STK = 'position:sticky;left:0;background:#f8f9fb;z-index:2;border-right:1px solid var(--border2)';
@@ -1700,9 +1737,8 @@ function renderRevCmp(type){
 }
 
 function renderRevTable(containerId, items, colors){
-  const mi = gI(curM);
-  const isAll = mi===null;
-  const activeMI = isAll ? [0,1,2,3,4,5,6,7,8,9,10,11] : [mi];
+  const isAll = isAllSel();
+  const activeMI = isAll ? [0,1,2,3,4,5,6,7,8,9,10,11] : activeMonths();
 
   // 헤더
   let h = '<div style="overflow-x:auto"><table class="rev-table"><thead><tr>';
@@ -2221,8 +2257,8 @@ function onPie26Click(evt, mi, isAll){
   const idx=pts[0].index; // 0=PATH, 1=빌링
   const side=idx===0?'path':'bill';
 
-  // 현재 선택 기간
-  const gV2=(arr)=>isAll ? arr.slice(0,5).reduce((s,v)=>s+(v||0),0) : (arr[mi]||0);
+  // 현재 선택 기간 (다중선택 대응: 전역 activeMonths 사용)
+  const gV2=(arr)=>activeMonths().reduce((s,i)=>s+(arr[i]||0),0);
 
   let items, totalVal;
   if(side==='path'){
@@ -2526,11 +2562,27 @@ function pg(id,btn){
   if(id==='pfcst') renderFcst();
   if(id==='phist') renderHist();
 }
-function setM(m,btn){
-  curM=m;
-  document.querySelectorAll('.fb').forEach(b=>b.classList.remove('on'));
-  btn.classList.add('on'); render26();
-  // 열려있는 매출구분 섹션 갱신
+// ── 누계(확정) 버튼: 전체 마감월 선택
+function setAll(btn){
+  selMonths=[];
+  document.querySelectorAll('.mbtn').forEach(b=>b.classList.remove('on'));
+  document.querySelector('.allbtn').classList.add('on');
+  rerender();
+}
+// ── 월 버튼 토글: 선택/해제
+function toggleM(m,btn){
+  const idx=m-1;
+  const pos=selMonths.indexOf(idx);
+  if(pos>=0){ selMonths.splice(pos,1); btn.classList.remove('on'); }
+  else { selMonths.push(idx); btn.classList.add('on'); }
+  // 월을 하나라도 선택하면 누계버튼 해제, 다 풀리면 누계로 복귀
+  const allbtn=document.querySelector('.allbtn');
+  if(selMonths.length===0){ allbtn.classList.add('on'); }
+  else { allbtn.classList.remove('on'); }
+  rerender();
+}
+function rerender(){
+  render26();
   if(document.getElementById('revPath').classList.contains('show')) renderRevPath();
   if(document.getElementById('revBill').classList.contains('show')) renderRevBill();
 }

@@ -26,7 +26,7 @@ body{background:var(--bg);color:var(--text);font-family:'Pretendard',sans-serif;
 .header{background:#0F172A;padding:20px 40px;display:flex;align-items:center;justify-content:space-between;}
 .header-left{display:flex;align-items:center;gap:14px;}
 .header-logo{width:36px;height:36px;background:var(--blue);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff;font-weight:700;}
-.header-left h1{font-size:18px;font-weight:800;color:#fff;letter-spacing:-.4px;}
+.header-left h1{font-size:18px;font-weight:700;color:#fff;letter-spacing:-.4px;}
 .header-left p{font-size:11px;color:#64748B;font-family:'DM Mono',monospace;margin-top:2px;}
 .header-right{display:flex;gap:10px;align-items:center;}
 .badge{font-size:11px;font-family:'DM Mono',monospace;background:var(--blue-dim);color:var(--blue);border:1px solid rgba(37,99,235,.15);border-radius:20px;padding:3px 12px;}
@@ -40,7 +40,7 @@ body{background:var(--bg);color:var(--text);font-family:'Pretendard',sans-serif;
 .tab.active{color:var(--blue);border-bottom-color:var(--blue);font-weight:600;}
 
 /* Layout */
-.main{padding:28px 40px 48px;max-width:1300px;margin:0 auto;}
+.main{padding:28px 40px 48px;max-width:1180px;margin:0 auto;}
 .panel{display:none;}
 .panel.active{display:block;}
 
@@ -77,14 +77,14 @@ body{background:var(--bg);color:var(--text);font-family:'Pretendard',sans-serif;
 .chart-wrap{position:relative;height:240px;}
 
 /* Table */
-.fin-table{width:100%;border-collapse:collapse;font-size:13px;}
-.fin-table th{background:var(--bg3);color:var(--text2);font-weight:600;padding:10px 14px;text-align:right;border-bottom:2px solid var(--border2);font-family:'DM Mono',monospace;font-size:12px;}
+.fin-table{width:100%;border-collapse:collapse;font-size:14px;}
+.fin-table th{background:var(--bg3);color:var(--text);font-weight:700;padding:12px 16px;text-align:right;border-bottom:2px solid var(--border2);font-family:'DM Mono',monospace;font-size:13px;}
 .fin-table th:first-child{text-align:left;}
-.fin-table td{padding:9px 14px;text-align:right;border-bottom:1px solid var(--border);color:var(--text2);font-family:'DM Mono',monospace;}
-.fin-table td:first-child{text-align:left;color:var(--text);font-family:'Pretendard',sans-serif;}
+.fin-table td{padding:11px 16px;text-align:right;border-bottom:1px solid var(--border);color:var(--text);font-weight:500;font-family:'DM Mono',monospace;font-size:14px;}
+.fin-table td:first-child{text-align:left;color:var(--text);font-weight:600;font-family:'Pretendard',sans-serif;}
 .fin-table tr:hover td{background:var(--bg3);}
-.fin-table .section-row td{background:var(--bg3);color:var(--text);font-weight:600;}
-.fin-table .highlight-row td{color:var(--blue);font-weight:700;}
+.fin-table .section-row td{background:#EFF2F7;color:var(--text);font-weight:700;font-size:14px;}
+.fin-table .highlight-row td{color:var(--blue);font-weight:800;background:#F5F8FF;font-size:14px;}
 .fin-table .neg{color:var(--red)!important;}
 .fin-table .pos-g{color:var(--green)!important;}
 .table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:var(--radius);}
@@ -418,20 +418,20 @@ body{background:var(--bg);color:var(--text);font-family:'Pretendard',sans-serif;
   </div>
 
   <!-- 자금현황 (마감 기준 스냅샷) -->
-  <div class="sec-title" style="margin-top:36px">보유 자금 현황 <span style="font-size:12px;color:#94A3B8;font-weight:400">— 2026년 4월 말일 기준 (정산 마감 시점)</span></div>
+  <div class="sec-title" style="margin-top:36px">보유 자금 현황 <span style="font-size:12px;color:#94A3B8;font-weight:400">— 2026년 5월 말일 기준 (정산 마감 시점)</span></div>
   <div style="background:#FFFBEB;border:1px solid #FDE68A;border-radius:8px;padding:10px 14px;margin-bottom:16px;font-size:12px;color:#92400E;">
-    ※ 실시간 잔액이 아니라 <strong>정산 완료된 월의 말일 기준</strong> 스냅샷입니다. 가장 최근 마감 자료(4월) 기준이며, 이후 거래는 반영되지 않습니다.
+    ※ 실시간 잔액이 아니라 <strong>정산 완료된 월의 말일 기준</strong> 스냅샷입니다. 가장 최근 마감 자료(5월) 기준이며, 이후 거래는 반영되지 않습니다.
   </div>
   <div class="cash-grid">
     <div class="cash-card">
       <div class="cash-label">현금성 자산 (가용시재+금융상품)</div>
-      <div class="cash-value">40.5<span>억원</span></div>
+      <div class="cash-value">41.3<span>억원</span></div>
       <div class="cash-sub">즉시·단기 동원 가능</div>
     </div>
     <div class="cash-card">
       <div class="cash-label">가용시재 (즉시 사용 가능)</div>
-      <div class="cash-value">10.5<span>억원</span></div>
-      <div class="cash-sub">보통예금 2.3억 + MMT 8.2억</div>
+      <div class="cash-value">11.3<span>억원</span></div>
+      <div class="cash-sub">보통예금 0.6억 + MMT 10.7억</div>
     </div>
     <div class="cash-card">
       <div class="cash-label">금융상품 (사용제한)</div>
@@ -447,22 +447,24 @@ body{background:var(--bg);color:var(--text);font-family:'Pretendard',sans-serif;
   <div class="table-wrap" style="margin-top:16px">
     <table class="fin-table">
       <thead>
-        <tr><th>구분</th><th>상세</th><th>금액(억원)</th><th>비고</th></tr>
+        <tr><th>구분</th><th>상세</th><th>금액(억원)</th><th>금리</th><th>만기</th><th>연간 추정이자</th></tr>
       </thead>
       <tbody>
-        <tr class="highlight-row"><td>가용시재 합계</td><td>원화 보통예금 + MMT</td><td class="pos-g">10.5</td><td>즉시 사용 가능</td></tr>
-        <tr><td>　보통예금</td><td>신한 외 다수 계좌</td><td>2.3</td><td>—</td></tr>
-        <tr><td>　MMT</td><td>NH투자증권</td><td>8.2</td><td>연 2.47%</td></tr>
-        <tr class="highlight-row"><td>금융상품 소계</td><td>사용제한 예금</td><td>30.0</td><td>만기 보유</td></tr>
-        <tr><td>　NH 발행어음</td><td>—</td><td>15.0</td><td>26.10.29 만기</td></tr>
-        <tr><td>　NH 회사채(삼성에프엔리츠)</td><td>—</td><td>5.0</td><td>27.09.13 만기</td></tr>
-        <tr><td>　NH 정기예금(지역수협)</td><td>—</td><td>10.0</td><td>27.04.29 만기</td></tr>
-        <tr class="highlight-row"><td>퇴직연금</td><td>신한 DB형</td><td>10.7</td><td>사외적립</td></tr>
-        <tr class="section-row"><td>총 보유자금</td><td>가용시재 + 금융상품 + 퇴직연금</td><td>51.2</td><td>차입금 0</td></tr>
+        <tr class="highlight-row"><td>가용시재 합계</td><td>원화 보통예금 + MMT</td><td class="pos-g">11.3</td><td>—</td><td>—</td><td>—</td></tr>
+        <tr><td>　보통예금</td><td>신한 외 다수 계좌</td><td>0.6</td><td>—</td><td>수시</td><td>—</td></tr>
+        <tr><td>　MMT</td><td>NH투자증권</td><td>10.7</td><td>변동(수시물)</td><td>수시</td><td>변동</td></tr>
+        <tr class="highlight-row"><td>금융상품 소계</td><td>사용제한 예금</td><td>30.0</td><td>평균 3.23%</td><td>—</td><td class="pos-g">약 9,700만원</td></tr>
+        <tr><td>　NH 발행어음</td><td>—</td><td>15.0</td><td>연 2.90%</td><td>26.10.29</td><td>4,350만원</td></tr>
+        <tr><td>　NH 회사채(삼성에프엔리츠)</td><td>—</td><td>5.0</td><td>연 3.771%</td><td>27.09.13</td><td>1,896만원</td></tr>
+        <tr><td>　NH 정기예금(지역수협)</td><td>—</td><td>10.0</td><td>연 3.45%</td><td>27.04.29</td><td>3,450만원</td></tr>
+        <tr class="highlight-row"><td>퇴직연금</td><td>신한 DB형</td><td>10.7</td><td>—</td><td>사외적립</td><td>—</td></tr>
+        <tr class="section-row"><td>총 보유자금</td><td>가용시재 + 금융상품 + 퇴직연금</td><td>52.1</td><td>—</td><td>차입금 0</td><td>—</td></tr>
       </tbody>
     </table>
   </div>
-</div>
+  <div style="font-size:11px;color:#94A3B8;margin-top:8px;line-height:1.6">
+    ※ 연간 추정이자는 <strong>원금 × 표면금리(세전)</strong> 단순 계산값입니다. 실제 수령액은 보유기간·세금(이자소득세 등)에 따라 달라질 수 있습니다. MMT는 변동금리 수시물이라 별도 산정합니다.
+  </div>
 
 </div><!-- /main -->
 
