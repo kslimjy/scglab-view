@@ -774,7 +774,8 @@ async function sendMessage() {
       },
       body: JSON.stringify({
         model: 'claude-sonnet-4-6',
-        max_tokens: 3000,
+        max_tokens: 2000,
+        stream: true,
         system: SYSTEM_PROMPT,
         messages: chatHistory
       })
@@ -790,9 +791,39 @@ async function sendMessage() {
       showError(errMsg);
       chatHistory.pop();
     } else {
-      var data = await response.json();
-      var answer = data.content[0].text;
-      addMessage('assistant', answer);
+      // 빈 말풍선 먼저 띄우고, 토큰이 올 때마다 채움 (스트리밍)
+      var bubbleDiv = addMessage('assistant', '');
+      var bubble = bubbleDiv.querySelector('.msg-bubble');
+      var answer = '';
+
+      var reader = response.body.getReader();
+      var decoder = new TextDecoder();
+      var buffer = '';
+
+      while (true) {
+        var chunk = await reader.read();
+        if (chunk.done) break;
+        buffer += decoder.decode(chunk.value, { stream: true });
+
+        var lines = buffer.split('\n');
+        buffer = lines.pop(); // 마지막 미완성 줄은 다음 루프로
+
+        for (var i = 0; i < lines.length; i++) {
+          var line = lines[i].trim();
+          if (!line || line.indexOf('data:') !== 0) continue;
+          var jsonStr = line.slice(5).trim();
+          if (jsonStr === '[DONE]') continue;
+          try {
+            var evt = JSON.parse(jsonStr);
+            if (evt.type === 'content_block_delta' && evt.delta && evt.delta.text) {
+              answer += evt.delta.text;
+              bubble.innerHTML = marked.parse(answer);
+              scrollBottom();
+            }
+          } catch(e) { /* 미완성 조각 무시 */ }
+        }
+      }
+
       chatHistory.push({ role: 'assistant', content: answer });
       // 대화 20턴 이상이면 오래된 것 제거 (컨텍스트 관리)
       if (chatHistory.length > 20) chatHistory = chatHistory.slice(-20);
