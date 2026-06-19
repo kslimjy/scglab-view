@@ -87,7 +87,8 @@ body {
   content: ''; width: 4px; height: 16px; background: #2563EB; border-radius: 2px;
 }
 
-.card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
+.card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+@media (max-width: 1024px){ .card-grid { grid-template-columns: 1fr; } }
 
 /* ── Dashboard Card */
 .dash-card {
@@ -138,15 +139,6 @@ body {
   transition: background .15s;
 }
 .dash-card:hover .arrow-btn { background: #DBEAFE; }
-.img-card {
-  padding: 16px; overflow: hidden; display: flex; align-items: center; justify-content: center;
-  background: #fff;
-}
-.img-card img {
-  max-width: 100%; max-height: 100%; width: auto; height: auto;
-  object-fit: contain; display: block; border-radius: 8px;
-}
-
 /* ── Stats row */
 .stats-row {
   display: grid; grid-template-columns: repeat(4, 1fr);
@@ -342,11 +334,6 @@ body {
       </div>
     </a>
 
-    <!-- 이미지 카드 (CEO평가 카드 자리 대체, 월별 카드 이미지) -->
-    <div class="dash-card img-card">
-      <img id="cardImg" src="images/card-05.png" alt="이달의 이미지">
-    </div>
-
   </div>
 </div>
 
@@ -382,7 +369,6 @@ body {
   (function setBanner(m){
     var mStr = String(m).padStart(2,'0');
     document.getElementById('monthImg').src = 'images/month-' + mStr + '.png';
-    document.getElementById('cardImg').src = 'images/card-' + mStr + '.png';
     document.getElementById('monthTag').textContent = monthNames[m-1] + ' · ' + m + '월';
     document.getElementById('monthSub').textContent = yyyy + '년 ' + m + '월 정산 완료';
   })(settledMonth);

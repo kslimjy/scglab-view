@@ -20,6 +20,12 @@ body{font-family:'Pretendard',sans-serif;background:var(--bg);color:var(--text);
 
 .hdr{background:#0F172A;padding:0 32px;display:flex;align-items:center;justify-content:space-between;height:60px;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(15,23,42,.15)}
 .logo{font-size:17px;font-weight:800;color:#fff;letter-spacing:-.4px} .logo em{color:#fff;font-style:normal}
+.hdr-left{display:flex;align-items:center;gap:14px}
+.hdr-logo{width:36px;height:36px;background:#2563EB;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff;font-weight:700;text-decoration:none;flex-shrink:0;transition:transform .15s,box-shadow .15s}
+.hdr-logo:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(37,99,235,.4)}
+.hdr-right{display:flex;align-items:center;gap:12px}
+.back-btn{font-size:12px;font-weight:500;background:rgba(255,255,255,.06);color:#CBD5E1;border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:6px 14px;cursor:pointer;text-decoration:none;transition:background .15s}
+.back-btn:hover{background:rgba(255,255,255,.14)}
 .hdr-meta{font-size:11px;color:#64748B} .hdr-meta b{color:#CBD5E1}
 
 .tabs{background:var(--white);border-bottom:1px solid var(--border);padding:0 32px;display:flex}
@@ -188,8 +194,14 @@ td.cum{background:#fffbf0 !important;font-weight:700;color:var(--text)}
 <body>
 
 <div class="hdr">
-  <div class="logo">에스씨지랩 경영현황</div>
-  <div class="hdr-meta">최종 업데이트: <b>2026년 5월</b></div>
+  <div class="hdr-left">
+    <a href="index.html" class="hdr-logo" title="허브로 이동">S</a>
+    <div class="logo">에스씨지랩 경영현황</div>
+  </div>
+  <div class="hdr-right">
+    <div class="hdr-meta">최종 업데이트: <b>2026년 5월</b></div>
+    <a href="index.html" class="back-btn">← 허브로</a>
+  </div>
 </div>
 
 <div class="tabs">

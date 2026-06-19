@@ -25,7 +25,8 @@ body{background:var(--bg);color:var(--text);font-family:'Pretendard',sans-serif;
 /* Header */
 .header{background:#0F172A;padding:20px 40px;display:flex;align-items:center;justify-content:space-between;}
 .header-left{display:flex;align-items:center;gap:14px;}
-.header-logo{width:36px;height:36px;background:var(--blue);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff;font-weight:700;}
+.header-logo{width:36px;height:36px;background:var(--blue);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff;font-weight:700;text-decoration:none;transition:transform .15s,box-shadow .15s;}
+.header-logo:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(37,99,235,.4);}
 .header-left h1{font-size:18px;font-weight:700;color:#fff;letter-spacing:-.4px;}
 .header-left p{font-size:11px;color:#64748B;font-family:'DM Mono',monospace;margin-top:2px;}
 .header-right{display:flex;gap:10px;align-items:center;}
@@ -131,7 +132,7 @@ body{background:var(--bg);color:var(--text);font-family:'Pretendard',sans-serif;
 
 <div class="header">
   <div class="header-left">
-    <div class="header-logo">S</div>
+    <a href="index.html" class="header-logo" title="허브로 이동">S</a>
     <div>
       <h1>에스씨지랩 재무제표</h1>
       <p>SCGLAB Financial Statements · 2020 – 2025</p>
