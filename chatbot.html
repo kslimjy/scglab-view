@@ -795,7 +795,35 @@ async function sendMessage() {
       // 빈 말풍선 먼저 띄우고, 토큰이 올 때마다 채움 (스트리밍)
       var bubbleDiv = addMessage('assistant', '');
       var bubble = bubbleDiv.querySelector('.msg-bubble');
-      var answer = '';
+      var answer = '';        // 화면에 실제로 그려진 텍스트
+      var pending = '';       // 아직 안 그려진 대기 텍스트
+      var streamDone = false;  // 네트워크 수신 완료 여부
+      var lastRender = 0;     // 마지막 마크다운 파싱 시각
+
+      // ── 부드러운 타이핑 렌더 루프 (수신과 분리) ──
+      function renderTick(now) {
+        if (pending.length > 0) {
+          // 대기량에 비례해 흘려보내되 최소 2자 — 덩어리 갱신 방지
+          var step = Math.max(2, Math.ceil(pending.length / 18));
+          answer += pending.slice(0, step);
+          pending = pending.slice(step);
+          // 마크다운 재파싱은 50ms마다(중간엔 평문) — 깜빡임·부하 감소
+          if (now - lastRender > 50 || pending.length === 0) {
+            bubble.innerHTML = marked.parse(answer);
+            lastRender = now;
+          } else {
+            bubble.textContent = answer;
+          }
+          scrollBottom();
+        }
+        if (!streamDone || pending.length > 0) {
+          requestAnimationFrame(renderTick);
+        } else {
+          bubble.innerHTML = marked.parse(answer); // 최종 확정 렌더
+          scrollBottom();
+        }
+      }
+      requestAnimationFrame(renderTick);
 
       var reader = response.body.getReader();
       var decoder = new TextDecoder();
@@ -817,15 +845,14 @@ async function sendMessage() {
           try {
             var evt = JSON.parse(jsonStr);
             if (evt.type === 'content_block_delta' && evt.delta && evt.delta.text) {
-              answer += evt.delta.text;
-              bubble.innerHTML = marked.parse(answer);
-              scrollBottom();
+              pending += evt.delta.text;   // 즉시 그리지 않고 큐에 쌓음 → 렌더 루프가 부드럽게 처리
             }
           } catch(e) { /* 미완성 조각 무시 */ }
         }
       }
+      streamDone = true;   // 렌더 루프가 남은 pending까지 흘린 뒤 종료
 
-      chatHistory.push({ role: 'assistant', content: answer });
+      chatHistory.push({ role: 'assistant', content: answer + pending });
       // 대화 20턴 이상이면 오래된 것 제거 (컨텍스트 관리)
       if (chatHistory.length > 20) chatHistory = chatHistory.slice(-20);
     }
