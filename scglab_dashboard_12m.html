@@ -187,6 +187,10 @@ td.cum{background:#fffbf0 !important;font-weight:700;color:var(--text)}
   .month-summary{grid-template-columns:repeat(3,1fr)}
   .plan-banner{justify-content:flex-start}
 }
+#dashTooltip{position:fixed;background:#1E293B;color:#fff;font-size:12px;font-family:'Pretendard',sans-serif;line-height:1.6;padding:9px 13px;border-radius:8px;max-width:280px;pointer-events:none;opacity:0;transition:opacity .12s;z-index:9999;box-shadow:0 4px 16px rgba(0,0,0,.25);white-space:normal;}
+#dashTooltip.show{opacity:1;}
+.tip-anchor{border-bottom:1px dotted var(--border2);cursor:help;}
+.tip-anchor .tip-i{color:var(--blue);font-size:9px;vertical-align:super;margin-left:2px;}
 </style>
 <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
 </head>
@@ -1222,10 +1226,20 @@ function render26(){
     return html;
   }
 
-  function mkSubRow(label, cells, cls=''){
+  function mkSubRow(label, cells, cls='', tip=''){
     const stkBg = cls.includes('path')?'#f8fbff':cls.includes('bill')?'#f5fdf9':'#fcfcfd';
+    const hasTip = !!tip;
     const labelStyle = `text-align:left;padding:5px 10px 5px 22px;font-size:11px;color:var(--text3);${STK_TD}background:${stkBg}`;
-    return `<tr class="${cls}"><td style="${labelStyle}">${label}</td>${cells}</tr>`;
+    const labelInner = hasTip
+      ? `<span class="tip-anchor" data-tip="${tip.replace(/"/g,'&quot;')}">${label}<span class="tip-i">ⓘ</span></span>`
+      : label;
+    return `<tr class="${cls}"><td style="${labelStyle}">${labelInner}</td>${cells}</tr>`;
+  }
+
+  // 분류 기준 구분 라벨 행 (값 없음, 묶음 머리글)
+  function mkGroupLabel(text){
+    const style = `text-align:left;padding:4px 10px 4px 22px;font-size:10px;color:var(--text3);font-weight:600;letter-spacing:.3px;background:#fafbfc;${STK_TD}`;
+    return `<tr class="grp-label"><td colspan="4" style="${style}">${text}</td></tr>`;
   }
 
   const plR=[
@@ -1246,12 +1260,14 @@ function render26(){
     // 하위행 구성
     let children = '';
     if(r.hasSub && isAll && r.pA && r.bA){
+      if(r.hasDetail) children += mkGroupLabel('— 사업부별 구분 (PATH+빌링 = 판매관리비) —');
       children += mkSubRow('ㄴ PATH', tcPath(r.pA), 'path-row');
       children += mkSubRow('ㄴ 빌링', tcBill(r.bA), 'bill-row');
     } else if(r.hasSub && !isAll && r.pA && r.bA){
       // 월별/다중선택에서도 PATH/빌링 접기 (선택월 합산)
       const p = selSum(r.pA), b = selSum(r.bA);
       const dash = '<span style="color:var(--border2)">-</span>';
+      if(r.hasDetail) children += mkGroupLabel('— 사업부별 구분 (PATH+빌링 = 판매관리비) —');
       children += mkSubRow('ㄴ PATH',
         `<td class="cp" style="text-align:right">${p!==null?fm(p):dash}</td><td style="text-align:right">${dash}</td><td style="text-align:right">${dash}</td>`,
         'path-row');
@@ -1262,16 +1278,17 @@ function render26(){
 
     // 판관비 세부항목 (detail)
     if(r.hasDetail){
+      children += mkGroupLabel('— 비용 항목별 구분 (인건비+광고선전비+기타 = 판매관리비) —');
       const detailRows = [
-        {l:'ㄴ 인건비',    pA:A26.인건P,   bA:A26.인건B,   sA:A26.인건S},
+        {l:'ㄴ 인건비',    pA:A26.인건P,   bA:A26.인건B,   sA:A26.인건S, tip:'직원급여 + 성과금 + 퇴직급여의 합 (4대보험비·복리후생비 제외 — 기타판관비에 포함)'},
         {l:'ㄴ 광고선전비', pA:A26.광고P,   bA:A26.광고B,   sA:A26.광고S},
-        {l:'ㄴ 기타판관비', pA:A26.기타판P, bA:A26.기타판B, sA:A26.기타판S},
+        {l:'ㄴ 기타판관비', pA:A26.기타판P, bA:A26.기타판B, sA:A26.기타판S, tip:'판매관리비에서 인건비·광고선전비를 뺀 나머지 (복리후생비·지급수수료·지급임차료·감가상각비 등 포함)'},
       ];
       if(isAll){
         detailRows.forEach(d => {
           children += mkSubRow(d.l,
             tc(d.pA, d.bA, d.sA),
-            'ind-row');
+            'ind-row', d.tip||'');
         });
       } else {
         detailRows.forEach(d => {
@@ -1280,7 +1297,7 @@ function render26(){
           const dash='<span style="color:var(--border2)">-</span>';
           children += mkSubRow(d.l,
             `<td class="cp" style="text-align:right">${p_!==null?fm(p_):dash}</td><td class="cb" style="text-align:right">${b_!==null?fm(b_):dash}</td><td style="text-align:right">${s_!==null?fm(s_):dash}</td>`,
-            'ind-row');
+            'ind-row', d.tip||'');
         });
       }
     }
@@ -1299,27 +1316,31 @@ function render26(){
     const mainCells = tc(r.pA, r.bA, null);
     let children = '';
     const detailRows2 = [
-      {l:'ㄴ 인건비',   pA:A26.원가급P, bA:A26.원가급B},
-      {l:'ㄴ 상품원가', pA:A26.원가상P, bA:A26.원가상B},
-      {l:'ㄴ 기타원가', pA:A26.원가기P, bA:A26.원가기B},
+      {l:'ㄴ 인건비',   pA:A26.원가급P, bA:A26.원가급B, tip:'급여 + 성과급 + 퇴직급여의 합 (4대보험비·복리후생비 제외 — 기타원가에 포함)'},
+      {l:'ㄴ 상품원가', pA:A26.원가상P, bA:A26.원가상B, tip:'커머스 상품 매입 원가 (커머스 매출에 대응하는 매입분)'},
+      {l:'ㄴ 기타원가', pA:A26.원가기P, bA:A26.원가기B, tip:'원가 합계에서 인건비·상품원가를 뺀 나머지 (외주비·경비·복리후생비 등 포함)'},
     ];
     if(r.hasSub && r.pA && r.bA){
       if(isAll){
+        children += mkGroupLabel('— 사업부별 구분 (PATH+빌링 = 원가 합계) —');
         children += mkSubRow('ㄴ PATH', tcPath(r.pA), 'path-row');
         children += mkSubRow('ㄴ 빌링', tcBill(r.bA), 'bill-row');
-        detailRows2.forEach(d => children += mkSubRow(d.l, tc(d.pA,d.bA,null), 'ind-row'));
+        children += mkGroupLabel('— 비용 항목별 구분 (인건비+상품원가+기타 = 원가 합계) —');
+        detailRows2.forEach(d => children += mkSubRow(d.l, tc(d.pA,d.bA,null), 'ind-row', d.tip||''));
       } else {
         const p=selSum(r.pA), b=selSum(r.bA);
         const dash='<span style="color:var(--border2)">-</span>';
+        children += mkGroupLabel('— 사업부별 구분 (PATH+빌링 = 원가 합계) —');
         children += mkSubRow('ㄴ PATH',
           `<td class="cp" style="text-align:right">${p!==null?fm(p):dash}</td><td style="text-align:right">${dash}</td><td style="text-align:right">${dash}</td>`,'path-row');
         children += mkSubRow('ㄴ 빌링',
           `<td style="text-align:right">${dash}</td><td class="cb" style="text-align:right">${b!==null?fm(b):dash}</td><td style="text-align:right">${dash}</td>`,'bill-row');
+        children += mkGroupLabel('— 비용 항목별 구분 (인건비+상품원가+기타 = 원가 합계) —');
         detailRows2.forEach(d => {
           const p_=selSum(d.pA), b_=selSum(d.bA);
           const s_=(p_!==null&&b_!==null?p_+b_:null);
           children += mkSubRow(d.l,
-            `<td class="cp" style="text-align:right">${p_!==null?fm(p_):dash}</td><td class="cb" style="text-align:right">${b_!==null?fm(b_):dash}</td><td style="text-align:right">${s_!==null?fm(s_):dash}</td>`,'ind-row');
+            `<td class="cp" style="text-align:right">${p_!==null?fm(p_):dash}</td><td class="cb" style="text-align:right">${b_!==null?fm(b_):dash}</td><td style="text-align:right">${s_!==null?fm(s_):dash}</td>`,'ind-row', d.tip||'');
         });
       }
     }
@@ -2608,6 +2629,30 @@ function rerender(){
 }
 render26(); render25();
 window.addEventListener('scroll',()=>document.getElementById('totop').classList.toggle('show',window.scrollY>300));
+</script>
+<div id="dashTooltip"></div>
+<script>
+(function(){
+  var tip=document.getElementById('dashTooltip');
+  document.addEventListener('mouseover',function(e){
+    var a=e.target.closest('.tip-anchor');
+    if(!a) return;
+    tip.textContent=a.getAttribute('data-tip')||'';
+    tip.classList.add('show');
+  });
+  document.addEventListener('mousemove',function(e){
+    if(!tip.classList.contains('show')) return;
+    var x=e.clientX+14, y=e.clientY+16;
+    var w=tip.offsetWidth, h=tip.offsetHeight;
+    if(x+w>window.innerWidth-8) x=e.clientX-w-14;
+    if(y+h>window.innerHeight-8) y=e.clientY-h-16;
+    tip.style.left=x+'px'; tip.style.top=y+'px';
+  });
+  document.addEventListener('mouseout',function(e){
+    var a=e.target.closest('.tip-anchor');
+    if(a && !a.contains(e.relatedTarget)) tip.classList.remove('show');
+  });
+})();
 </script>
 </body>
 </html>
