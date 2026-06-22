@@ -20,7 +20,8 @@ body{background:var(--bg);color:var(--text);font-family:'Pretendard',sans-serif;
 /* Header */
 .header{background:#0F172A;padding:16px 32px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
 .brand{display:flex;align-items:center;gap:12px;}
-.logo{width:34px;height:34px;background:var(--blue);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:15px;}
+.logo{width:34px;height:34px;background:var(--blue);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:15px;text-decoration:none;transition:transform .15s,box-shadow .15s;}
+.logo:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(37,99,235,.4);}
 .brand-text h1{font-size:16px;font-weight:800;color:#fff;}
 .brand-text p{font-size:11px;color:#64748B;font-family:'DM Mono',monospace;margin-top:1px;}
 .header-right{display:flex;gap:10px;align-items:center;}
@@ -76,6 +77,7 @@ body{background:var(--bg);color:var(--text);font-family:'Pretendard',sans-serif;
 .msg.assistant .msg-bubble ul,.msg.assistant .msg-bubble ol{padding-left:18px;margin:6px 0;}
 .msg.assistant .msg-bubble li{margin:3px 0;line-height:1.6;}
 .msg.assistant .msg-bubble strong{font-weight:700;}
+.msg.assistant .msg-bubble hr{border:none;border-top:none;height:0;margin:8px 0;}
 .msg.assistant .msg-bubble hr{border:none;border-top:1px solid var(--border);margin:12px 0;}
 .msg.assistant .msg-bubble blockquote{border-left:3px solid var(--blue);padding-left:10px;color:var(--text2);margin:8px 0;}
 .msg.assistant .msg-bubble code{background:var(--bg3);padding:1px 5px;border-radius:4px;font-family:'DM Mono',monospace;font-size:12px;}
@@ -126,7 +128,7 @@ textarea::placeholder{color:var(--text3);}
 <!-- Header -->
 <div class="header">
   <div class="brand">
-    <div class="logo">S</div>
+    <a href="index.html" class="logo" title="허브로 이동">S</a>
     <div class="brand-text">
       <h1>SCGLAB 경영 AI</h1>
       <p>재무·매출 데이터 질의응답</p>
@@ -644,6 +646,7 @@ const SYSTEM_PROMPT = `당신은 에스씨지랩(SCGLAB)의 경영 데이터 분
 - 전년 대비, 계획 대비 비교가 있으면 함께 제시
 - 데이터에 없는 내용은 "해당 데이터가 없습니다"라고 명확히 답변
 - 간결하고 명확하게, 불필요한 서론 없이 바로 핵심 답변
+- ★답변 형식 통일: 계산식·산식·수식을 코드블록이나 백틱으로 감싸지 말고 평문 문장으로 작성(숫자·변수명도 코드표기 없이). ★수평 구분선(--- 등 마크다운 가로줄)은 절대 쓰지 말 것 — 섹션 구분은 [대괄호 소제목]이나 줄바꿈으로만. 같은 질문이면 형식·구성이 일관되게 나오도록 위 보고 형식 지침을 따를 것. 표·굵게(**)·목록은 사용 가능.
 - ★보고용 요약 요청 시(정산 요약): 정중한 보고체로 15~20줄 내외. 반드시 이달_보고요약_확정수치 블록을 근거로 사용(임의 재계산 금지, 그 값과 어긋나지 말 것). 맨 위 "■ 2026년 N월 경영실적 요약 (보고용)" 제목. 포함 — ①매출(금액+계획대비 달성률+전년 동월비) ②영업이익·순이익(금액+영업이익률, 전월/계획 대비) ③사업부별 핵심(PATH/빌링, 두드러진 거래처 1~2개) ④긍정/주의 요인 1~2개 ⑤2QF 연간 전망 한 줄. 숫자는 억원 단위 반올림, 사실 위주. 표·코드블록 금지, 짧은 문장 나열. 끝에 "※ N월 마감 확정 기준" 주석. 추측은 "추정" 명시.
 - ★보고용 상세 요청 시(정산 상세): 정중한 보고체로 보유 정보를 최대한 담아 항목별로 정리(섹션 구분 가능, 30~40줄 허용). 맨 위 "■ 2026년 N월 경영실적 상세 (보고용)" 제목. 섹션 — [매출] 과금·광고커머스기타·빌링·가스톡 구분 + 계획/전년 대비, [손익] 매출원가·판관비·영업이익·영업외수익·순이익 + 영업이익률, [사업부·거래처] 주요 거래처 동향, [재무·자금] 보유 현금·금융상품·자금현황(있는 범위), [전망] 2QF 연간. 데이터가 없는 항목은 "해당 정보 미보유"로 솔직히 밝히고 지어내지 말 것. 숫자는 정확히, 표 대신 문장·소제목 활용. 끝에 마감 기준 주석.
 - ★회원수 주의: "실적"과 "계획"을 절대 바꿔 쓰지 말 것. 실적=실제 달성한 회원수, 계획=목표. 달성률=실적÷계획×100. 거래처별_실적과_계획 데이터에서 각 거래처는 {"실적":[...], "계획":[...]} 형태이며 배열은 [1월,2월,3월,4월] 순서.
@@ -790,6 +793,10 @@ async function sendMessage() {
   // 로딩 표시
   addMessage('assistant', '', true);
 
+  // 상세 보고/심층 분석 요청이면 토큰 한도 확대, 평소엔 2000 유지(속도)
+  var isDetailed = /상세|자세|구체적|최대한|전부|모두 정리|항목별로/.test(text);
+  var maxTok = isDetailed ? 3500 : 2000;
+
   try {
     var response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
@@ -801,7 +808,7 @@ async function sendMessage() {
       },
       body: JSON.stringify({
         model: 'claude-sonnet-4-6',
-        max_tokens: 2000,
+        max_tokens: maxTok,
         system: SYSTEM_PROMPT,
         messages: chatHistory
       })
