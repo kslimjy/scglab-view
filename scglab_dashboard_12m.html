@@ -355,12 +355,12 @@ td.cum{background:#fffbf0 !important;font-weight:700;color:var(--text)}
   </div>
   <div class="rev-section" id="revPathCmp">
     <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px">PATH 매출 구분 비교</div>
-    <div style="font-size:11px;color:var(--text3);margin-bottom:14px">26년 실적 / 26년 계획 / 25년 동기 — 단위: 백만원</div>
+    <div style="font-size:11px;color:var(--text3);margin-bottom:14px">26년 실적 / 26년 계획 / 25년 동기(1~5월) — 단위: 백만원</div>
     <div id="revPathCmpContent"></div>
   </div>
   <div class="rev-section" id="revBillCmp">
     <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px">빌링 매출 구분 비교</div>
-    <div style="font-size:11px;color:var(--text3);margin-bottom:14px">26년 실적 / 26년 계획 / 25년 동기 — 단위: 백만원</div>
+    <div style="font-size:11px;color:var(--text3);margin-bottom:14px">26년 실적 / 26년 계획 / 25년 동기(1~5월) — 단위: 백만원</div>
     <div id="revBillCmpContent"></div>
   </div>
 
@@ -377,12 +377,12 @@ td.cum{background:#fffbf0 !important;font-weight:700;color:var(--text)}
     <div class="cgrid c11" style="margin-bottom:16px">
       <div class="ccard">
         <div class="ctitle">매출 비교</div>
-        <div class="csub">26년 실적(PATH+빌링) / 25년 동기 / 26년 계획</div>
+        <div class="csub">26년 실적(PATH+빌링) / 25년 동기(1~5월) / 26년 계획</div>
         <div class="cwrap h260"><canvas id="cmpChartRev"></canvas></div>
       </div>
       <div class="ccard">
         <div class="ctitle">영업이익 비교</div>
-        <div class="csub">26년 실적(PATH+빌링) / 25년 동기 / 26년 계획</div>
+        <div class="csub">26년 실적(PATH+빌링) / 25년 동기(1~5월) / 26년 계획</div>
         <div class="cwrap h260"><canvas id="cmpChartOp"></canvas></div>
       </div>
     </div>
@@ -1446,14 +1446,16 @@ function render25(){
 
 // ── 성과&계획비교 렌더
 function renderCmp(){
-  const 매출26=SUM(A26.매출S,0,4), 영업26=SUM(A26.영업S,0,4), 순이26=SUM(A26.순이S,0,4);
-  const 매출25=SUM(A25.매출S,0,4), 영업25=SUM(A25.영업S,0,4), 순이25=SUM(A25.순이S,0,4);
-  const PM_매출S=SUM(P26.매출S,0,4), PM_영업S=SUM(P26.영업S,0,4);
-  const PM_매출P=SUM(P26.매출P,0,4), PM_매출B=SUM(P26.매출B,0,4);
-  const PATH26=SUM(A26.매출P,0,4), BILL26=SUM(A26.매출B,0,4);
-  const PATH25=SUM(A25.매출P,0,4), BILL25=SUM(A25.매출B,0,4);
-  const OP26=SUM(A26.영업P,0,4),   OB26=SUM(A26.영업B,0,4);
-  const OP25=SUM(A25.영업P,0,4),   OB25=SUM(A25.영업B,0,4);
+  const CM = CONFIRMED_MAX; // 마감월 수 (현재 5)
+  const 동기L = `25년 동기(1~${CM}월)`;
+  const 매출26=SUM(A26.매출S,0,CM), 영업26=SUM(A26.영업S,0,CM), 순이26=SUM(A26.순이S,0,CM);
+  const 매출25=SUM(A25.매출S,0,CM), 영업25=SUM(A25.영업S,0,CM), 순이25=SUM(A25.순이S,0,CM);
+  const PM_매출S=SUM(P26.매출S,0,CM), PM_영업S=SUM(P26.영업S,0,CM);
+  const PM_매출P=SUM(P26.매출P,0,CM), PM_매출B=SUM(P26.매출B,0,CM);
+  const PATH26=SUM(A26.매출P,0,CM), BILL26=SUM(A26.매출B,0,CM);
+  const PATH25=SUM(A25.매출P,0,CM), BILL25=SUM(A25.매출B,0,CM);
+  const OP26=SUM(A26.영업P,0,CM),   OB26=SUM(A26.영업B,0,CM);
+  const OP25=SUM(A25.영업P,0,CM),   OB25=SUM(A25.영업B,0,CM);
 
   // 증감 태그
   const diffTag=(act,base)=>{
@@ -1483,7 +1485,7 @@ function renderCmp(){
       <th style="${TH};color:var(--blue)">26년 실적</th>
       <th style="${TH}">26년 계획 (1~5월)</th>
       <th style="${TH}">vs 계획</th>
-      <th style="${TH}">25년 동기</th>
+      <th style="${TH}">${동기L}</th>
       <th style="${TH}">vs 전년</th>
     </tr></thead><tbody>`;
   sumRows.forEach(r=>{
@@ -1512,7 +1514,7 @@ function renderCmp(){
         datasets:[
           {label:'26년 실적', data:[Math.round(PATH26/1e6),Math.round(BILL26/1e6),Math.round(매출26/1e6)],backgroundColor:['rgba(75,124,243,.9)','rgba(30,201,151,.9)','rgba(75,124,243,.6)'],borderRadius:4},
           {label:'26년 계획', data:[Math.round(PM_매출P/1e6),Math.round(PM_매출B/1e6),Math.round(PM_매출S/1e6)],backgroundColor:'rgba(251,191,36,.15)',borderRadius:4,borderWidth:1.5,borderColor:'rgba(217,119,6,.35)'},
-          {label:'25년 동기', data:[Math.round(PATH25/1e6),Math.round(BILL25/1e6),Math.round(매출25/1e6)],backgroundColor:'rgba(167,139,250,.15)',borderRadius:4,borderWidth:1.5,borderColor:'rgba(124,58,237,.3)',borderDash:[4,3]},
+          {label:동기L, data:[Math.round(PATH25/1e6),Math.round(BILL25/1e6),Math.round(매출25/1e6)],backgroundColor:'rgba(167,139,250,.15)',borderRadius:4,borderWidth:1.5,borderColor:'rgba(124,58,237,.3)',borderDash:[4,3]},
         ]
       },
       options:{responsive:true,maintainAspectRatio:false,
@@ -1532,7 +1534,7 @@ function renderCmp(){
         datasets:[
           {label:'26년 실적', data:[Math.round(OP26/1e6),Math.round(OB26/1e6),Math.round(영업26/1e6)],backgroundColor:['rgba(75,124,243,.9)','rgba(30,201,151,.9)','rgba(217,119,6,.9)'],borderRadius:4},
           {label:'26년 계획', data:[Math.round(planOP_P/1e6),Math.round(planOP_B/1e6),Math.round(PM_영업S/1e6)],backgroundColor:'rgba(251,191,36,.15)',borderRadius:4,borderWidth:1.5,borderColor:'rgba(217,119,6,.35)'},
-          {label:'25년 동기', data:[Math.round(OP25/1e6),Math.round(OB25/1e6),Math.round(영업25/1e6)],backgroundColor:'rgba(167,139,250,.15)',borderRadius:4,borderWidth:1.5,borderColor:'rgba(124,58,237,.6)'},
+          {label:동기L, data:[Math.round(OP25/1e6),Math.round(OB25/1e6),Math.round(영업25/1e6)],backgroundColor:'rgba(167,139,250,.15)',borderRadius:4,borderWidth:1.5,borderColor:'rgba(124,58,237,.6)'},
         ]
       },
       options:{responsive:true,maintainAspectRatio:false,
@@ -1578,17 +1580,17 @@ function renderCmp(){
     </tr><tr>
       <th style="${TH};border-left:1px solid var(--border);color:var(--blue)">26년 실적</th>
       <th style="${TH}">26년 계획</th>
-      <th style="${TH}">25년 동기</th>
+      <th style="${TH}">${동기L}</th>
       <th style="${TH}">vs 계획</th>
       <th style="${TH}">vs 전년</th>
       <th style="${TH};border-left:1px solid var(--border);color:var(--mint)">26년 실적</th>
       <th style="${TH}">26년 계획</th>
-      <th style="${TH}">25년 동기</th>
+      <th style="${TH}">${동기L}</th>
       <th style="${TH}">vs 계획</th>
       <th style="${TH}">vs 전년</th>
       <th style="${TH};border-left:2px solid var(--border2)">26년 실적</th>
       <th style="${TH}">26년 계획</th>
-      <th style="${TH}">25년 동기</th>
+      <th style="${TH}">${동기L}</th>
       <th style="${TH}">vs 계획</th>
       <th style="${TH}">vs 전년</th>
     </tr></thead><tbody>`;
@@ -1622,9 +1624,9 @@ function renderCmp(){
     <td style="${TD};color:var(--text3)" colspan="5">사업부별 분리 없음</td>
     <td style="${TD};border-left:2px solid var(--border2)">${fa(순이26)}</td>
     <td style="${TD};color:var(--text3)">${fa(169732104)}</td>
-    <td style="${TD};color:var(--text3)">${fa(SUM(A25.순이S,0,4))}</td>
+    <td style="${TD};color:var(--text3)">${fa(SUM(A25.순이S,0,CM))}</td>
     <td style="${TD}">${diffTag(순이26,550504495)}</td>
-    <td style="${TD}">${diffTag(순이26,SUM(A25.순이S,0,4))}</td>
+    <td style="${TD}">${diffTag(순이26,SUM(A25.순이S,0,CM))}</td>
   </tr>`;
   tbl+='</tbody></table>';
   document.getElementById('cmpTbl').innerHTML=tbl;
