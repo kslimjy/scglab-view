@@ -39,6 +39,10 @@ body{background:var(--bg);color:var(--text);font-family:'Pretendard',sans-serif;
 .sidebar-title{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px;}
 .suggest-btn{display:block;width:100%;text-align:left;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-size:12px;color:var(--text2);cursor:pointer;margin-bottom:6px;transition:background .15s,border-color .15s;font-family:'Pretendard',sans-serif;line-height:1.4;}
 .suggest-btn:hover{background:var(--blue-dim);border-color:rgba(37,99,235,.2);color:var(--blue);}
+.suggest-btn.report{background:rgba(37,99,235,.08);border-color:rgba(37,99,235,.35);color:var(--blue);font-weight:700;}
+.suggest-btn.report:hover{background:rgba(37,99,235,.15);border-color:rgba(37,99,235,.5);color:var(--blue);}
+.suggest-btn.report::before{content:'📋 ';}
+.suggest-btn.report.last{margin-bottom:10px;}
 .divider{height:1px;background:var(--border);margin:4px 16px;}
 .sidebar-note{padding:12px 16px;font-size:11px;color:var(--text3);line-height:1.6;}
 
@@ -141,6 +145,8 @@ textarea::placeholder{color:var(--text3);}
   <div class="sidebar">
     <div class="sidebar-section">
       <div class="sidebar-title">추천 질문</div>
+      <button class="suggest-btn report" onclick="ask('5월 정산이 완료됐어. 대표님 보고용으로 5월 경영실적을 핵심만 요약해줘. 매출·영업이익·순이익(계획/전월/전년 대비), 영업이익률, 사업부별 특이사항, 2QF 전망을 포함하고 보고체로 간결하게 작성해줘.')">5월 정산 요약 (보고용)</button>
+      <button class="suggest-btn report last" onclick="ask('5월 정산이 완료됐어. 대표님 보고용으로 5월 경영실적을 상세히 정리해줘. 매출(과금·광고·빌링·가스톡 구분), 손익(매출원가·판관비·영업이익·영업외수익·순이익), 계획·전월·전년 대비 증감, 주요 거래처 동향, 재무·자금 현황, 2QF 전망까지 보유한 정보를 최대한 담아 보고체로 작성해줘.')">5월 정산 상세 (보고용)</button>
       <button class="suggest-btn" onclick="ask('26년 1~5월 확정 실적 요약해줘')">26년 1~5월 확정 실적 요약</button>
       <button class="suggest-btn" onclick="ask('26년 계획 대비 실적 어떻게 돼?')">26년 계획 대비 실적 비교</button>
       <button class="suggest-btn" onclick="ask('서울도시가스 매출 25년이랑 26년 비교해줘')">서울도시가스 25 vs 26 비교</button>
@@ -238,6 +244,23 @@ textarea::placeholder{color:var(--text3);}
 const SCGLAB_DATA = {
   "company": "에스씨지랩 (SCGLAB)",
   "data_updated": "2026-06 (5월 매출+손익 반영, 2QF 갱신)",
+  "이달_보고요약_확정수치": {
+    "note": "★보고용 요약/상세 버튼 응답의 근거 수치(매월 정산 후 갱신·검증). 이 값과 어긋나게 답하지 말 것. 단위 억원.",
+    "기준월": "2026년 5월 (마감 확정)",
+    "매출": {"실적": 7.35, "계획": 5.54, "달성률": "132.7%", "전월(4월)": 7.83, "전년동월(25.5)": 4.88, "전년비": "+50.8%"},
+    "영업이익": {"실적": 0.59, "영업이익률": "8.0%", "전월(4월)": 0.85},
+    "순이익": {"실적": 0.71},
+    "매출원가": 5.02, "매출총이익": 2.34, "판매관리비": 1.74, "영업외수익": 0.32,
+    "매출구분_5월": {
+      "과금": {"실적": 2.85, "계획": 2.40, "달성률": "118.9%"},
+      "광고커머스기타": {"실적": 2.65, "계획": 1.57, "달성률": "168.3%"},
+      "빌링": {"실적": 1.78, "계획": 1.49, "달성률": "119.5%"},
+      "가스톡": {"실적": 0.07, "계획": 0.08}
+    },
+    "누계_1to5": {"매출_실적": 40.20, "매출_계획": 30.62, "전년_1to5": 25.73},
+    "특이사항": "5월 매출은 계획·전년 동월을 큰 폭 상회(달성 132.7%, 전년비 +50.8%). 광고·커머스가 계획 168%로 견인. 단 영업이익률은 5월 8.0%로 1~4월 대비 하락 — 봄~초여름 계절적 저점 + 고정비 레버리지 영향(추정).",
+    "2QF_연간전망": {"매출": 85.7, "영업이익": 6.42, "순이익": 9.65, "영업이익률": "7.5%"}
+  },
   "금액단위": "원(₩). 억원 환산: 값÷100,000,000",
   "데이터_구조_설명": "2QF = 1~5월 확정 + 6~12월 추정. 5월 Monthly로 5월 실적 반영됨. 다음은 3QF(6월 Monthly 시점)로 전환 예정.",
 
@@ -621,6 +644,8 @@ const SYSTEM_PROMPT = `당신은 에스씨지랩(SCGLAB)의 경영 데이터 분
 - 전년 대비, 계획 대비 비교가 있으면 함께 제시
 - 데이터에 없는 내용은 "해당 데이터가 없습니다"라고 명확히 답변
 - 간결하고 명확하게, 불필요한 서론 없이 바로 핵심 답변
+- ★보고용 요약 요청 시(정산 요약): 정중한 보고체로 15~20줄 내외. 반드시 이달_보고요약_확정수치 블록을 근거로 사용(임의 재계산 금지, 그 값과 어긋나지 말 것). 맨 위 "■ 2026년 N월 경영실적 요약 (보고용)" 제목. 포함 — ①매출(금액+계획대비 달성률+전년 동월비) ②영업이익·순이익(금액+영업이익률, 전월/계획 대비) ③사업부별 핵심(PATH/빌링, 두드러진 거래처 1~2개) ④긍정/주의 요인 1~2개 ⑤2QF 연간 전망 한 줄. 숫자는 억원 단위 반올림, 사실 위주. 표·코드블록 금지, 짧은 문장 나열. 끝에 "※ N월 마감 확정 기준" 주석. 추측은 "추정" 명시.
+- ★보고용 상세 요청 시(정산 상세): 정중한 보고체로 보유 정보를 최대한 담아 항목별로 정리(섹션 구분 가능, 30~40줄 허용). 맨 위 "■ 2026년 N월 경영실적 상세 (보고용)" 제목. 섹션 — [매출] 과금·광고커머스기타·빌링·가스톡 구분 + 계획/전년 대비, [손익] 매출원가·판관비·영업이익·영업외수익·순이익 + 영업이익률, [사업부·거래처] 주요 거래처 동향, [재무·자금] 보유 현금·금융상품·자금현황(있는 범위), [전망] 2QF 연간. 데이터가 없는 항목은 "해당 정보 미보유"로 솔직히 밝히고 지어내지 말 것. 숫자는 정확히, 표 대신 문장·소제목 활용. 끝에 마감 기준 주석.
 - ★회원수 주의: "실적"과 "계획"을 절대 바꿔 쓰지 말 것. 실적=실제 달성한 회원수, 계획=목표. 달성률=실적÷계획×100. 거래처별_실적과_계획 데이터에서 각 거래처는 {"실적":[...], "계획":[...]} 형태이며 배열은 [1월,2월,3월,4월] 순서.
 - ★거래처명은 데이터에 있는 정확한 명칭 사용(예: "군산도시가스"). 임의로 마스킹(**)하거나 줄이지 말 것.
 - ★표로 답할 때 숫자를 다시 계산해 검증할 것. 실적이 계획보다 큰데 달성률을 100% 미만으로 쓰는 등의 모순 금지.
