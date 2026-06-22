@@ -1121,13 +1121,22 @@ function render26(){
     return h;
   }
 
+  // 선택된 활성 월들의 합 (단일이면 그 달, 다중이면 누계). null 처리 포함
+  function selSum(arr){
+    if(!arr) return null;
+    const idxs = activeMIdxs;
+    let any=false, s=0;
+    idxs.forEach(i=>{ if(arr[i]!==null && arr[i]!==undefined){ s+=arr[i]; any=true; } });
+    return any ? s : null;
+  }
+
   function tc(pA, bA, sA){
     const dash = '<span style="color:var(--border2)">-</span>';
 
     if(!isAll){
-      const p  = pA ? pA[mi] : null;
-      const b  = bA ? bA[mi] : null;
-      const sv = sA ? sA[mi] : (p!==null && b!==null ? p+b : null);
+      const p  = selSum(pA);
+      const b  = selSum(bA);
+      const sv = sA ? selSum(sA) : (p!==null && b!==null ? p+b : null);
       return `<td class="cp" style="text-align:right">${p!==null?fm(p):dash}</td>`+
              `<td class="cb" style="text-align:right">${b!==null?fm(b):dash}</td>`+
              `<td style="text-align:right">${sv!==null?fm(sv):dash}</td>`;
@@ -1240,8 +1249,8 @@ function render26(){
       children += mkSubRow('ㄴ PATH', tcPath(r.pA), 'path-row');
       children += mkSubRow('ㄴ 빌링', tcBill(r.bA), 'bill-row');
     } else if(r.hasSub && !isAll && r.pA && r.bA){
-      // 월별에서도 PATH/빌링 접기
-      const p = r.pA[mi], b = r.bA[mi];
+      // 월별/다중선택에서도 PATH/빌링 접기 (선택월 합산)
+      const p = selSum(r.pA), b = selSum(r.bA);
       const dash = '<span style="color:var(--border2)">-</span>';
       children += mkSubRow('ㄴ PATH',
         `<td class="cp" style="text-align:right">${p!==null?fm(p):dash}</td><td style="text-align:right">${dash}</td><td style="text-align:right">${dash}</td>`,
@@ -1266,8 +1275,8 @@ function render26(){
         });
       } else {
         detailRows.forEach(d => {
-          const p_=d.pA?d.pA[mi]:null, b_=d.bA?d.bA[mi]:null;
-          const s_=d.sA?d.sA[mi]:(p_!==null&&b_!==null?p_+b_:null);
+          const p_=selSum(d.pA), b_=selSum(d.bA);
+          const s_=d.sA?selSum(d.sA):(p_!==null&&b_!==null?p_+b_:null);
           const dash='<span style="color:var(--border2)">-</span>';
           children += mkSubRow(d.l,
             `<td class="cp" style="text-align:right">${p_!==null?fm(p_):dash}</td><td class="cb" style="text-align:right">${b_!==null?fm(b_):dash}</td><td style="text-align:right">${s_!==null?fm(s_):dash}</td>`,
@@ -1300,14 +1309,14 @@ function render26(){
         children += mkSubRow('ㄴ 빌링', tcBill(r.bA), 'bill-row');
         detailRows2.forEach(d => children += mkSubRow(d.l, tc(d.pA,d.bA,null), 'ind-row'));
       } else {
-        const p=r.pA[mi], b=r.bA[mi];
+        const p=selSum(r.pA), b=selSum(r.bA);
         const dash='<span style="color:var(--border2)">-</span>';
         children += mkSubRow('ㄴ PATH',
           `<td class="cp" style="text-align:right">${p!==null?fm(p):dash}</td><td style="text-align:right">${dash}</td><td style="text-align:right">${dash}</td>`,'path-row');
         children += mkSubRow('ㄴ 빌링',
           `<td style="text-align:right">${dash}</td><td class="cb" style="text-align:right">${b!==null?fm(b):dash}</td><td style="text-align:right">${dash}</td>`,'bill-row');
         detailRows2.forEach(d => {
-          const p_=d.pA?d.pA[mi]:null, b_=d.bA?d.bA[mi]:null;
+          const p_=selSum(d.pA), b_=selSum(d.bA);
           const s_=(p_!==null&&b_!==null?p_+b_:null);
           children += mkSubRow(d.l,
             `<td class="cp" style="text-align:right">${p_!==null?fm(p_):dash}</td><td class="cb" style="text-align:right">${b_!==null?fm(b_):dash}</td><td style="text-align:right">${s_!==null?fm(s_):dash}</td>`,'ind-row');
