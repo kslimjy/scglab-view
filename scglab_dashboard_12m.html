@@ -355,12 +355,12 @@ td.cum{background:#fffbf0 !important;font-weight:700;color:var(--text)}
   </div>
   <div class="rev-section" id="revPathCmp">
     <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px">PATH 매출 구분 비교</div>
-    <div style="font-size:11px;color:var(--text3);margin-bottom:14px">26년 실적 / 26년 계획 / 25년 동기(1~5월) — 단위: 백만원</div>
+    <div id="revPathCmpCap" style="font-size:11px;color:var(--text3);margin-bottom:14px"></div>
     <div id="revPathCmpContent"></div>
   </div>
   <div class="rev-section" id="revBillCmp">
     <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px">빌링 매출 구분 비교</div>
-    <div style="font-size:11px;color:var(--text3);margin-bottom:14px">26년 실적 / 26년 계획 / 25년 동기(1~5월) — 단위: 백만원</div>
+    <div id="revBillCmpCap" style="font-size:11px;color:var(--text3);margin-bottom:14px"></div>
     <div id="revBillCmpContent"></div>
   </div>
 
@@ -377,12 +377,12 @@ td.cum{background:#fffbf0 !important;font-weight:700;color:var(--text)}
     <div class="cgrid c11" style="margin-bottom:16px">
       <div class="ccard">
         <div class="ctitle">매출 비교</div>
-        <div class="csub">26년 실적(PATH+빌링) / 25년 동기(1~5월) / 26년 계획</div>
+        <div class="csub" id="cmpRevCap"></div>
         <div class="cwrap h260"><canvas id="cmpChartRev"></canvas></div>
       </div>
       <div class="ccard">
         <div class="ctitle">영업이익 비교</div>
-        <div class="csub">26년 실적(PATH+빌링) / 25년 동기(1~5월) / 26년 계획</div>
+        <div class="csub" id="cmpOpCap"></div>
         <div class="cwrap h260"><canvas id="cmpChartOp"></canvas></div>
       </div>
     </div>
@@ -391,7 +391,7 @@ td.cum{background:#fffbf0 !important;font-weight:700;color:var(--text)}
   <!-- 사업부별 실적 비교 -->
   <div class="ccard">
     <div class="ctitle">사업부별 실적 비교</div>
-    <div class="csub">26년 누계(1~5월) — 실적 · 계획 · 전년 동기 · 증감률</div>
+    <div class="csub" id="cmpBizCap"></div>
     <div id="cmpTbl"></div>
   </div>
 
@@ -1447,7 +1447,14 @@ function render25(){
 // ── 성과&계획비교 렌더
 function renderCmp(){
   const CM = CONFIRMED_MAX; // 마감월 수 (현재 5)
-  const 동기L = `25년 동기(1~${CM}월)`;
+  const 기간L = `1~${CM}월 누계 기준`;
+  const 동기L = `25년 동기`;
+  // 비교 섹션 캡션 (모든 수치가 1~N월 누계임을 앞머리에 명시)
+  { const e1=document.getElementById('revPathCmpCap'); if(e1) e1.textContent=`${기간L} · 26년 실적 / 26년 계획 / 25년 동기 — 단위: 백만원`;
+    const e2=document.getElementById('revBillCmpCap'); if(e2) e2.textContent=`${기간L} · 26년 실적 / 26년 계획 / 25년 동기 — 단위: 백만원`;
+    const e3=document.getElementById('cmpRevCap');  if(e3) e3.textContent=`${기간L} · 26년 실적(PATH+빌링) / 25년 동기 / 26년 계획`;
+    const e4=document.getElementById('cmpOpCap');   if(e4) e4.textContent=`${기간L} · 26년 실적(PATH+빌링) / 25년 동기 / 26년 계획`;
+    const e5=document.getElementById('cmpBizCap');  if(e5) e5.textContent=`${기간L} · 실적 · 계획 · 전년 동기 · 증감률`; }
   const 매출26=SUM(A26.매출S,0,CM), 영업26=SUM(A26.영업S,0,CM), 순이26=SUM(A26.순이S,0,CM);
   const 매출25=SUM(A25.매출S,0,CM), 영업25=SUM(A25.영업S,0,CM), 순이25=SUM(A25.순이S,0,CM);
   const PM_매출S=SUM(P26.매출S,0,CM), PM_영업S=SUM(P26.영업S,0,CM);
@@ -1479,7 +1486,7 @@ function renderCmp(){
   ];
   let sumHtml=`<div class="ccard" style="margin-bottom:14px">
     <div class="ctitle">전사 실적 요약</div>
-    <div class="csub">26년 누계(1~5월) 기준 — 단위: 억원</div>
+    <div class="csub">26년 누계(1~${CM}월) 기준 — 단위: 억원</div>
     <table style="width:100%"><thead><tr>
       <th style="${THL}">구분</th>
       <th style="${TH};color:var(--blue)">26년 실적</th>
@@ -1542,7 +1549,7 @@ function renderCmp(){
           tooltip:{backgroundColor:'rgba(26,29,35,.9)',titleColor:'#fff',bodyColor:'rgba(255,255,255,.8)',padding:10,cornerRadius:8,
             callbacks:{label:ctx=>` ${ctx.dataset.label}: ${faT(ctx.raw*1e6)}`}}},
         scales:{x:{grid:{color:GC},ticks:{color:TC,font:{size:12,weight:'500'}}},
-          y:{grid:{color:GC},ticks:{color:TC,font:{size:11},callback:v=>Math.abs(v)>=100?(v/100).toFixed(0)+'억':v+'M'}}}}
+          y:{grid:{color:GC},ticks:{color:TC,font:{size:11},callback:v=>Math.abs(v)>=100?(v/100).toFixed(1)+'억':v+'M'}}}}
     });
   };
   if(document.getElementById('chartToggleWrap').style.display!=='none') drawCharts();
