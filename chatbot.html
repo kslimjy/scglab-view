@@ -861,7 +861,6 @@ async function sendMessage() {
       body: JSON.stringify({
         model: 'claude-sonnet-4-6',
         max_tokens: maxTok,
-        stream: true,
         system: [
           { type: 'text', text: SYSTEM_PROMPT, cache_control: { type: 'ephemeral' } }
         ],
@@ -879,58 +878,9 @@ async function sendMessage() {
       showError(errMsg);
       chatHistory.pop();
     } else {
-      // 빈 말풍선을 먼저 띄우고 토큰이 올 때마다 채움 (스트리밍)
-      var bubbleDiv = addMessage('assistant', '');
-      var bubble = bubbleDiv.querySelector('.msg-bubble');
-      var answer = '';
-
-      // requestAnimationFrame으로 렌더를 묶어 "다다다" 끊김 제거
-      var pending = false;
-      function flush() {
-        bubble.innerHTML = marked.parse(answer);
-        scrollBottom();
-        pending = false;
-      }
-      function scheduleRender() {
-        if (pending) return;
-        pending = true;
-        requestAnimationFrame(flush);
-      }
-
-      var reader = response.body.getReader();
-      var decoder = new TextDecoder();
-      var buffer = '';
-
-      while (true) {
-        var chunk = await reader.read();
-        if (chunk.done) break;
-        buffer += decoder.decode(chunk.value, { stream: true });
-
-        // SSE는 줄 단위(\n)로 옴. 완성된 줄만 처리하고 나머지는 버퍼에 둠
-        var lines = buffer.split('\n');
-        buffer = lines.pop();
-
-        for (var i = 0; i < lines.length; i++) {
-          var line = lines[i].trim();
-          if (!line || line.indexOf('data:') !== 0) continue;
-          var payload = line.slice(5).trim();
-          if (payload === '[DONE]') continue;
-          try {
-            var evt = JSON.parse(payload);
-            if (evt.type === 'content_block_delta' && evt.delta && evt.delta.type === 'text_delta') {
-              answer += evt.delta.text;
-              scheduleRender();
-            } else if (evt.type === 'error') {
-              showError((evt.error && evt.error.message) ? evt.error.message : '스트리밍 오류');
-            }
-          } catch(parseErr) { /* 불완전한 줄은 무시 */ }
-        }
-      }
-
-      // 마지막 렌더 보정
-      bubble.innerHTML = marked.parse(answer);
-      scrollBottom();
-
+      var data = await response.json();
+      var answer = data.content[0].text;
+      addMessage('assistant', answer);
       chatHistory.push({ role: 'assistant', content: answer });
       // 대화 20턴 이상이면 오래된 것 제거 (컨텍스트 관리)
       if (chatHistory.length > 20) chatHistory = chatHistory.slice(-20);
